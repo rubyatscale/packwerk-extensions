@@ -1,0 +1,6 @@
+include:
+  - "**/*.rb"
+  - "**/*.{blop,rb}" # To test for duplicated files
+exclude:
+  - "**/temp.rb"
+parallel: false

@@ -1,0 +1,32 @@
+name: packwerk
+
+type: ruby
+
+up:
+  - ruby: 3.0.0
+  - bundler
+
+commands:
+  test:
+    run: |
+      if [[ "$*" =~ ":"[0-9]+ ]];
+      then
+        # run test by its line number
+        bin/m "$@"
+      elif [[ "$#" -eq 1 && -f "$1" ]];
+      then
+        # run all tests in given file(s)
+        bin/rake test TEST="$@"
+      else
+        # run all tests
+        bin/rake test
+      fi
+  style: "bin/rubocop -D --auto-correct"
+  typecheck:
+    desc: "run Sorbet typechecking"
+    run: "bin/srb tc"
+    aliases: ['tc']
+    subcommands:
+      update:
+        desc: "update RBIs for gems"
+        run: "bin/tapioca sync -c 'dev typecheck update'"
