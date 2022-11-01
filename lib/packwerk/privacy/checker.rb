@@ -43,12 +43,12 @@ module Packwerk
       def message(reference)
         source_desc = "'#{reference.source_package}'"
 
-        message = <<~EOS
+        message = <<~MESSAGE
           Privacy violation: '#{reference.constant.name}' is private to '#{reference.constant.package}' but referenced from #{source_desc}.
           Is there a public entrypoint in '#{Package.from(reference.constant.package).public_path}' that you can use instead?
 
           #{standard_help_message(reference)}
-        EOS
+        MESSAGE
 
         message.chomp
       end

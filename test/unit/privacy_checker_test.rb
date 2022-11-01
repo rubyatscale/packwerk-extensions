@@ -8,6 +8,15 @@ module Packwerk
     class CheckerTest < Minitest::Test
       extend T::Sig
       include FactoryHelper
+      include RailsApplicationFixtureHelper
+
+      setup do
+        setup_application_fixture
+      end
+
+      teardown do
+        teardown_application_fixture
+      end
 
       test 'ignores if destination package is not enforcing' do
         checker = privacy_checker

@@ -8,9 +8,16 @@ module Packwerk
     class PackageTest < Minitest::Test
       extend T::Sig
 
+      include RailsApplicationFixtureHelper
+
       setup do
+        setup_application_fixture
         @package = Packwerk::Package.new(name: 'components/timeline', config: { 'enforce_privacy' => ['::Test'] })
         privacy_package = Privacy::Package.from(@package)
+      end
+
+      teardown do
+        teardown_application_fixture
       end
 
       sig { returns(Package) }

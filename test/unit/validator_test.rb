@@ -19,6 +19,7 @@ module Packwerk
     teardown do
       teardown_application_fixture
     end
+
     test 'check_package_manifest_syntax returns an error for unknown package keys' do
       use_template(:minimal)
       merge_into_app_yaml_file('package.yml', { 'enforce_correctness' => false })

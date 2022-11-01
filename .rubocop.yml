@@ -119,3 +119,12 @@ Style/NumericPredicate:
 
 Layout/BlockEndNewline:
   Enabled: false
+
+Naming/FileName:
+  Exclude:
+    - packwerk-privacy.rb
+
+Lint/EmptyClass:
+  Exclude:
+    - test/**/*
+
