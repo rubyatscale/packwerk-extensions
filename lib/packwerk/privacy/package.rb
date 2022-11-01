@@ -32,7 +32,7 @@ module Packwerk
           return unless package.config['public_path']
           return package.config['public_path'] if package.config['public_path'].end_with?('/')
 
-          package.config['public_path'] + '/'
+          "#{package.config['public_path']}/"
         end
 
         sig { params(package: ::Packwerk::Package).returns(String) }

@@ -118,7 +118,7 @@ module Packwerk
 
       sig { params(name: T.untyped, config_file_path: T.untyped).returns(ApplicationValidator::Result) }
       def private_constant_unresolvable(name, config_file_path)
-        explicit_filepath = (name.start_with?('::') ? name[2..-1] : name).underscore + '.rb'
+        explicit_filepath = "#{(name.start_with?('::') ? name[2..] : name).underscore}.rb"
 
         ApplicationValidator::Result.new(
           ok: false,

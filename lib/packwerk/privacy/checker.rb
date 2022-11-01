@@ -64,7 +64,7 @@ module Packwerk
       def explicitly_private_constant?(constant, explicitly_private_constants:)
         explicitly_private_constants.include?(constant.name) ||
           # nested constants
-          explicitly_private_constants.any? { |epc| constant.name.start_with?(epc + '::') }
+          explicitly_private_constants.any? { |epc| constant.name.start_with?("#{epc}::") }
       end
 
       sig do
