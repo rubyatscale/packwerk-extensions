@@ -7,7 +7,7 @@ require 'test_helper'
 require 'fixtures/skeleton/components/timeline/app/models/private_thing'
 
 module Packwerk
-  class CheckPackageManifestsForPrivacyTest < Minitest::Test
+  class ValidatorTest < Minitest::Test
     extend T::Sig
     include ApplicationFixtureHelper
     include RailsApplicationFixtureHelper
