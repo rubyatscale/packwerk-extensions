@@ -24,4 +24,13 @@ Gem::Specification.new do |spec|
   spec.files = Dir['README.md', 'lib/**/*']
 
   spec.add_dependency 'packwerk', '>= 2.2.1'
+  spec.add_dependency 'rails'
+  spec.add_dependency 'zeitwerk'
+  spec.add_dependency 'sorbet-runtime', '0.5.10520'
+
+  spec.add_development_dependency 'sorbet', '0.5.10520'
+  spec.add_development_dependency 'sorbet-static', '0.5.10520'
+  spec.add_development_dependency 'tapioca'
+  spec.add_development_dependency 'minitest'
+  spec.add_development_dependency 'mocha'
 end

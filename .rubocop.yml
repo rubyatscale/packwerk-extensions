@@ -1,75 +1,121 @@
-inherit_gem:
-    rubocop-shopify: rubocop.yml
-
-require:
-  - rubocop-performance
-  - rubocop-sorbet
-
+# The behavior of RuboCop can be controlled via the .rubocop.yml
+# configuration file. It makes it possible to enable/disable
+# certain cops (checks) and to alter their behavior if they accept
+# any parameters. The file can be placed either in your home
+# directory or in some project directory.
+#
+# RuboCop will start looking for the configuration file in the directory
+# where the inspected file is and continue its way up to the root directory.
+#
+# See https://docs.rubocop.org/rubocop/configuration
 AllCops:
-  TargetRubyVersion: 2.7
-  NewCops: disable
-  UseCache: true
-  SuggestExtensions: false
-  CacheRootDirectory: tmp
+  NewCops: enable
   Exclude:
-    - 'test/fixtures/**/*'
+    - vendor/bundle/**/**
 
-Sorbet/ConstantsFromStrings:
-  Enabled: true
+Metrics/ParameterLists:
+  Enabled: false
 
-Sorbet/ForbidIncludeConstLiteral:
-  Enabled: true
+# This cop is annoying with typed configuration
+Style/TrivialAccessors:
+  Enabled: false
 
-Sorbet/SignatureBuildOrder:
-  Enabled: true
+# This rubocop is annoying when we use interfaces a lot
+Lint/UnusedMethodArgument:
+  Enabled: false
 
-Sorbet/KeywordArgumentOrdering:
-  Enabled: true
+Gemspec/RequireMFA:
+  Enabled: false
 
-Sorbet/ValidSigil:
-  Enabled: true
+Lint/DuplicateBranch:
+  Enabled: false
 
-Performance/AncestorsInclude: # new in 1.7
-  Enabled: true
+# If is sometimes easier to think about than unless sometimes
+Style/NegatedIf:
+  Enabled: false
 
-Performance/BigDecimalWithNumericArgument: # new in 1.7
-  Enabled: true
+# Disabling for now until it's clearer why we want this
+Style/FrozenStringLiteralComment:
+  Enabled: false
 
-Performance/BlockGivenWithExplicitBlock: # new in 1.9
-  Enabled: true
+# It's nice to be able to read the condition first before reading the code within the condition
+Style/GuardClause:
+  Enabled: false
 
-Performance/CollectionLiteralInLoop: # new in 1.8
-  Enabled: true
+#
+# Leaving length metrics to human judgment for now
+#
+Metrics/ModuleLength:
+  Enabled: false
 
-Performance/ConstantRegexp: # new in 1.9
-  Enabled: true
+Layout/LineLength:
+  Enabled: false
 
-Performance/MethodObjectAsBlock: # new in 1.9
-  Enabled: true
+Metrics/BlockLength:
+  Enabled: false
 
-Performance/RedundantEqualityComparisonBlock: # new in 1.10
-  Enabled: true
+Metrics/MethodLength:
+  Enabled: false
 
-Performance/RedundantSortBlock: # new in 1.7
-  Enabled: true
+Metrics/AbcSize:
+  Enabled: false
 
-Performance/RedundantSplitRegexpArgument: # new in 1.10
-  Enabled: true
+Metrics/ClassLength:
+  Enabled: false
 
-Performance/RedundantStringChars: # new in 1.7
-  Enabled: true
+# This doesn't feel useful
+Metrics/CyclomaticComplexity:
+  Enabled: false
 
-Performance/ReverseFirst: # new in 1.7
-  Enabled: true
+# This doesn't feel useful
+Metrics/PerceivedComplexity:
+  Enabled: false
 
-Performance/SortReverse: # new in 1.7
-  Enabled: true
+# It's nice to be able to read the condition first before reading the code within the condition
+Style/IfUnlessModifier:
+  Enabled: false
 
-Performance/Squeeze: # new in 1.7
-  Enabled: true
+# This leads to code that is not very readable at times (very long lines)
+Style/ConditionalAssignment:
+  Enabled: false
 
-Performance/StringInclude: # new in 1.7
-  Enabled: true
+# For now, we prefer to lean on clean method signatures as documentation. We may change this later.
+Style/Documentation:
+  Enabled: false
 
-Performance/Sum: # new in 1.8
-  Enabled: true
+# Sometimes we leave comments in empty else statements intentionally
+Style/EmptyElse:
+  Enabled: false
+
+# Sometimes we want to more explicitly list out a condition
+Style/RedundantCondition:
+  Enabled: false
+
+# This leads to code that is not very readable at times (very long lines)
+Layout/MultilineMethodCallIndentation:
+  Enabled: false
+
+# Blocks across lines are okay sometimes
+Style/BlockDelimiters:
+  Enabled: false
+
+# Sometimes we like methods like `get_packages`
+Naming/AccessorMethodName:
+  Enabled: false
+
+# This leads to code that is not very readable at times (very long lines)
+Layout/FirstArgumentIndentation:
+  Enabled: false
+
+# This leads to code that is not very readable at times (very long lines)
+Layout/ArgumentAlignment:
+  Enabled: false
+
+Style/AccessorGrouping:
+  Enabled: false
+
+Style/NumericPredicate:
+  Enabled: false
+
+Layout/BlockEndNewline:
+  Enabled: false
