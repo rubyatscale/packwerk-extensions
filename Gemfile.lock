@@ -1,3 +1,18 @@
+GIT
+  remote: https://github.com/Shopify/packwerk
+  revision: c08534fa46936e1f1f6d49290b710b1a49afbf63
+  branch: ae-pull-privacy-out-of-packwerk
+  specs:
+    packwerk (2.2.1)
+      activesupport (>= 5.2)
+      ast
+      better_html
+      bundler
+      constant_resolver (>= 0.2.0)
+      parallel
+      parser
+      sorbet-runtime (>= 0.5.9914)
+
 PATH
   remote: .
   specs:
@@ -121,15 +136,6 @@ GEM
       racc (~> 1.4)
     nokogiri (1.13.9-x86_64-linux)
       racc (~> 1.4)
-    packwerk (2.2.1)
-      activesupport (>= 5.2)
-      ast
-      better_html
-      bundler
-      constant_resolver (>= 0.2.0)
-      parallel
-      parser
-      sorbet-runtime (>= 0.5.9914)
     parallel (1.22.1)
     parser (3.1.2.1)
       ast (~> 2.4.1)
@@ -245,6 +251,7 @@ PLATFORMS
 DEPENDENCIES
   minitest
   mocha
+  packwerk!
   packwerk-privacy!
   rubocop
   sorbet (= 0.5.10520)
