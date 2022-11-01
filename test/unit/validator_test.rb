@@ -1,10 +1,10 @@
 # typed: true
 # frozen_string_literal: true
 
-require "test_helper"
+require 'test_helper'
 
 # make sure PrivateThing.constantize succeeds to pass the privacy validity check
-require "fixtures/skeleton/components/timeline/app/models/private_thing"
+require 'fixtures/skeleton/components/timeline/app/models/private_thing'
 
 module Packwerk
   class CheckPackageManifestsForPrivacyTest < Minitest::Test
@@ -19,9 +19,9 @@ module Packwerk
     teardown do
       teardown_application_fixture
     end
-    test "check_package_manifest_syntax returns an error for unknown package keys" do
+    test 'check_package_manifest_syntax returns an error for unknown package keys' do
       use_template(:minimal)
-      merge_into_app_yaml_file("package.yml", { "enforce_correctness" => false })
+      merge_into_app_yaml_file('package.yml', { 'enforce_correctness' => false })
 
       result = validator.check_package_manifest_syntax(config)
 
@@ -29,9 +29,9 @@ module Packwerk
       assert_match(/Unknown keys/, result.error_value)
     end
 
-    test "check_package_manifest_syntax returns an error for invalid enforce_dependencies value" do
+    test 'check_package_manifest_syntax returns an error for invalid enforce_dependencies value' do
       use_template(:minimal)
-      merge_into_app_yaml_file("package.yml", { "enforce_dependencies" => "components/sales" })
+      merge_into_app_yaml_file('package.yml', { 'enforce_dependencies' => 'components/sales' })
 
       result = validator.check_package_manifest_syntax(config)
 
@@ -39,10 +39,10 @@ module Packwerk
       assert_match(/Invalid 'enforce_dependencies' option/, result.error_value)
     end
 
-    test "check_package_manifest_syntax returns error for invalid dependencies value" do
+    test 'check_package_manifest_syntax returns error for invalid dependencies value' do
       use_template(:minimal)
-      merge_into_app_yaml_file("components/timeline/package.yml", {})
-      merge_into_app_yaml_file("components/sales/package.yml", { "dependencies" => "components/timeline" })
+      merge_into_app_yaml_file('components/timeline/package.yml', {})
+      merge_into_app_yaml_file('components/sales/package.yml', { 'dependencies' => 'components/timeline' })
 
       result = validator.check_package_manifest_syntax(config)
 
@@ -50,9 +50,9 @@ module Packwerk
       assert_match(/Invalid 'dependencies' option/, result.error_value)
     end
 
-    test "check_all returns an error for invalid enforce_privacy value" do
+    test 'check_all returns an error for invalid enforce_privacy value' do
       use_template(:minimal)
-      merge_into_app_yaml_file("package.yml", { "enforce_privacy" => "yes, please." })
+      merge_into_app_yaml_file('package.yml', { 'enforce_privacy' => 'yes, please.' })
 
       result = Packwerk::Privacy::Validator.new.call(package_set, config)
 
@@ -60,9 +60,9 @@ module Packwerk
       assert_match(/Invalid 'enforce_privacy' option/, result.error_value)
     end
 
-    test "check_all returns an error for invalid public_path value" do
+    test 'check_all returns an error for invalid public_path value' do
       use_template(:minimal)
-      merge_into_app_yaml_file("package.yml", { "public_path" => [] })
+      merge_into_app_yaml_file('package.yml', { 'public_path' => [] })
 
       result = Packwerk::Privacy::Validator.new.call(package_set, config)
 
@@ -70,10 +70,10 @@ module Packwerk
       assert_match(/'public_path' option must be a string/, result.error_value)
     end
 
-    test "check_package_manifests_for_privacy returns an error for unresolvable privatized constants" do
+    test 'check_package_manifests_for_privacy returns an error for unresolvable privatized constants' do
       use_template(:skeleton)
-      ConstantResolver.expects(:new).returns(stub("resolver", resolve: nil))
- 
+      ConstantResolver.expects(:new).returns(stub('resolver', resolve: nil))
+
       result = Packwerk::Privacy::Validator.new.call(package_set, config)
       refute result.ok?, result.error_value
       assert_match(
@@ -86,11 +86,11 @@ module Packwerk
       )
     end
 
-    test "check_package_manifests_for_privacy returns an error for privatized constants in other packages" do
+    test 'check_package_manifests_for_privacy returns an error for privatized constants in other packages' do
       use_template(:skeleton)
-      context = ConstantResolver::ConstantContext.new("::PrivateThing", "private_thing.rb")
+      context = ConstantResolver::ConstantContext.new('::PrivateThing', 'private_thing.rb')
 
-      ConstantResolver.expects(:new).returns(stub("resolver", resolve: context))
+      ConstantResolver.expects(:new).returns(stub('resolver', resolve: context))
 
       result = Packwerk::Privacy::Validator.new.call(package_set, config)
 
@@ -105,9 +105,9 @@ module Packwerk
       )
     end
 
-    test "check_package_manifests_for_privacy returns an error for constants without `::` prefix" do
+    test 'check_package_manifests_for_privacy returns an error for constants without `::` prefix' do
       use_template(:minimal)
-      merge_into_app_yaml_file("package.yml", { "enforce_privacy" => ["::PrivateThing", "OtherThing"] })
+      merge_into_app_yaml_file('package.yml', { 'enforce_privacy' => ['::PrivateThing', 'OtherThing'] })
 
       result = Packwerk::Privacy::Validator.new.call(package_set, config)
 

@@ -1,21 +1,21 @@
 # typed: true
 # frozen_string_literal: true
 
-ENV["RAILS_ENV"] = "test"
+ENV['RAILS_ENV'] = 'test'
 
-$LOAD_PATH.unshift(File.expand_path("../lib", __dir__))
-ROOT = Pathname.new(__dir__).join("..").expand_path
+$LOAD_PATH.unshift(File.expand_path('../lib', __dir__))
+ROOT = Pathname.new(__dir__).join('..').expand_path
 
-require "packwerk-privacy"
-require "packwerk"
-require "minitest/autorun"
-require "mocha/minitest"
-require "support/application_fixture_helper"
-require "support/rails_application_fixture_helper"
-require "support/yaml_file"
-require "support/factory_helper"
-require "support/test_macro"
-require "pry"
+require 'packwerk-privacy'
+require 'packwerk'
+require 'minitest/autorun'
+require 'mocha/minitest'
+require 'support/application_fixture_helper'
+require 'support/rails_application_fixture_helper'
+require 'support/yaml_file'
+require 'support/factory_helper'
+require 'support/test_macro'
+require 'pry'
 
 Minitest::Test.extend(TestMacro)
 

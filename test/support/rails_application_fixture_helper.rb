@@ -1,8 +1,8 @@
 # typed: true
 # frozen_string_literal: true
 
-require "rails_test_helper"
-require "zeitwerk"
+require 'rails_test_helper'
+require 'zeitwerk'
 
 module RailsApplicationFixtureHelper
   include ApplicationFixtureHelper
@@ -48,15 +48,15 @@ module RailsApplicationFixtureHelper
   private
 
   def set_load_paths_for_minimal_template
-    Rails.autoloaders.main.push_dir(*to_app_paths("/components/sales/app/models"))
+    Rails.autoloaders.main.push_dir(*to_app_paths('/components/sales/app/models'))
   end
 
   def set_load_paths_for_skeleton_template
-    Rails.autoloaders.main.push_dir(*to_app_paths("/components/sales/app/models"))
-    Rails.autoloaders.main.push_dir(*to_app_paths("components/platform/app/models"))
+    Rails.autoloaders.main.push_dir(*to_app_paths('/components/sales/app/models'))
+    Rails.autoloaders.main.push_dir(*to_app_paths('components/platform/app/models'))
 
-    Rails.autoloaders.once.push_dir(*to_app_paths("components/timeline/app/models"))
-    Rails.autoloaders.once.push_dir(*to_app_paths("components/timeline/app/models/concerns"))
-    Rails.autoloaders.once.push_dir(*to_app_paths("vendor/cache/gems/example/models"))
+    Rails.autoloaders.once.push_dir(*to_app_paths('components/timeline/app/models'))
+    Rails.autoloaders.once.push_dir(*to_app_paths('components/timeline/app/models/concerns'))
+    Rails.autoloaders.once.push_dir(*to_app_paths('vendor/cache/gems/example/models'))
   end
 end

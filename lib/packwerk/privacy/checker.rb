@@ -8,7 +8,7 @@ module Packwerk
       extend T::Sig
       include CheckerInterface
 
-      VIOLATION_TYPE = T.let("privacy", String)
+      VIOLATION_TYPE = T.let('privacy', String)
 
       sig { override.returns(String) }
       def violation_type
@@ -30,7 +30,7 @@ module Packwerk
         return false if enforcement_disabled?(privacy_option)
 
         return false unless privacy_option == true ||
-          explicitly_private_constant?(reference.constant, explicitly_private_constants: T.unsafe(privacy_option))
+                            explicitly_private_constant?(reference.constant, explicitly_private_constants: T.unsafe(privacy_option))
 
         true
       end
@@ -64,7 +64,7 @@ module Packwerk
       def explicitly_private_constant?(constant, explicitly_private_constants:)
         explicitly_private_constants.include?(constant.name) ||
           # nested constants
-          explicitly_private_constants.any? { |epc| constant.name.start_with?(epc + "::") }
+          explicitly_private_constants.any? { |epc| constant.name.start_with?(epc + '::') }
       end
 
       sig do

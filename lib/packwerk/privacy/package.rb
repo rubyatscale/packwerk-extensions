@@ -23,21 +23,21 @@ module Packwerk
           Package.new(
             public_path: public_path_for(package),
             user_defined_public_path: user_defined_public_path(package),
-            enforce_privacy: package.config["enforce_privacy"],
+            enforce_privacy: package.config['enforce_privacy']
           )
         end
 
         sig { params(package: ::Packwerk::Package).returns(T.nilable(String)) }
         def user_defined_public_path(package)
-          return unless package.config["public_path"]
-          return package.config["public_path"] if package.config["public_path"].end_with?("/")
+          return unless package.config['public_path']
+          return package.config['public_path'] if package.config['public_path'].end_with?('/')
 
-          package.config["public_path"] + "/"
+          package.config['public_path'] + '/'
         end
 
         sig { params(package: ::Packwerk::Package).returns(String) }
         def public_path_for(package)
-          unprefixed_public_path = user_defined_public_path(package) || "app/public/"
+          unprefixed_public_path = user_defined_public_path(package) || 'app/public/'
 
           if package.root?
             unprefixed_public_path

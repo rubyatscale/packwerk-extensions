@@ -22,7 +22,7 @@ class YamlFile
   end
 
   def write(data)
-    File.open(path, "w") { |f| YAML.dump(data, f) }
+    File.open(path, 'w') { |f| YAML.dump(data, f) }
   end
 
   def recursive_merge(hash, other_hash)

@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 module ApplicationFixtureHelper
-  TEMP_FIXTURE_DIR = ROOT.join("tmp", "fixtures").to_s
+  TEMP_FIXTURE_DIR = ROOT.join('tmp', 'fixtures').to_s
   DEFAULT_TEMPLATE = :minimal
 
   extend T::Helpers
@@ -19,7 +19,7 @@ module ApplicationFixtureHelper
   end
 
   def use_template(template)
-    raise "use_template may only be called once per test" if using_template?
+    raise 'use_template may only be called once per test' if using_template?
 
     copy_dir("test/fixtures/#{template}")
     Dir.chdir(app_dir)
@@ -27,7 +27,7 @@ module ApplicationFixtureHelper
 
   def app_dir
     unless using_template?
-      raise "You need to set up an application fixture by calling `use_template(:the_template)`."
+      raise 'You need to set up an application fixture by calling `use_template(:the_template)`.'
     end
 
     @app_dir
@@ -58,7 +58,7 @@ module ApplicationFixtureHelper
     FileUtils.remove_entry(to_app_path(relative_path))
   end
 
-  def open_app_file(path, mode: "w+", &block)
+  def open_app_file(path, mode: 'w+', &block)
     expanded_path = to_app_path(File.join(path))
     File.open(expanded_path, mode, &block)
   end
@@ -67,7 +67,7 @@ module ApplicationFixtureHelper
   def write_app_file(path, content)
     expanded_path = to_app_path(File.join(*path))
     FileUtils.mkdir_p(Pathname.new(expanded_path).dirname)
-    File.open(expanded_path, "w+") do |file|
+    File.open(expanded_path, 'w+') do |file|
       file.write(content)
       file.flush
     end
@@ -87,6 +87,6 @@ module ApplicationFixtureHelper
 
   def fixture_path
     T.bind(self, Minitest::Runnable)
-    File.join(TEMP_FIXTURE_DIR, "#{name}-#{Time.now.strftime("%Y_%m_%d_%H_%M_%S")}")
+    File.join(TEMP_FIXTURE_DIR, "#{name}-#{Time.now.strftime('%Y_%m_%d_%H_%M_%S')}")
   end
 end
