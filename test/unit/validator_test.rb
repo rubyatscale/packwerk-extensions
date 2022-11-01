@@ -125,7 +125,7 @@ module Packwerk
 
     sig { returns(Packwerk::ApplicationValidator) }
     def validator
-      @application_validator ||= Packwerk::ApplicationValidator.new
+      @validator ||= Packwerk::ApplicationValidator.new
     end
   end
 end

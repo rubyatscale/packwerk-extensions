@@ -105,9 +105,9 @@ module Packwerk
           if constant.start_with?('::')
             constant.try(&:constantize) && ApplicationValidator::Result.new(ok: true)
           else
-            error_value = "'#{constant}', listed in the 'enforce_privacy' option" \
-                          " in #{config_file_path}, is invalid.\nPrivate constants need to be" \
-                          ' prefixed with the top-level namespace operator `::`.'
+            error_value = "'#{constant}', listed in the 'enforce_privacy' option " \
+                          "in #{config_file_path}, is invalid.\nPrivate constants need to be " \
+                          'prefixed with the top-level namespace operator `::`.'
             ApplicationValidator::Result.new(
               ok: false,
               error_value: error_value

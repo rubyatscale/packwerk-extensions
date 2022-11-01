@@ -129,3 +129,6 @@ Lint/EmptyClass:
     - test/**/*
     - tmp/**/*
 
+Lint/EmptyFile:
+  Exclude:
+    - test/fixtures/minimal/config/environment.rb
