@@ -1,1 +1,1 @@
-See https://github.com/rubyatscale/packwerk-privacy/releases.
+See https://github.com/rubyatscale/packwerk-extensions/releases.

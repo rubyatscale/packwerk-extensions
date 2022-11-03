@@ -6,7 +6,7 @@ ENV['RAILS_ENV'] = 'test'
 $LOAD_PATH.unshift(File.expand_path('../lib', __dir__))
 ROOT = Pathname.new(__dir__).join('..').expand_path
 
-require 'packwerk-privacy'
+require 'packwerk-extensions'
 require 'packwerk'
 require 'minitest/autorun'
 require 'mocha/minitest'

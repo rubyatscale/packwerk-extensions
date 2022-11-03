@@ -9,6 +9,6 @@ require 'packwerk/privacy/package'
 require 'packwerk/privacy/validator'
 
 module Packwerk
-  module Privacy
+  module Extensions
   end
 end

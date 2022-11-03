@@ -122,7 +122,7 @@ Layout/BlockEndNewline:
 
 Naming/FileName:
   Exclude:
-    - lib/packwerk-privacy.rb
+    - lib/packwerk-extensions.rb
 
 Lint/EmptyClass:
   Exclude:

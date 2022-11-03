@@ -1,11 +1,10 @@
-# TODO
-Extract relevant information from packwerk README.md when removing privacy stuff from `packwerk`
+# packwerk-extensions
 
-# packwerk-privacy
-
-`packwerk-privacy` is a checker extension extracted from [packwerk](https://github.com/Shopify/packwerk).
+`packwerk-extensions` is a home for checker extensions for packwerk.
 
 #### Enforcing privacy boundary
+
+The privacy checker extension was originally extracted from [packwerk](https://github.com/Shopify/packwerk).
 
 A package's privacy boundary is violated when there is a reference to the package's private constants from a source outside the package.
 
