@@ -20,9 +20,9 @@ module Packwerk
 
       test 'extension is properly loaded' do
         use_template(:extended)
-        Packwerk::CheckerInterface.all
-        assert_equal(Packwerk::CheckerInterface.all.count, 1)
-        assert T.unsafe(Packwerk::CheckerInterface.all.first).is_a?(Packwerk::Privacy::Checker)
+        Packwerk::AbstractChecker.all
+        assert_equal(Packwerk::AbstractChecker.all.count, 1)
+        assert T.unsafe(Packwerk::AbstractChecker.all.first).is_a?(Packwerk::Privacy::Checker)
       end
     end
   end

@@ -5,7 +5,7 @@ module Packwerk
   module Privacy
     class Validator
       extend T::Sig
-      include ValidatorInterface
+      include AbstractValidator
 
       sig { override.params(package_set: PackageSet, configuration: Configuration).returns(ApplicationValidator::Result) }
       def call(package_set, configuration)
