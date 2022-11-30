@@ -35,16 +35,15 @@ module Packwerk
         true
       end
 
-
-      sig do
-        override
-          .params(listed_offense: Packwerk::ReferenceOffense)
-          .returns(T::Boolean)
-      end
-      def strict_mode_violation?(listed_offense)
-        publishing_package = listed_offense.reference.constant.package
-        publishing_package.config['enforce_privacy'] == 'strict'
-      end
+      # sig do
+      #   override
+      #     .params(listed_offense: Packwerk::ReferenceOffense)
+      #     .returns(T::Boolean)
+      # end
+      # def strict_mode_violation?(listed_offense)
+      #   publishing_package = listed_offense.reference.constant.package
+      #   publishing_package.config['enforce_privacy'] == 'strict'
+      # end
 
       sig do
         override
