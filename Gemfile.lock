@@ -1,5 +1,7 @@
-PATH
-  remote: ../packwerk
+GIT
+  remote: https://github.com/Shopify/packwerk
+  revision: 06ed8bc87f0b4d10307db81016ef2b790ffbc80b
+  branch: main
   specs:
     packwerk (2.2.1)
       activesupport (>= 6.0)
