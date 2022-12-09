@@ -84,6 +84,16 @@ module Packwerk
         checker.invalid_reference?(reference)
       end
 
+      test 'provides a useful message' do
+        assert_equal privacy_checker.message(build_reference), <<~MSG.chomp
+          Privacy violation: '::SomeName' is private to 'components/destination' but referenced from 'components/source'.
+          Is there a public entrypoint in 'components/destination/app/public/' that you can use instead?
+
+          Inference details: this is a reference to ::SomeName which seems to be defined in some/location.rb.
+          To receive help interpreting or resolving this error message, see: https://github.com/Shopify/packwerk/blob/main/TROUBLESHOOT.md#Troubleshooting-violations
+        MSG
+      end
+
       private
 
       sig { returns(Checker) }

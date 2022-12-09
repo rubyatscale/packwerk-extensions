@@ -47,6 +47,16 @@ module Packwerk
         refute checker.invalid_reference?(reference)
       end
 
+      test 'provides a useful message' do
+        assert_equal visibility_checker.message(build_reference), <<~MSG.chomp
+          Visibility violation: '::SomeName' belongs to 'components/destination', which is not visible to 'components/source'.
+          Is there a different package to use instead, or should 'components/destination' also be visible to 'components/source'?
+          
+          Inference details: this is a reference to ::SomeName which seems to be defined in some/location.rb.
+          To receive help interpreting or resolving this error message, see: https://github.com/Shopify/packwerk/blob/main/TROUBLESHOOT.md#Troubleshooting-violations
+        MSG
+      end
+
       private
 
       sig { returns(Checker) }

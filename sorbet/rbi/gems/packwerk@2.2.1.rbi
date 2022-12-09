@@ -1734,6 +1734,7 @@ class Packwerk::Reference < ::Struct
     def [](*_arg0); end
     def inspect; end
     def members; end
+    def new(*_arg0); end
   end
 end
 

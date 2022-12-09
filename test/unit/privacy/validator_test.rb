@@ -20,37 +20,6 @@ module Packwerk
       teardown_application_fixture
     end
 
-    test 'check_package_manifest_syntax returns an error for unknown package keys' do
-      use_template(:minimal)
-      merge_into_app_yaml_file('package.yml', { 'enforce_correctness' => false })
-
-      result = validator.check_package_manifest_syntax(config)
-
-      refute result.ok?
-      assert_match(/Unknown keys/, result.error_value)
-    end
-
-    test 'check_package_manifest_syntax returns an error for invalid enforce_dependencies value' do
-      use_template(:minimal)
-      merge_into_app_yaml_file('package.yml', { 'enforce_dependencies' => 'components/sales' })
-
-      result = validator.check_package_manifest_syntax(config)
-
-      refute result.ok?
-      assert_match(/Invalid 'enforce_dependencies' option/, result.error_value)
-    end
-
-    test 'check_package_manifest_syntax returns error for invalid dependencies value' do
-      use_template(:minimal)
-      merge_into_app_yaml_file('components/timeline/package.yml', {})
-      merge_into_app_yaml_file('components/sales/package.yml', { 'dependencies' => 'components/timeline' })
-
-      result = validator.check_package_manifest_syntax(config)
-
-      refute result.ok?
-      assert_match(/Invalid 'dependencies' option/, result.error_value)
-    end
-
     test 'check_all returns an error for invalid enforce_privacy value' do
       use_template(:minimal)
       merge_into_app_yaml_file('package.yml', { 'enforce_privacy' => 'yes, please.' })

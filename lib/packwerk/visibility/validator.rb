@@ -14,6 +14,17 @@ module Packwerk
 
         all_package_names = package_set.map(&:name).to_set
         
+        package_manifests_settings_for(configuration, "enforce_visibility").each do |config, setting|
+          next if setting.nil?
+
+          unless [TrueClass, FalseClass, "strict"].include?(setting.class)
+            results << ApplicationValidator::Result.new(
+              ok: false,
+              error_value: "\tInvalid 'enforce_visibility' option: #{setting.inspect} in #{config.inspect}"
+            )
+          end
+        end
+
         visible_settings.each do |config_file_path, setting|
           next if setting.nil?
           if !setting.is_a?(Array)
@@ -27,7 +38,7 @@ module Packwerk
             if packages_not_found.any?
               results << ApplicationValidator::Result.new(
                 ok: false,
-                error_value: "'visible_to' option must only contain valid packages in #{config_file_path.inspect}. Invalid packages: #{packages_not_found.inspect}"
+                error_value: "'visible_to' option must only contain valid packages in #{config_file_path.inspect}. Invalid packages: #{packages_not_found.to_a.inspect}"
               )
             end
           end

@@ -44,7 +44,7 @@ module Packwerk
           .returns(String)
       end
       def message(reference)
-        source_desc = "'#{reference.source_package}'"
+        source_desc = "'#{reference.package}'"
 
         message = <<~MESSAGE
           Visibility violation: '#{reference.constant.name}' belongs to '#{reference.constant.package}', which is not visible to #{source_desc}.

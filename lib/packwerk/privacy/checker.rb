@@ -51,7 +51,7 @@ module Packwerk
           .returns(String)
       end
       def message(reference)
-        source_desc = "'#{reference.source_package}'"
+        source_desc = "'#{reference.package}'"
 
         message = <<~MESSAGE
           Privacy violation: '#{reference.constant.name}' is private to '#{reference.constant.package}' but referenced from #{source_desc}.
