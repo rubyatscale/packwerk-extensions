@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/Shopify/packwerk
-  revision: 06ed8bc87f0b4d10307db81016ef2b790ffbc80b
+  revision: a97e605bd9adcee4b07671323498b37665df2a05
   branch: main
   specs:
     packwerk (2.2.1)
@@ -100,6 +100,7 @@ GEM
       parser (>= 2.4)
       smart_properties
     builder (3.2.4)
+    coderay (1.1.3)
     concurrent-ruby (1.1.10)
     constant_resolver (0.2.0)
     crass (1.0.6)
@@ -139,9 +140,14 @@ GEM
       racc (~> 1.4)
     nokogiri (1.13.9-x86_64-darwin)
       racc (~> 1.4)
+    nokogiri (1.13.9-x86_64-linux)
+      racc (~> 1.4)
     parallel (1.22.1)
     parser (3.1.2.1)
       ast (~> 2.4.1)
+    pry (0.14.1)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
     racc (1.6.0)
     rack (2.2.4)
     rack-test (2.0.2)
@@ -256,6 +262,7 @@ DEPENDENCIES
   mocha
   packwerk!
   packwerk-extensions!
+  pry
   rubocop
   sorbet (= 0.5.10520)
   sorbet-static (= 0.5.10520)

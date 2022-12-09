@@ -15,6 +15,7 @@ require 'support/rails_application_fixture_helper'
 require 'support/yaml_file'
 require 'support/factory_helper'
 require 'support/test_macro'
+require 'pry'
 
 Minitest::Test.extend(TestMacro)
 

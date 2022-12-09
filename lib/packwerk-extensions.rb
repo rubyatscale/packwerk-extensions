@@ -8,6 +8,10 @@ require 'packwerk/privacy/checker'
 require 'packwerk/privacy/package'
 require 'packwerk/privacy/validator'
 
+require 'packwerk/visibility/checker'
+require 'packwerk/visibility/package'
+require 'packwerk/visibility/validator'
+
 module Packwerk
   module Extensions
   end

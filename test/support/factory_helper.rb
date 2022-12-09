@@ -15,6 +15,11 @@ module FactoryHelper
       constant_location,
       destination_package
     )
-    Packwerk::Reference.new(source_package, path, constant, source_location)
+
+    Packwerk::Reference.new(
+      package: source_package,
+      relative_path: path,
+      constant: constant,
+      source_location: source_location)
   end
 end

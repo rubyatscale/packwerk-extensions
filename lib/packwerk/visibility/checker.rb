@@ -2,13 +2,13 @@
 # frozen_string_literal: true
 
 module Packwerk
-  module Privacy
-    # Checks whether a given reference references a private constant of another package.
+  module Visibility
+    # Checks whether a given reference references a constant from a package that does not permit visibility
     class Checker
       extend T::Sig
       include Packwerk::Checker
 
-      VIOLATION_TYPE = T.let('privacy', String)
+      VIOLATION_TYPE = T.let('visibility', String)
 
       sig { override.returns(String) }
       def violation_type
@@ -22,17 +22,10 @@ module Packwerk
       end
       def invalid_reference?(reference)
         constant_package = reference.constant.package
-        privacy_package = Package.from(constant_package)
-
-        return false if privacy_package.public_path?(reference.constant.location)
-
-        privacy_option = privacy_package.enforce_privacy
-        return false if enforcement_disabled?(privacy_option)
-
-        return false unless privacy_option == true || privacy_option == 'strict' ||
-                            explicitly_private_constant?(reference.constant, explicitly_private_constants: T.unsafe(privacy_option))
-
-        true
+        visibility_package = Package.from(constant_package)
+        visibility_option = visibility_package.enforce_visibility
+        return false if enforcement_disabled?(visibility_option)
+        !visibility_package.visible_to.include?(reference.package.name)
       end
 
       sig do
@@ -42,7 +35,7 @@ module Packwerk
       end
       def strict_mode_violation?(listed_offense)
         publishing_package = listed_offense.reference.constant.package
-        publishing_package.config['enforce_privacy'] == 'strict'
+        publishing_package.config['enforce_visibility'] == 'strict'
       end
 
       sig do
@@ -54,8 +47,8 @@ module Packwerk
         source_desc = "'#{reference.source_package}'"
 
         message = <<~MESSAGE
-          Privacy violation: '#{reference.constant.name}' is private to '#{reference.constant.package}' but referenced from #{source_desc}.
-          Is there a public entrypoint in '#{Package.from(reference.constant.package).public_path}' that you can use instead?
+          Visibility violation: '#{reference.constant.name}' belongs to '#{reference.constant.package}', which is not visible to #{source_desc}.
+          Is there a different package to use instead, or should '#{reference.constant.package}' also be visible to #{source_desc}?
 
           #{standard_help_message(reference)}
         MESSAGE
@@ -78,11 +71,11 @@ module Packwerk
       end
 
       sig do
-        params(privacy_option: T.nilable(T.any(T::Boolean, String, T::Array[String])))
+        params(visibility_option: T.nilable(T.any(T::Boolean, String)))
           .returns(T::Boolean)
       end
-      def enforcement_disabled?(privacy_option)
-        [false, nil].include?(privacy_option)
+      def enforcement_disabled?(visibility_option)
+        [false, nil].include?(visibility_option)
       end
 
       sig { params(reference: Reference).returns(String) }
