@@ -25,6 +25,7 @@ module Packwerk
         visibility_package = Package.from(constant_package)
         visibility_option = visibility_package.enforce_visibility
         return false if enforcement_disabled?(visibility_option)
+
         !visibility_package.visible_to.include?(reference.package.name)
       end
 

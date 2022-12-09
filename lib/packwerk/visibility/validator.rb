@@ -13,26 +13,22 @@ module Packwerk
         results = T.let([], T::Array[ApplicationValidator::Result])
 
         all_package_names = package_set.map(&:name).to_set
-        
-        package_manifests_settings_for(configuration, "enforce_visibility").each do |config, setting|
+
+        package_manifests_settings_for(configuration, 'enforce_visibility').each do |config, setting|
           next if setting.nil?
 
-          unless [TrueClass, FalseClass, "strict"].include?(setting.class)
-            results << ApplicationValidator::Result.new(
-              ok: false,
-              error_value: "\tInvalid 'enforce_visibility' option: #{setting.inspect} in #{config.inspect}"
-            )
-          end
+          next if [TrueClass, FalseClass, 'strict'].include?(setting.class)
+
+          results << ApplicationValidator::Result.new(
+            ok: false,
+            error_value: "\tInvalid 'enforce_visibility' option: #{setting.inspect} in #{config.inspect}"
+          )
         end
 
         visible_settings.each do |config_file_path, setting|
           next if setting.nil?
-          if !setting.is_a?(Array)
-            results << ApplicationValidator::Result.new(
-              ok: false,
-              error_value: "'visible_to' option must be an array in #{config_file_path.inspect}."
-            )
-          else
+
+          if setting.is_a?(Array)
             packages_not_found = setting.to_set - all_package_names
 
             if packages_not_found.any?
@@ -41,6 +37,11 @@ module Packwerk
                 error_value: "'visible_to' option must only contain valid packages in #{config_file_path.inspect}. Invalid packages: #{packages_not_found.to_a.inspect}"
               )
             end
+          else
+            results << ApplicationValidator::Result.new(
+              ok: false,
+              error_value: "'visible_to' option must be an array in #{config_file_path.inspect}."
+            )
           end
         end
 
