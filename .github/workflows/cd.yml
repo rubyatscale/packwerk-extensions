@@ -1,0 +1,26 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@8230315d06ad95c617244d2f265d237a1682d445
+      - name: Tag and Push Gem
+        id: tag-and-push-gem
+        uses: discourse/publish-rubygems-action@a3753e0ecc0c9f53b87c993ac854de93b39c4b53
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GIT_EMAIL: ${{secrets.ALEX_GIT_EMAIL}}
+          GIT_NAME: ${{secrets.ALEX_GIT_NAME}}
+          RUBYGEMS_API_KEY: ${{secrets.RUBYGEMS_API_KEY}}
+      - name: Create GitHub Release
+        run: gh release create v${{steps.tag-and-push-gem.outputs.gem_version}} --generate-notes
+        if: ${{ steps.tag-and-push-gem.outputs.new_version == 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
