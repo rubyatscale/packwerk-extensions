@@ -67,7 +67,7 @@ module Packwerk
 
       sig do
         params(
-          constant: ConstantDiscovery::ConstantContext,
+          constant: ConstantContext,
           explicitly_private_constants: T::Array[String]
         ).returns(T::Boolean)
       end

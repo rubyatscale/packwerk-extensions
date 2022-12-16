@@ -7,10 +7,12 @@ module Packwerk
       extend T::Sig
       include Packwerk::Validator
 
-      sig { override.params(package_set: PackageSet, configuration: Configuration).returns(ApplicationValidator::Result) }
+      Result = Packwerk::Validator::Result
+
+      sig { override.params(package_set: PackageSet, configuration: Configuration).returns(Result) }
       def call(package_set, configuration)
         visible_settings = package_manifests_settings_for(configuration, 'visible_to')
-        results = T.let([], T::Array[ApplicationValidator::Result])
+        results = T.let([], T::Array[Result])
 
         all_package_names = package_set.map(&:name).to_set
 
@@ -19,7 +21,7 @@ module Packwerk
 
           next if [TrueClass, FalseClass, 'strict'].include?(setting.class)
 
-          results << ApplicationValidator::Result.new(
+          results << Result.new(
             ok: false,
             error_value: "\tInvalid 'enforce_visibility' option: #{setting.inspect} in #{config.inspect}"
           )
@@ -32,13 +34,13 @@ module Packwerk
             packages_not_found = setting.to_set - all_package_names
 
             if packages_not_found.any?
-              results << ApplicationValidator::Result.new(
+              results << Result.new(
                 ok: false,
                 error_value: "'visible_to' option must only contain valid packages in #{config_file_path.inspect}. Invalid packages: #{packages_not_found.to_a.inspect}"
               )
             end
           else
-            results << ApplicationValidator::Result.new(
+            results << Result.new(
               ok: false,
               error_value: "'visible_to' option must be an array in #{config_file_path.inspect}."
             )

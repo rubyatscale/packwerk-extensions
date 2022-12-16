@@ -34,7 +34,8 @@ module ApplicationFixtureHelper
   end
 
   def config
-    @config ||= Packwerk::Configuration.from_path(app_dir)
+    # This is temporary until https://github.com/Shopify/packwerk/pull/289 merges
+    @config ||= Packwerk.const_get(:Configuration).from_path(app_dir)
   end
 
   def package_set
