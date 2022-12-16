@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/Shopify/packwerk
-  revision: 7e8e7a50705833b41fe40c201eadb85ff9a1a422
+  revision: 8476bb3cd5452765ad452d36aa45ae724f1d44f5
   branch: main
   specs:
     packwerk (2.2.1)
@@ -139,6 +139,8 @@ GEM
     nokogiri (1.13.9-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.13.9-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.13.9-x86_64-linux)
       racc (~> 1.4)
     parallel (1.22.1)
     parser (3.1.2.1)
