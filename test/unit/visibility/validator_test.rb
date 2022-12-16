@@ -30,6 +30,15 @@ module Packwerk
       assert_match(/Invalid 'enforce_visibility' option/, result.error_value)
     end
 
+    test 'call returns success when enforce_visibility is set to strict' do
+      use_template(:minimal)
+      merge_into_app_yaml_file('package.yml', { 'enforce_visibility' => 'strict' })
+
+      result = validator.call(package_set, config)
+
+      assert result.ok?
+    end
+
     test 'call returns an error for invalid visible_to value' do
       use_template(:minimal)
       merge_into_app_yaml_file('package.yml', { 'visible_to' => 'blah' })

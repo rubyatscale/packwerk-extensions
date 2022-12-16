@@ -30,6 +30,15 @@ module Packwerk
       assert_match(/Invalid 'enforce_privacy' option/, result.error_value)
     end
 
+    test 'check_all returns success for when enforce_privacy is set to strict' do
+      use_template(:minimal)
+      merge_into_app_yaml_file('package.yml', { 'enforce_privacy' => 'strict' })
+
+      result = Packwerk::Privacy::Validator.new.call(package_set, config)
+
+      assert result.ok?
+    end
+
     test 'check_all returns an error for invalid public_path value' do
       use_template(:minimal)
       merge_into_app_yaml_file('package.yml', { 'public_path' => [] })
