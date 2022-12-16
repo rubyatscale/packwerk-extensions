@@ -72,7 +72,7 @@ module Packwerk
         params(config_file_path: String, setting: T.untyped).returns(Result)
       end
       def check_enforce_privacy_setting(config_file_path, setting)
-        if [TrueClass, FalseClass, Array, NilClass].include?(setting.class)
+        if [TrueClass, FalseClass, Array, NilClass].include?(setting.class) || setting == 'strict'
           Result.new(ok: true)
         else
           Result.new(

@@ -19,7 +19,7 @@ module Packwerk
         package_manifests_settings_for(configuration, 'enforce_visibility').each do |config, setting|
           next if setting.nil?
 
-          next if [TrueClass, FalseClass, 'strict'].include?(setting.class)
+          next if [TrueClass, FalseClass].include?(setting.class) || setting == 'strict'
 
           results << Result.new(
             ok: false,
