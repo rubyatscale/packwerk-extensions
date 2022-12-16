@@ -10,7 +10,7 @@ module FactoryHelper
     constant_location: 'some/location.rb',
     source_location: Packwerk::Node::Location.new(2, 12)
   )
-    constant = Packwerk::ConstantDiscovery::ConstantContext.new(
+    constant = Packwerk::ConstantContext.new(
       constant_name,
       constant_location,
       destination_package
