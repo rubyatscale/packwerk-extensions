@@ -12,6 +12,10 @@ require 'packwerk/visibility/checker'
 require 'packwerk/visibility/package'
 require 'packwerk/visibility/validator'
 
+require 'packwerk/architecture/checker'
+require 'packwerk/architecture/package'
+require 'packwerk/architecture/validator'
+
 module Packwerk
   module Extensions
   end

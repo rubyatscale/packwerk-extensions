@@ -21,15 +21,15 @@ module Packwerk
         teardown_application_fixture
       end
 
-      test 'call returns an error for invalid enforce_visibility value' do
-        use_template(:minimal)
-        merge_into_app_yaml_file('package.yml', { 'enforce_visibility' => 'yes, please.' })
+      # test 'call returns an error for invalid enforce_visibility value' do
+      #   use_template(:minimal)
+      #   merge_into_app_yaml_file('package.yml', { 'enforce_visibility' => 'yes, please.' })
 
-        result = validator.call(package_set, config)
+      #   result = validator.call(package_set, config)
 
-        refute result.ok?
-        assert_match(/Invalid 'enforce_visibility' option/, result.error_value)
-      end
+      #   refute result.ok?
+      #   assert_match(/Invalid 'enforce_visibility' option/, result.error_value)
+      # end
 
       test 'call returns success when enforce_visibility is set to strict' do
         use_template(:minimal)
