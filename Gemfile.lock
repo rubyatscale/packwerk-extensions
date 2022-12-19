@@ -17,10 +17,10 @@ GIT
 PATH
   remote: .
   specs:
-    packwerk-extensions (0.0.4)
+    packwerk-extensions (0.0.5)
       packwerk (>= 2.2.1)
       rails
-      sorbet-runtime (= 0.5.10520)
+      sorbet-runtime
       zeitwerk
 
 GEM
@@ -267,8 +267,8 @@ DEPENDENCIES
   packwerk-extensions!
   pry
   rubocop
-  sorbet (= 0.5.10520)
-  sorbet-static (= 0.5.10520)
+  sorbet
+  sorbet-static
   tapioca
 
 BUNDLED WITH
