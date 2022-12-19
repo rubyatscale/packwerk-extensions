@@ -60,18 +60,6 @@ module Packwerk
       private
 
       sig do
-        params(
-          constant: ConstantContext,
-          explicitly_private_constants: T::Array[String]
-        ).returns(T::Boolean)
-      end
-      def explicitly_private_constant?(constant, explicitly_private_constants:)
-        explicitly_private_constants.include?(constant.name) ||
-          # nested constants
-          explicitly_private_constants.any? { |epc| constant.name.start_with?("#{epc}::") }
-      end
-
-      sig do
         params(visibility_option: T.nilable(T.any(T::Boolean, String)))
           .returns(T::Boolean)
       end
