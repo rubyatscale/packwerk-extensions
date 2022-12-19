@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = 'packwerk-extensions'
-  spec.version       = '0.0.4'
+  spec.version       = '0.0.5'
   spec.authors       = ['Gusto Engineers']
   spec.email         = ['dev@gusto.com']
 
@@ -25,14 +25,14 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'packwerk', '>= 2.2.1'
   spec.add_dependency 'rails'
-  spec.add_dependency 'sorbet-runtime', '0.5.10520'
+  spec.add_dependency 'sorbet-runtime'
   spec.add_dependency 'zeitwerk'
 
   spec.add_development_dependency 'minitest'
   spec.add_development_dependency 'mocha'
   spec.add_development_dependency 'pry'
   spec.add_development_dependency 'rubocop'
-  spec.add_development_dependency 'sorbet', '0.5.10520'
-  spec.add_development_dependency 'sorbet-static', '0.5.10520'
+  spec.add_development_dependency 'sorbet'
+  spec.add_development_dependency 'sorbet-static'
   spec.add_development_dependency 'tapioca'
 end
