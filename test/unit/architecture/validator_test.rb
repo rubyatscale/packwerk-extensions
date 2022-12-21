@@ -57,7 +57,7 @@ module Packwerk
       # TODO: Validate that if something enforces architecture, it has a layer
       # Validate that layer is in the list of possible layers
       # Validate that dependencies never violate layers
-      # Validate that if anything uses enforce_architecture, then architecture_layers are set 
+      # Validate that if anything uses enforce_architecture, then architecture_layers are set
 
       test 'call returns no error for valid layer value' do
         merge_into_app_yaml_file('package.yml', { 'layer' => 'platform' })

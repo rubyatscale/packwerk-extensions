@@ -22,11 +22,11 @@ module Packwerk
       end
 
       def orchestrator_pack(enforce: false)
-        Packwerk::Package.new(name: 'packs/orchestrator', config: { 'enforce_architecture' => enforce, 'layer' => 'orchestrator'})
+        Packwerk::Package.new(name: 'packs/orchestrator', config: { 'enforce_architecture' => enforce, 'layer' => 'orchestrator' })
       end
 
       def utility_pack(enforce: false)
-        Packwerk::Package.new(name: 'packs/utility', config: { 'enforce_architecture' => enforce, 'layer' => 'utility'})
+        Packwerk::Package.new(name: 'packs/utility', config: { 'enforce_architecture' => enforce, 'layer' => 'utility' })
       end
 
       setup do
@@ -63,12 +63,11 @@ module Packwerk
         checker = architecture_checker
         reference = build_reference(
           source_package: orchestrator_pack(enforce: true),
-          destination_package: utility_pack(enforce: false),
+          destination_package: utility_pack(enforce: false)
         )
 
         refute checker.invalid_reference?(reference)
       end
-
 
       test 'provides a useful message' do
         reference = build_reference(

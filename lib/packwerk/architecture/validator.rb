@@ -11,15 +11,9 @@ module Packwerk
 
       sig { override.params(package_set: PackageSet, configuration: Configuration).returns(Result) }
       def call(package_set, configuration)
-        architecture_settings = package_manifests_settings_for(configuration, 'enforce_architecture')
-
-        resolver = ConstantResolver.new(
-          root_path: configuration.root_path,
-          load_paths: configuration.load_paths
-        )
-
         results = T.let([], T::Array[Result])
 
+        architecture_settings = package_manifests_settings_for(configuration, 'enforce_architecture')
         architecture_settings.each do |config_file_path, setting|
           results << check_enforce_architecture_setting(config_file_path, setting)
         end

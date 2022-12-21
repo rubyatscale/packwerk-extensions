@@ -65,10 +65,7 @@ module Packwerk
           .returns(String)
       end
       def message(reference)
-        constant_package = reference.constant.package
-        source_desc = "'#{reference.package}'"
-
-        constant_package = Package.from(constant_package)
+        constant_package = Package.from(reference.constant.package)
         referencing_package = Package.from(reference.package)
 
         message = <<~MESSAGE
