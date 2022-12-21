@@ -21,7 +21,7 @@ module Packwerk
       test 'extension is properly loaded' do
         use_template(:extended)
         Packwerk::Checker.all
-        assert_equal(Packwerk::Checker.all.count, 3)
+        assert_equal(Packwerk::Checker.all.count, 4)
         found_checker = Packwerk::Checker.all.any? do |checker|
           T.unsafe(checker).is_a?(Packwerk::Privacy::Checker)
         end

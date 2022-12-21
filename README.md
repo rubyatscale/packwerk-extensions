@@ -2,9 +2,10 @@
 
 `packwerk-extensions` is a home for checker extensions for packwerk.
 
-Currently, it ships with two checkers to help improve the boundaries between packages. These checkers are:
+Currently, it ships the following checkers to help improve the boundaries between packages. These checkers are:
 - A `privacy` checker that ensures other packages are using your package's public API
 - A `visibility` checker that allows packages to be private except to an explicit group of other packages.
+- An experimental `architecture` checker that allows packages to specify their "layer" and requires that each layer only communicate with layers below it.
 
 ## Privacy Checker
 The privacy checker extension was originally extracted from [packwerk](https://github.com/Shopify/packwerk).
@@ -62,3 +63,22 @@ enforce_visibility: true
 visible_to:
   - components/other_package
 ```
+
+## Architecture Checker
+The architecture checker can be used to enforce constraints on what can depend on what.
+
+To enforce architecture for your package, first define the `architecture_layers` in `packwerk.yml`, for example:
+```
+architecture_layers:
+  - package
+  - utility
+```
+
+Then, turn on the checker in your package:
+```yaml
+# components/merchandising/package.yml
+enforce_architecture: true
+layer: utility
+```
+
+Now this pack can only depend on other utility packages.
