@@ -1,6 +1,8 @@
 # typed: strict
 # frozen_string_literal: true
 
+require 'packwerk/architecture/layers'
+
 module Packwerk
   module Architecture
     # This enforces "layered architecture," which allows each class to be designated as one of N layers
@@ -41,12 +43,7 @@ module Packwerk
       def invalid_reference?(reference)
         constant_package = Package.from(reference.constant.package)
         referencing_package = Package.from(reference.package)
-        referencing_layer = referencing_package.layer
-        constant_layer = constant_package.layer
-        return false if !referencing_package.enforces?
-        return false if !referencing_layer || !constant_layer
-
-        layer_index(referencing_layer) < layer_index(constant_layer)
+        !referencing_package.can_depend_on?(constant_package, layers: layers)
       end
 
       sig do
@@ -90,10 +87,9 @@ module Packwerk
         standard_message.chomp
       end
 
-      sig { params(layer: String).returns(Integer) }
-      def layer_index(layer)
-        @layers ||= T.let(YAML.load_file('packwerk.yml')['architecture_layers'], T.nilable(T::Array[String]))
-        @layers.reverse.find_index(layer)
+      sig { returns(Layers) }
+      def layers
+        @layers ||= T.let(Layers.new, T.nilable(Packwerk::Architecture::Layers))
       end
     end
   end
