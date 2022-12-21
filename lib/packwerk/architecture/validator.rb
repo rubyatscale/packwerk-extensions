@@ -15,7 +15,7 @@ module Packwerk
 
         package_manifests(configuration).each do |f|
           config = YAML.load_file(File.join(f))
-          next if config == false
+          next if !config
 
           result = check_enforce_architecture_setting(f, config['enforce_architecture'])
           results << result
