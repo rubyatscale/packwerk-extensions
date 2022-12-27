@@ -41,8 +41,8 @@ module Packwerk
           .returns(T::Boolean)
       end
       def invalid_reference?(reference)
-        constant_package = Package.from(reference.constant.package)
-        referencing_package = Package.from(reference.package)
+        constant_package = Package.from(reference.constant.package, layers)
+        referencing_package = Package.from(reference.package, layers)
         !referencing_package.can_depend_on?(constant_package, layers: layers)
       end
 
@@ -62,8 +62,8 @@ module Packwerk
           .returns(String)
       end
       def message(reference)
-        constant_package = Package.from(reference.constant.package)
-        referencing_package = Package.from(reference.package)
+        constant_package = Package.from(reference.constant.package, layers)
+        referencing_package = Package.from(reference.package, layers)
 
         message = <<~MESSAGE
           Architecture layer violation: '#{reference.constant.name}' belongs to '#{reference.constant.package}', whose architecture layer type is "#{constant_package.layer}."

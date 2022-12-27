@@ -8,12 +8,13 @@ module Packwerk
 
       sig { void }
       def initialize
-        @names = T.let(@names, T.nilable(T::Array[String]))
+        @names = T.let(@names, T.nilable(T::Set[String]))
+        @names_list = T.let(@names_list, T.nilable(T::Array[String]))
       end
 
       sig { params(layer: String).returns(Integer) }
       def index_of(layer)
-        index = names.reverse.find_index(layer)
+        index = names_list.reverse.find_index(layer)
         if index.nil?
           raise "Layer #{layer} not find, please run `bin/packwerk validate`"
         end
@@ -21,9 +22,16 @@ module Packwerk
         index
       end
 
-      sig { returns(T::Array[String]) }
+      sig { returns(T::Set[String]) }
       def names
-        @names ||= YAML.load_file('packwerk.yml')['architecture_layers'] || []
+        @names ||= Set.new(names_list)
+      end
+
+      private
+
+      sig { returns(T::Array[String]) }
+      def names_list
+        @names_list ||= YAML.load_file('packwerk.yml')['architecture_layers'] || []
       end
     end
   end

@@ -13,8 +13,9 @@ module Packwerk
       def call(package_set, configuration)
         results = T.let([], T::Array[Result])
 
-        package_manifests(configuration).each do |f|
-          config = YAML.load_file(File.join(f))
+        package_set.each do |package|
+          config = package.config
+          f = Pathname.new(package.name).join("package.yml").to_s
           next if !config
 
           result = check_enforce_architecture_setting(f, config['enforce_architecture'])
@@ -25,7 +26,7 @@ module Packwerk
           results << result
           next if !result.ok?
 
-          package = Package.from_config(config)
+          package = Package.from(package, layers)
           results += check_dependencies_setting(package_set, package, f)
         end
 
@@ -51,7 +52,7 @@ module Packwerk
           other_packwerk_package = package_set.fetch(dependency)
           next if other_packwerk_package.nil?
 
-          other_package = Package.from(other_packwerk_package)
+          other_package = Package.from(other_packwerk_package, layers)
           next if package.can_depend_on?(other_package, layers: layers)
 
           results << Result.new(
@@ -81,7 +82,7 @@ module Packwerk
         else
           Result.new(
             ok: false,
-            error_value: "Invalid 'layer' option in #{config_file_path.inspect}: #{layer.inspect}. Must be one of #{layers.names.inspect}"
+            error_value: "Invalid 'layer' option in #{config_file_path.inspect}: #{layer.inspect}. Must be one of #{layers.names.to_a.inspect}"
           )
         end
       end
