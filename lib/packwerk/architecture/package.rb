@@ -33,8 +33,17 @@ module Packwerk
         sig { params(package: ::Packwerk::Package, layers: Layers).returns(Package) }
         def from(package, layers)
           config = package.config
+
+          # This allows the layer to be inferred based on the package root
+          package_root = package.name.split("/").first
+          if layers.names.include?(package_root)
+            layer = package_root
+          else
+            layer = config['layer']
+          end
+
           Package.new(
-            layer: config['layer'],
+            layer: layer,
             enforcement_setting: config['enforce_architecture'],
             config: config
           )
