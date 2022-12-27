@@ -30,10 +30,9 @@ module Packwerk
       class << self
         extend T::Sig
 
-        sig { params(package: ::Packwerk::Package).returns(Package) }
-        def from(package)
+        sig { params(package: ::Packwerk::Package, layers: Layers).returns(Package) }
+        def from(package, layers)
           config = package.config
-
           Package.new(
             layer: config['layer'],
             enforcement_setting: config['enforce_architecture'],

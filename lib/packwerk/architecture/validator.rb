@@ -26,7 +26,7 @@ module Packwerk
           results << result
           next if !result.ok?
 
-          package = Package.from(package)
+          package = Package.from(package, layers)
           results += check_dependencies_setting(package_set, package, f)
         end
 
@@ -52,7 +52,7 @@ module Packwerk
           other_packwerk_package = package_set.fetch(dependency)
           next if other_packwerk_package.nil?
 
-          other_package = Package.from(other_packwerk_package)
+          other_package = Package.from(other_packwerk_package, layers)
           next if package.can_depend_on?(other_package, layers: layers)
 
           results << Result.new(
