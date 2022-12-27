@@ -26,7 +26,7 @@ module Packwerk
           results << result
           next if !result.ok?
 
-          package = Package.from_config(config)
+          package = Package.from(package)
           results += check_dependencies_setting(package_set, package, f)
         end
 

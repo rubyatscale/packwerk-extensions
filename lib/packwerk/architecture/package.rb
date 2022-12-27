@@ -32,11 +32,8 @@ module Packwerk
 
         sig { params(package: ::Packwerk::Package).returns(Package) }
         def from(package)
-          from_config(package.config)
-        end
+          config = package.config
 
-        sig { params(config: T::Hash[T.untyped, T.untyped]).returns(Package) }
-        def from_config(config)
           Package.new(
             layer: config['layer'],
             enforcement_setting: config['enforce_architecture'],
