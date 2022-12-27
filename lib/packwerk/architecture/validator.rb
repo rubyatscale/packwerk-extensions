@@ -13,8 +13,9 @@ module Packwerk
       def call(package_set, configuration)
         results = T.let([], T::Array[Result])
 
-        package_manifests(configuration).each do |f|
-          config = YAML.load_file(File.join(f))
+        package_set.each do |package|
+          config = package.config
+          f = Pathname.new(package.name).join("package.yml").to_s
           next if !config
 
           result = check_enforce_architecture_setting(f, config['enforce_architecture'])
