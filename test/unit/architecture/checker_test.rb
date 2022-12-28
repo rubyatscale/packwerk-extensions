@@ -71,7 +71,6 @@ module Packwerk
         assert checker.invalid_reference?(reference)
       end
 
-
       test 'is not an invalid reference if destination pack is below source package' do
         checker = architecture_checker
         reference = build_reference(

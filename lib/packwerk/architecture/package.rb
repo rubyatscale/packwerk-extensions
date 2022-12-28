@@ -35,7 +35,7 @@ module Packwerk
           config = package.config
 
           # This allows the layer to be inferred based on the package root
-          package_root = package.name.split("/").first
+          package_root = package.name.split('/').first
           if package_root && layers.names.include?(package_root)
             layer = package_root
           else
