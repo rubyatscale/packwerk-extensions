@@ -22,11 +22,12 @@ module Packwerk
           results << result
           next if !result.ok?
 
-          result = check_layer_setting(config, f, config['layer'])
+          package = Package.from(package, layers)
+
+          result = check_layer_setting(package, f)
           results << result
           next if !result.ok?
 
-          package = Package.from(package, layers)
           results += check_dependencies_setting(package_set, package, f)
         end
 
@@ -65,17 +66,16 @@ module Packwerk
       end
 
       sig do
-        params(config: T::Hash[T.untyped, T.untyped], config_file_path: String, layer: T.untyped).returns(Result)
+        params(package: Package, config_file_path: String).returns(Result)
       end
-      def check_layer_setting(config, config_file_path, layer)
-        enforce_architecture = config['enforce_architecture']
-        enforce_architecture_enabled = !(enforce_architecture.nil? || enforce_architecture == false)
+      def check_layer_setting(package, config_file_path)
+        layer = package.layer
         valid_layer = layer.nil? || layers.names.include?(layer)
 
-        if layer.nil? && enforce_architecture_enabled
+        if layer.nil? && package.enforces?
           Result.new(
             ok: false,
-            error_value: "Invalid 'layer' option in #{config_file_path.inspect}: #{layer.inspect}. `layer` must be set if `enforce_architecture` is on."
+            error_value: "Invalid 'layer' option in #{config_file_path.inspect}: #{package.layer.inspect}. `layer` must be set if `enforce_architecture` is on."
           )
         elsif valid_layer
           Result.new(ok: true)
