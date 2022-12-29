@@ -91,6 +91,12 @@ module Packwerk
         assert result.ok?
       end
 
+      test 'call returns no error for no layer value if layer is implied by root location' do
+        merge_into_app_yaml_file('utility/package.yml', { 'enforce_architecture' => true })
+        result = validator.call(package_set, config)
+        assert result.ok?
+      end
+
       test 'call returns an error if a dependency violates architecture layers' do
         merge_into_app_yaml_file('packs/my_utility/package.yml', { 'dependencies' => ['packs/my_pack'], 'enforce_architecture' => true, 'layer' => 'utility' })
         merge_into_app_yaml_file('packs/my_pack/package.yml', { 'enforce_architecture' => false, 'layer' => 'package' })
