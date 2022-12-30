@@ -1,6 +1,11 @@
 # packwerk-extensions
 
-`packwerk-extensions` is a home for checker extensions for packwerk.
+`packwerk-extensions` is a home for checker extensions for [packwerk](https://github.com/Shopify/packwerk) 3.
+
+Note that packwerk has not yet released packwerk 3. If you'd like to use `packwerk-extensions`, you'll need to point your `Gemfile` at the `packwerk` `main` branch:
+```ruby
+gem 'packwerk', github: 'Shopify/packwerk', branch: 'main'
+```
 
 Currently, it ships the following checkers to help improve the boundaries between packages. These checkers are:
 - A `privacy` checker that ensures other packages are using your package's public API
