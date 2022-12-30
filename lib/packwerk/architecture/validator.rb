@@ -91,20 +91,21 @@ module Packwerk
         params(config_file_path: String, setting: T.untyped).returns(Result)
       end
       def check_enforce_architecture_setting(config_file_path, setting)
+        activated_value = [true, 'strict'].include?(setting)
         valid_value = [true, nil, false, 'strict'].include?(setting)
         layers_set = layers.names.any?
-        if valid_value && layers_set
-          Result.new(ok: true)
-        elsif valid_value
+        if !valid_value
+          Result.new(
+            ok: false,
+            error_value: "Invalid 'enforce_architecture' option in #{config_file_path.inspect}: #{setting.inspect}"
+          )
+        elsif activated_value && !layers_set
           Result.new(
             ok: false,
             error_value: "Cannot set 'enforce_architecture' option in #{config_file_path.inspect} until `architectural_layers` have been specified in `packwerk.yml`"
           )
         else
-          Result.new(
-            ok: false,
-            error_value: "Invalid 'enforce_architecture' option in #{config_file_path.inspect}: #{setting.inspect}"
-          )
+          Result.new(ok: true)
         end
       end
     end
