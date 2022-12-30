@@ -28,6 +28,15 @@ module Packwerk
         teardown_application_fixture
       end
 
+      test 'call returns no error if enforce_architecture is unset' do
+        write_app_file('packwerk.yml', <<~YML)
+          {}
+        YML
+        result = validator.call(package_set, config)
+
+        assert result.ok?
+      end
+
       test 'call returns an error for invalid enforce_visibility value' do
         merge_into_app_yaml_file('package.yml', { 'enforce_architecture' => 'yes, please.' })
 
