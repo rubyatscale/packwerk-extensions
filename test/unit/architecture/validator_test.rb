@@ -30,7 +30,7 @@ module Packwerk
 
       test 'call returns no error if enforce_architecture is unset' do
         write_app_file('packwerk.yml', <<~YML)
-        {}
+          {}
         YML
         result = validator.call(package_set, config)
 
