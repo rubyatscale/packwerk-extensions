@@ -41,6 +41,14 @@ module Packwerk
         assert checker.invalid_reference?(reference)
       end
 
+      test 'ignores unlisted private constants if enforcing for specific constants' do
+        destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => ['::SomeName'] })
+        checker = privacy_checker
+        reference = build_reference(destination_package: destination_package, constant_name: '::SomeOtherName')
+
+        refute checker.invalid_reference?(reference)
+      end
+
       test 'complains about nested constant if enforcing for specific constants' do
         destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => ['::SomeName'] })
         checker = privacy_checker
