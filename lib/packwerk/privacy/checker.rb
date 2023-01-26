@@ -27,7 +27,7 @@ module Packwerk
         return false if privacy_package.public_path?(reference.constant.location)
 
         privacy_option = privacy_package.enforce_privacy
-        !enforcement_disabled?(privacy_option)
+        !enforcement_disabled?(privacy_option, reference.constant)
       end
 
       sig do
@@ -61,11 +61,17 @@ module Packwerk
       private
 
       sig do
-        params(privacy_option: T.nilable(T.any(T::Boolean, String, T::Array[String])))
+        params(privacy_option: T.nilable(T.any(T::Boolean, String, T::Array[String])), constant: Packwerk::ConstantContext)
           .returns(T::Boolean)
       end
-      def enforcement_disabled?(privacy_option)
-        [false, nil].include?(privacy_option)
+      def enforcement_disabled?(privacy_option, constant)
+        return true if [false, nil].include?(privacy_option)
+        return false unless privacy_option.is_a?(Array)
+
+        names = constant.name.split('::')
+        names_to_check = names.count.times.map { |i| names[0..i].join('::') }
+
+        (privacy_option & names_to_check).empty?
       end
 
       sig { params(reference: Reference).returns(String) }
