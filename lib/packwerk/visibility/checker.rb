@@ -1,6 +1,9 @@
 # typed: strict
 # frozen_string_literal: true
 
+require 'packwerk/visibility/package'
+require 'packwerk/visibility/validator'
+
 module Packwerk
   module Visibility
     # Checks whether a given reference references a constant from a package that does not permit visibility

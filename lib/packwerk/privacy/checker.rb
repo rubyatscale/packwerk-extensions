@@ -1,6 +1,9 @@
 # typed: strict
 # frozen_string_literal: true
 
+require 'packwerk/privacy/package'
+require 'packwerk/privacy/validator'
+
 module Packwerk
   module Privacy
     # Checks whether a given reference references a private constant of another package.

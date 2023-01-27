@@ -2,6 +2,8 @@
 # frozen_string_literal: true
 
 require 'packwerk/architecture/layers'
+require 'packwerk/architecture/package'
+require 'packwerk/architecture/validator'
 
 module Packwerk
   module Architecture
