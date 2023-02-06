@@ -25,6 +25,17 @@ module Packwerk
         refute checker.invalid_reference?(reference)
       end
 
+      test 'ignores if destination package is only enforcing for other constants' do
+        destination_package = Packwerk::Package.new(
+          name: 'destination_package',
+          config: { 'enforce_privacy' => ['::OtherConstant'] }
+        )
+        checker = privacy_checker
+        reference = build_reference(destination_package: destination_package)
+
+        refute checker.invalid_reference?(reference)
+      end
+
       test 'complains about private constant if enforcing privacy for everything' do
         destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => true })
         checker = privacy_checker
@@ -47,6 +58,14 @@ module Packwerk
         reference = build_reference(destination_package: destination_package)
 
         assert checker.invalid_reference?(reference)
+      end
+
+      test 'ignores constant that starts like enforced constant' do
+        destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => ['::SomeName'] })
+        checker = privacy_checker
+        reference = build_reference(destination_package: destination_package, constant_name: '::SomeNameButNotQuite')
+
+        refute checker.invalid_reference?(reference)
       end
 
       test 'ignores public constant even if enforcing privacy for everything' do
