@@ -15,15 +15,46 @@ module Packwerk
 
         results = T.let([], T::Array[Result])
 
+        privacy_settings.each do |config_file_path, setting|
+          results << check_enforce_privacy_setting(config_file_path, setting)
+        end
+
+        results += verify_private_constants_setting(package_set, configuration)
+
+        public_path_settings = package_manifests_settings_for(configuration, 'public_path')
+        public_path_settings.each do |config_file_path, setting|
+          results << check_public_path(config_file_path, setting)
+        end
+
+        merge_results(results, separator: "\n---\n")
+      end
+
+      sig { override.returns(T::Array[String]) }
+      def permitted_keys
+        %w[public_path enforce_privacy private_constants]
+      end
+
+      private
+
+      sig { params(package_set: PackageSet, configuration: Configuration).returns(T::Array[Result]) }
+      def verify_private_constants_setting(package_set, configuration)
+        private_constants_setting = package_manifests_settings_for(configuration, 'private_constants')
+        results = T.let([], T::Array[Result])
         resolver = ConstantResolver.new(
           root_path: configuration.root_path,
           load_paths: configuration.load_paths
         )
 
-        privacy_settings.each do |config_file_path, setting|
-          results << check_enforce_privacy_setting(config_file_path, setting)
+        private_constants_setting.each do |config_file_path, setting|
+          next if setting.nil?
 
-          next unless setting.is_a?(Array)
+          unless setting.is_a?(Array)
+            results << Result.new(
+              ok: false,
+              error_value: "Invalid 'private_constants' setting: #{setting.inspect}"
+            )
+            next
+          end
 
           constants = setting
 
@@ -40,20 +71,8 @@ module Packwerk
           end
         end
 
-        public_path_settings = package_manifests_settings_for(configuration, 'public_path')
-        public_path_settings.each do |config_file_path, setting|
-          results << check_public_path(config_file_path, setting)
-        end
-
-        merge_results(results, separator: "\n---\n")
+        results
       end
-
-      sig { override.returns(T::Array[String]) }
-      def permitted_keys
-        %w[public_path enforce_privacy]
-      end
-
-      private
 
       sig do
         params(config_file_path: String, setting: T.untyped).returns(Result)
@@ -73,7 +92,7 @@ module Packwerk
         params(config_file_path: String, setting: T.untyped).returns(Result)
       end
       def check_enforce_privacy_setting(config_file_path, setting)
-        if [TrueClass, FalseClass, Array, NilClass].include?(setting.class) || setting == 'strict'
+        if [TrueClass, FalseClass, NilClass].include?(setting.class) || setting == 'strict'
           Result.new(ok: true)
         else
           Result.new(
@@ -108,7 +127,7 @@ module Packwerk
           if constant.start_with?('::')
             constant.try(&:constantize) && Result.new(ok: true)
           else
-            error_value = "'#{constant}', listed in the 'enforce_privacy' option " \
+            error_value = "'#{constant}', listed in the 'private_constants' option " \
                           "in #{config_file_path}, is invalid.\nPrivate constants need to be " \
                           'prefixed with the top-level namespace operator `::`.'
             Result.new(

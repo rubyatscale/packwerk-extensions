@@ -86,13 +86,13 @@ module Packwerk
 
     test 'check_package_manifests_for_privacy returns an error for constants without `::` prefix' do
       use_template(:minimal)
-      merge_into_app_yaml_file('package.yml', { 'enforce_privacy' => ['::PrivateThing', 'OtherThing'] })
+      merge_into_app_yaml_file('package.yml', { 'private_constants' => ['::PrivateThing', 'OtherThing'] })
 
       result = Packwerk::Privacy::Validator.new.call(package_set, config)
 
       refute result.ok?, result.error_value
       assert_match(
-        /'OtherThing', listed in the 'enforce_privacy' option in .*package.yml, is invalid./,
+        /'OtherThing', listed in the 'private_constants' option in .*package.yml, is invalid./,
         result.error_value
       )
       assert_match(
