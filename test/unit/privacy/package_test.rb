@@ -12,7 +12,7 @@ module Packwerk
 
       setup do
         setup_application_fixture
-        @package = Packwerk::Package.new(name: 'components/timeline', config: { 'enforce_privacy' => ['::Test'] })
+        @package = Packwerk::Package.new(name: 'components/timeline', config: { 'enforce_privacy' => true, 'private_constants' => ['::Test'] })
       end
 
       teardown do
@@ -25,7 +25,7 @@ module Packwerk
       end
 
       test '#enforce_privacy returns same value as from config' do
-        assert_equal(['::Test'], privacy_package.enforce_privacy)
+        assert_equal(true, privacy_package.enforce_privacy)
       end
 
       test '#public_path returns expected path when using the default public path' do

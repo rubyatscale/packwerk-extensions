@@ -56,6 +56,9 @@ Example:
 public_path: my/custom/path/
 ```
 
+### Using specific private constants
+Sometimes it is desirable to only enforce privacy on a subset of constants in a package. You can do so by defining a `private_constants` list in your package.yml. Note that `enforce_privacy` must be set to `true` or `'strict'` for this to work.
+
 ### Package Privacy violation
 A constant that is private to its package has been referenced from outside of the package. Constants are declared private in their package’s `package.yml`.
 
