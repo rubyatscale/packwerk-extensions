@@ -12,6 +12,23 @@ Currently, it ships the following checkers to help improve the boundaries betwee
 - A `visibility` checker that allows packages to be private except to an explicit group of other packages.
 - An experimental `architecture` checker that allows packages to specify their "layer" and requires that each layer only communicate with layers below it.
 
+## Installation
+
+To register all checkers included in this gem, add the following to your `packwerk.yml`:
+
+```yaml
+require: packwerk-extensions
+```
+
+Alternatively, you can require individual checkers:
+
+```yaml
+require:
+  - packwerk/privacy/checker
+  - packwerk/visibility/checker
+  - packwerk/architecture/checker
+```
+
 ## Privacy Checker
 The privacy checker extension was originally extracted from [packwerk](https://github.com/Shopify/packwerk).
 
