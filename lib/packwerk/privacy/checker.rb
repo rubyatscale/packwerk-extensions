@@ -30,7 +30,9 @@ module Packwerk
         return false if privacy_package.public_path?(reference.constant.location)
 
         privacy_option = privacy_package.enforce_privacy
-        !enforcement_disabled?(privacy_option)
+        return false if enforcement_disabled?(privacy_option)
+
+        explicitly_private_constant?(reference.constant, explicitly_private_constants: privacy_package.private_constants)
       end
 
       sig do
@@ -62,6 +64,20 @@ module Packwerk
       end
 
       private
+
+      sig do
+        params(
+          constant: ConstantContext,
+          explicitly_private_constants: T::Array[String]
+        ).returns(T::Boolean)
+      end
+      def explicitly_private_constant?(constant, explicitly_private_constants:)
+        return true if explicitly_private_constants.empty?
+
+        explicitly_private_constants.include?(constant.name) ||
+          # nested constants
+          explicitly_private_constants.any? { |epc| constant.name.start_with?("#{epc}::") }
+      end
 
       sig do
         params(privacy_option: T.nilable(T.any(T::Boolean, String, T::Array[String])))
