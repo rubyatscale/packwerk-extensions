@@ -29,8 +29,8 @@ jobs:
           bundle exec rake
           git diff
           git diff-index --quiet --cached HEAD
-          echo git diff
-          echo git diff-index --quiet --cached HEAD
+          echo $(git diff)
+          echo $(git diff-index --quiet --cached HEAD)
 
   static_type_check:
     name: "Type Check"
