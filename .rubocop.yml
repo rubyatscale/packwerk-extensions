@@ -133,3 +133,6 @@ Lint/EmptyClass:
 Lint/EmptyFile:
   Exclude:
     - test/fixtures/minimal/config/environment.rb
+
+Gemspec/DevelopmentDependencies:
+  Enabled: false
