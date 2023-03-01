@@ -68,7 +68,23 @@ module Packwerk
           destination_package: orchestrator_pack
         )
 
+        assert_equal Package.from(orchestrator_pack, Layers.new).layer, 'orchestrator'
+        assert_equal Package.from(utility_pack, Layers.new).layer, 'utility'
         assert checker.invalid_reference?(reference)
+      end
+
+      test 'allows layer setting to override root directory location' do
+        orchestrator_pack = Packwerk::Package.new(name: 'orchestrator/some_pack', config: { 'layer' => 'specification', 'enforce_architecture' => true })
+        utility_pack = Packwerk::Package.new(name: 'utility/some_other_pack', config: { 'enforce_architecture' => true })
+        checker = architecture_checker
+        reference = build_reference(
+          source_package: utility_pack,
+          destination_package: orchestrator_pack
+        )
+
+        assert_equal Package.from(orchestrator_pack, Layers.new).layer, 'specification'
+        assert_equal Package.from(utility_pack, Layers.new).layer, 'utility'
+        refute checker.invalid_reference?(reference)
       end
 
       test 'is not an invalid reference if destination pack is below source package' do
