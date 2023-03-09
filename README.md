@@ -17,7 +17,8 @@ Currently, it ships the following checkers to help improve the boundaries betwee
 To register all checkers included in this gem, add the following to your `packwerk.yml`:
 
 ```yaml
-require: packwerk-extensions
+require:
+  - packwerk-extensions
 ```
 
 Alternatively, you can require individual checkers:
