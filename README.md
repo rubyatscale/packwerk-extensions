@@ -2,17 +2,14 @@
 
 `packwerk-extensions` is a home for checker extensions for [packwerk](https://github.com/Shopify/packwerk) 3.
 
-Note that packwerk has not yet released packwerk 3. If you'd like to use `packwerk-extensions`, you'll need to point your `Gemfile` at the `packwerk` `main` branch:
-```ruby
-gem 'packwerk', github: 'Shopify/packwerk', branch: 'main'
-```
-
 Currently, it ships the following checkers to help improve the boundaries between packages. These checkers are:
 - A `privacy` checker that ensures other packages are using your package's public API
 - A `visibility` checker that allows packages to be private except to an explicit group of other packages.
 - An experimental `architecture` checker that allows packages to specify their "layer" and requires that each layer only communicate with layers below it.
 
 ## Installation
+
+Add `packwerk-extensions` to your `Gemfile`.
 
 To register all checkers included in this gem, add the following to your `packwerk.yml`:
 
@@ -61,7 +58,7 @@ public_path: my/custom/path/
 Sometimes it is desirable to only enforce privacy on a subset of constants in a package. You can do so by defining a `private_constants` list in your package.yml. Note that `enforce_privacy` must be set to `true` or `'strict'` for this to work.
 
 ### Package Privacy violation
-A constant that is private to its package has been referenced from outside of the package. Constants are declared private in their package’s `package.yml`.
+Packwerk thinks something is a privacy violation if you're referencing a constant, class, or module defined in the private implementation (i.e. not the public folder) of another package. We care about these because we want to make sure we only use parts of a package that have been exposed as public API.
 
 #### Interpreting Privacy violation
 
