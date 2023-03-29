@@ -9,50 +9,6 @@ module Packwerk
   extend ::ActiveSupport::Autoload
 end
 
-# Extracts the load paths from the analyzed application so that we can map constant names to paths.
-#
-# source://packwerk//lib/packwerk/application_load_paths.rb#8
-module Packwerk::ApplicationLoadPaths
-  class << self
-    # source://packwerk//lib/packwerk/application_load_paths.rb#22
-    sig { returns(T::Hash[::String, ::Module]) }
-    def extract_application_autoload_paths; end
-
-    # source://packwerk//lib/packwerk/application_load_paths.rb#13
-    sig { params(root: ::String, environment: ::String).returns(T::Hash[::String, ::Module]) }
-    def extract_relevant_paths(root, environment); end
-
-    # source://packwerk//lib/packwerk/application_load_paths.rb#32
-    sig do
-      params(
-        all_paths: T::Hash[::String, ::Module],
-        bundle_path: ::Pathname,
-        rails_root: ::Pathname
-      ).returns(T::Hash[::Pathname, ::Module])
-    end
-    def filter_relevant_paths(all_paths, bundle_path: T.unsafe(nil), rails_root: T.unsafe(nil)); end
-
-    # source://packwerk//lib/packwerk/application_load_paths.rb#43
-    sig do
-      params(
-        load_paths: T::Hash[::Pathname, ::Module],
-        rails_root: ::Pathname
-      ).returns(T::Hash[::String, ::Module])
-    end
-    def relative_path_strings(load_paths, rails_root: T.unsafe(nil)); end
-
-    private
-
-    # source://packwerk//lib/packwerk/application_load_paths.rb#63
-    sig { params(paths: T::Hash[T.untyped, ::Module]).void }
-    def assert_load_paths_present(paths); end
-
-    # source://packwerk//lib/packwerk/application_load_paths.rb#50
-    sig { params(root: ::String, environment: ::String).void }
-    def require_application(root, environment); end
-  end
-end
-
 # Checks the structure of the application and its packwerk configuration to make sure we can run a check and deliver
 # correct results.
 #
@@ -61,7 +17,7 @@ class Packwerk::ApplicationValidator
   include ::Packwerk::Validator
   extend ::ActiveSupport::Autoload
 
-  # source://packwerk//lib/packwerk/application_validator.rb#22
+  # source://packwerk//lib/packwerk/application_validator.rb#25
   sig do
     override
       .params(
@@ -71,7 +27,7 @@ class Packwerk::ApplicationValidator
   end
   def call(package_set, configuration); end
 
-  # source://packwerk//lib/packwerk/application_validator.rb#16
+  # source://packwerk//lib/packwerk/application_validator.rb#19
   sig do
     params(
       package_set: Packwerk::PackageSet,
@@ -80,33 +36,33 @@ class Packwerk::ApplicationValidator
   end
   def check_all(package_set, configuration); end
 
-  # source://packwerk//lib/packwerk/application_validator.rb#69
+  # source://packwerk//lib/packwerk/application_validator.rb#72
   sig { params(configuration: ::Packwerk::Configuration).returns(::Packwerk::Validator::Result) }
   def check_application_structure(configuration); end
 
-  # source://packwerk//lib/packwerk/application_validator.rb#84
+  # source://packwerk//lib/packwerk/application_validator.rb#87
   sig { params(configuration: ::Packwerk::Configuration).returns(::Packwerk::Validator::Result) }
   def check_package_manifest_paths(configuration); end
 
-  # source://packwerk//lib/packwerk/application_validator.rb#41
+  # source://packwerk//lib/packwerk/application_validator.rb#44
   sig { params(configuration: ::Packwerk::Configuration).returns(::Packwerk::Validator::Result) }
   def check_package_manifest_syntax(configuration); end
 
-  # source://packwerk//lib/packwerk/application_validator.rb#105
+  # source://packwerk//lib/packwerk/application_validator.rb#108
   sig { params(configuration: ::Packwerk::Configuration).returns(::Packwerk::Validator::Result) }
   def check_root_package_exists(configuration); end
 
-  # source://packwerk//lib/packwerk/application_validator.rb#34
+  # source://packwerk//lib/packwerk/application_validator.rb#37
   sig { override.returns(T::Array[::String]) }
   def permitted_keys; end
 
   private
 
-  # source://packwerk//lib/packwerk/application_validator.rb#124
+  # source://packwerk//lib/packwerk/application_validator.rb#127
   sig { params(list: T.untyped).returns(T.untyped) }
   def format_yaml_strings(list); end
 
-  # source://packwerk//lib/packwerk/application_validator.rb#129
+  # source://packwerk//lib/packwerk/application_validator.rb#132
   sig { params(configuration: ::Packwerk::Configuration, paths: T::Array[::String]).returns(T::Array[::Pathname]) }
   def relative_paths(configuration, paths); end
 end
@@ -209,7 +165,7 @@ class Packwerk::Cache::CacheContents < ::T::Struct
     sig { params(serialized_cache_contents: ::String).returns(::Packwerk::Cache::CacheContents) }
     def deserialize(serialized_cache_contents); end
 
-    # source://sorbet-runtime/0.5.10520/lib/types/struct.rb#13
+    # source://sorbet-runtime/0.5.10672/lib/types/struct.rb#13
     def inherited(s); end
   end
 end
@@ -225,34 +181,34 @@ module Packwerk::Checker
 
   # @abstract
   #
-  # source://packwerk//lib/packwerk/checker.rb#49
+  # source://packwerk//lib/packwerk/checker.rb#58
   sig { abstract.params(reference: ::Packwerk::Reference).returns(T::Boolean) }
   def invalid_reference?(reference); end
 
   # @abstract
   #
-  # source://packwerk//lib/packwerk/checker.rb#52
+  # source://packwerk//lib/packwerk/checker.rb#61
   sig { abstract.params(reference: ::Packwerk::Reference).returns(::String) }
   def message(reference); end
 
   # @abstract
   #
-  # source://packwerk//lib/packwerk/checker.rb#46
+  # source://packwerk//lib/packwerk/checker.rb#55
   sig { abstract.params(listed_offense: ::Packwerk::ReferenceOffense).returns(T::Boolean) }
   def strict_mode_violation?(listed_offense); end
 
   # @abstract
   #
-  # source://packwerk//lib/packwerk/checker.rb#43
+  # source://packwerk//lib/packwerk/checker.rb#52
   sig { abstract.returns(::String) }
   def violation_type; end
 
   class << self
-    # source://packwerk//lib/packwerk/checker.rb#22
+    # source://packwerk//lib/packwerk/checker.rb#20
     sig { returns(T::Array[::Packwerk::Checker]) }
     def all; end
 
-    # source://packwerk//lib/packwerk/checker.rb#27
+    # source://packwerk//lib/packwerk/checker.rb#26
     sig { params(violation_type: ::String).returns(::Packwerk::Checker) }
     def find(violation_type); end
 
@@ -262,9 +218,17 @@ module Packwerk::Checker
 
     private
 
-    # source://packwerk//lib/packwerk/checker.rb#34
+    # source://packwerk//lib/packwerk/checker.rb#43
     sig { params(name: ::String).returns(::Packwerk::Checker) }
     def checker_by_violation_type(name); end
+
+    # source://packwerk//lib/packwerk/checker.rb#38
+    sig { returns(T::Array[::Class]) }
+    def checkers; end
+
+    # source://packwerk//lib/packwerk/checker.rb#33
+    sig { void }
+    def load_defaults; end
   end
 end
 
@@ -274,7 +238,7 @@ end
 class Packwerk::Cli
   extend ::ActiveSupport::Autoload
 
-  # source://packwerk//lib/packwerk/cli.rb#21
+  # source://packwerk//lib/packwerk/cli.rb#24
   sig do
     params(
       configuration: T.nilable(::Packwerk::Configuration),
@@ -287,17 +251,17 @@ class Packwerk::Cli
   end
   def initialize(configuration: T.unsafe(nil), out: T.unsafe(nil), err_out: T.unsafe(nil), environment: T.unsafe(nil), style: T.unsafe(nil), offenses_formatter: T.unsafe(nil)); end
 
-  # source://packwerk//lib/packwerk/cli.rb#48
+  # source://packwerk//lib/packwerk/cli.rb#51
   sig { params(args: T::Array[::String]).returns(T::Boolean) }
   def execute_command(args); end
 
-  # source://packwerk//lib/packwerk/cli.rb#42
+  # source://packwerk//lib/packwerk/cli.rb#45
   sig { params(args: T::Array[::String]).returns(T.noreturn) }
   def run(args); end
 
   private
 
-  # source://packwerk//lib/packwerk/cli.rb#135
+  # source://packwerk//lib/packwerk/cli.rb#142
   sig do
     params(
       relative_file_paths: T::Array[::String],
@@ -306,39 +270,39 @@ class Packwerk::Cli
   end
   def fetch_files_to_process(relative_file_paths, ignore_nested_packages); end
 
-  # source://packwerk//lib/packwerk/cli.rb#79
+  # source://packwerk//lib/packwerk/cli.rb#85
   sig { returns(T::Boolean) }
   def generate_configs; end
 
-  # source://packwerk//lib/packwerk/cli.rb#72
+  # source://packwerk//lib/packwerk/cli.rb#78
   sig { returns(T::Boolean) }
   def init; end
 
-  # source://packwerk//lib/packwerk/cli.rb#176
+  # source://packwerk//lib/packwerk/cli.rb#183
   sig { params(result: ::Packwerk::Validator::Result).void }
   def list_validation_errors(result); end
 
-  # source://packwerk//lib/packwerk/cli.rb#123
+  # source://packwerk//lib/packwerk/cli.rb#130
   sig { params(result: ::Packwerk::Cli::Result).returns(T::Boolean) }
   def output_result(result); end
 
-  # source://packwerk//lib/packwerk/cli.rb#168
+  # source://packwerk//lib/packwerk/cli.rb#175
   sig { returns(Packwerk::PackageSet) }
   def package_set; end
 
-  # source://packwerk//lib/packwerk/cli.rb#188
+  # source://packwerk//lib/packwerk/cli.rb#195
   sig { params(args: T::Array[::String]).returns(::Packwerk::ParseRun) }
   def parse_run(args); end
 
-  # source://packwerk//lib/packwerk/cli.rb#108
+  # source://packwerk//lib/packwerk/cli.rb#114
   sig { returns(T::Boolean) }
   def usage; end
 
-  # source://packwerk//lib/packwerk/cli.rb#150
+  # source://packwerk//lib/packwerk/cli.rb#157
   sig { params(_paths: T::Array[::String]).returns(T::Boolean) }
   def validate(_paths); end
 
-  # source://packwerk//lib/packwerk/cli.rb#163
+  # source://packwerk//lib/packwerk/cli.rb#170
   sig { returns(::Packwerk::ApplicationValidator) }
   def validator; end
 end
@@ -349,90 +313,83 @@ class Packwerk::Cli::Result < ::T::Struct
   const :status, T::Boolean
 
   class << self
-    # source://sorbet-runtime/0.5.10520/lib/types/struct.rb#13
+    # source://sorbet-runtime/0.5.10672/lib/types/struct.rb#13
     def inherited(s); end
   end
 end
 
 # source://packwerk//lib/packwerk/configuration.rb#8
 class Packwerk::Configuration
-  # @return [Configuration] a new instance of Configuration
-  #
-  # source://packwerk//lib/packwerk/configuration.rb#42
+  # source://packwerk//lib/packwerk/configuration.rb#69
+  sig { params(configs: T::Hash[::String, T.untyped], config_path: T.nilable(::String)).void }
   def initialize(configs = T.unsafe(nil), config_path: T.unsafe(nil)); end
 
-  # Returns the value of attribute cache_directory.
-  #
-  # source://packwerk//lib/packwerk/configuration.rb#38
+  # source://packwerk//lib/packwerk/configuration.rb#61
+  sig { returns(::Pathname) }
   def cache_directory; end
 
-  # @return [Boolean]
-  #
-  # source://packwerk//lib/packwerk/configuration.rb#76
+  # source://packwerk//lib/packwerk/configuration.rb#111
+  sig { returns(T::Boolean) }
   def cache_enabled?; end
 
-  # Returns the value of attribute config_path.
-  #
-  # source://packwerk//lib/packwerk/configuration.rb#38
+  # source://packwerk//lib/packwerk/configuration.rb#58
+  sig { returns(T.nilable(::String)) }
   def config_path; end
 
-  # Returns the value of attribute custom_associations.
-  #
-  # source://packwerk//lib/packwerk/configuration.rb#38
+  # source://packwerk//lib/packwerk/configuration.rb#55
+  sig { returns(T::Array[::Symbol]) }
   def custom_associations; end
 
-  # Returns the value of attribute exclude.
-  #
-  # source://packwerk//lib/packwerk/configuration.rb#38
+  # source://packwerk//lib/packwerk/configuration.rb#46
+  sig { returns(T::Array[::String]) }
   def exclude; end
 
-  # Returns the value of attribute include.
-  #
-  # source://packwerk//lib/packwerk/configuration.rb#38
+  # source://packwerk//lib/packwerk/configuration.rb#43
+  sig { returns(T::Array[::String]) }
   def include; end
 
-  # source://packwerk//lib/packwerk/configuration.rb#63
+  # source://packwerk//lib/packwerk/configuration.rb#93
+  sig { returns(T::Hash[::String, ::Module]) }
   def load_paths; end
 
-  # source://packwerk//lib/packwerk/configuration.rb#72
+  # source://packwerk//lib/packwerk/configuration.rb#106
   sig { returns(::Packwerk::OffensesFormatter) }
   def offenses_formatter; end
 
-  # Returns the value of attribute package_paths.
-  #
-  # source://packwerk//lib/packwerk/configuration.rb#38
+  # source://packwerk//lib/packwerk/configuration.rb#52
+  sig { returns(T.any(::String, T::Array[::String])) }
   def package_paths; end
 
-  # @return [Boolean]
-  #
-  # source://packwerk//lib/packwerk/configuration.rb#67
+  # source://packwerk//lib/packwerk/configuration.rb#101
+  sig { returns(T::Boolean) }
   def parallel?; end
 
-  # Returns the value of attribute root_path.
-  #
-  # source://packwerk//lib/packwerk/configuration.rb#38
+  # source://packwerk//lib/packwerk/configuration.rb#49
+  sig { returns(::String) }
   def root_path; end
 
   class << self
     # @raise [ArgumentError]
     #
-    # source://packwerk//lib/packwerk/configuration.rb#12
+    # source://packwerk//lib/packwerk/configuration.rb#15
+    sig { params(path: ::String).returns(::Packwerk::Configuration) }
     def from_path(path = T.unsafe(nil)); end
 
     private
 
-    # source://packwerk//lib/packwerk/configuration.rb#26
+    # source://packwerk//lib/packwerk/configuration.rb#30
+    sig { params(path: ::String).returns(::Packwerk::Configuration) }
     def from_packwerk_config(path); end
   end
 end
 
-# source://packwerk//lib/packwerk/configuration.rb#34
+# source://packwerk//lib/packwerk/configuration.rb#38
 Packwerk::Configuration::DEFAULT_CONFIG_PATH = T.let(T.unsafe(nil), String)
 
-# source://packwerk//lib/packwerk/configuration.rb#36
+# source://packwerk//lib/packwerk/configuration.rb#40
 Packwerk::Configuration::DEFAULT_EXCLUDE_GLOBS = T.let(T.unsafe(nil), Array)
 
-# source://packwerk//lib/packwerk/configuration.rb#35
+# source://packwerk//lib/packwerk/configuration.rb#39
 Packwerk::Configuration::DEFAULT_INCLUDE_GLOBS = T.let(T.unsafe(nil), Array)
 
 # Extracts a constant name from an AST node of type :const
@@ -460,7 +417,7 @@ class Packwerk::ConstNodeInspector
   def root_constant?(parent); end
 end
 
-# source://packwerk//lib/packwerk/constant_context.rb#9
+# source://packwerk//lib/packwerk/constant_context.rb#7
 class Packwerk::ConstantContext < ::Struct
   # Returns the value of attribute location
   #
@@ -472,7 +429,7 @@ class Packwerk::ConstantContext < ::Struct
   # @param value [Object] the value to set the attribute location to.
   # @return [Object] the newly set value
   #
-  # source://packwerk//lib/packwerk/constant_context.rb#9
+  # source://packwerk//lib/packwerk/constant_context.rb#7
   def location=(_); end
 
   # Returns the value of attribute name
@@ -485,7 +442,7 @@ class Packwerk::ConstantContext < ::Struct
   # @param value [Object] the value to set the attribute name to.
   # @return [Object] the newly set value
   #
-  # source://packwerk//lib/packwerk/constant_context.rb#9
+  # source://packwerk//lib/packwerk/constant_context.rb#7
   def name=(_); end
 
   # Returns the value of attribute package
@@ -498,7 +455,7 @@ class Packwerk::ConstantContext < ::Struct
   # @param value [Object] the value to set the attribute package to.
   # @return [Object] the newly set value
   #
-  # source://packwerk//lib/packwerk/constant_context.rb#9
+  # source://packwerk//lib/packwerk/constant_context.rb#7
   def package=(_); end
 
   class << self
@@ -618,7 +575,7 @@ class Packwerk::FileProcessor::ProcessedFile < ::T::Struct
   const :offenses, T::Array[::Packwerk::Offense], default: T.unsafe(nil)
 
   class << self
-    # source://sorbet-runtime/0.5.10520/lib/types/struct.rb#13
+    # source://sorbet-runtime/0.5.10672/lib/types/struct.rb#13
     def inherited(s); end
   end
 end
@@ -692,7 +649,7 @@ end
 # source://packwerk//lib/packwerk/files_for_processing.rb#8
 Packwerk::FilesForProcessing::RelativeFileSet = T.type_alias { T::Set[::String] }
 
-# source://packwerk//lib/packwerk.rb#51
+# source://packwerk//lib/packwerk.rb#46
 module Packwerk::Formatters
   extend ::ActiveSupport::Autoload
 end
@@ -714,10 +671,10 @@ class Packwerk::Formatters::DefaultOffensesFormatter
     override
       .params(
         offense_collection: ::Packwerk::OffenseCollection,
-        fileset: T::Set[::String]
+        file_set: T::Set[::String]
       ).returns(::String)
   end
-  def show_stale_violations(offense_collection, fileset); end
+  def show_stale_violations(offense_collection, file_set); end
 
   # source://packwerk//lib/packwerk/formatters/default_offenses_formatter.rb#38
   sig { override.params(strict_mode_violations: T::Array[::Packwerk::ReferenceOffense]).returns(::String) }
@@ -729,11 +686,11 @@ class Packwerk::Formatters::DefaultOffensesFormatter
   sig { params(offense: ::Packwerk::ReferenceOffense).returns(::String) }
   def format_strict_mode_violation(offense); end
 
-  # source://packwerk//lib/packwerk/formatters/default_offenses_formatter.rb#62
+  # source://packwerk//lib/packwerk/formatters/default_offenses_formatter.rb#63
   sig { params(offenses: T::Array[T.nilable(::Packwerk::Offense)]).returns(::String) }
   def offenses_list(offenses); end
 
-  # source://packwerk//lib/packwerk/formatters/default_offenses_formatter.rb#70
+  # source://packwerk//lib/packwerk/formatters/default_offenses_formatter.rb#71
   sig { params(offenses: T::Array[T.nilable(::Packwerk::Offense)]).returns(::String) }
   def offenses_summary(offenses); end
 
@@ -786,7 +743,7 @@ class Packwerk::Formatters::ProgressFormatter
   def start_validation; end
 end
 
-# source://packwerk//lib/packwerk.rb#87
+# source://packwerk//lib/packwerk.rb#81
 module Packwerk::Generators
   extend ::ActiveSupport::Autoload
 end
@@ -916,7 +873,7 @@ end
 # source://packwerk//lib/packwerk/node_helpers.rb#9
 module Packwerk::NodeHelpers
   class << self
-    # source://packwerk//lib/packwerk/node_helpers.rb#117
+    # source://packwerk//lib/packwerk/node_helpers.rb#122
     sig { params(node: ::AST::Node).returns(T::Boolean) }
     def class?(node); end
 
@@ -924,11 +881,11 @@ module Packwerk::NodeHelpers
     sig { params(class_or_module_node: ::AST::Node).returns(::String) }
     def class_or_module_name(class_or_module_node); end
 
-    # source://packwerk//lib/packwerk/node_helpers.rb#107
+    # source://packwerk//lib/packwerk/node_helpers.rb#112
     sig { params(node: ::AST::Node).returns(T::Boolean) }
     def constant?(node); end
 
-    # source://packwerk//lib/packwerk/node_helpers.rb#112
+    # source://packwerk//lib/packwerk/node_helpers.rb#117
     sig { params(node: ::AST::Node).returns(T::Boolean) }
     def constant_assignment?(node); end
 
@@ -936,121 +893,126 @@ module Packwerk::NodeHelpers
     sig { params(constant_node: ::AST::Node).returns(::String) }
     def constant_name(constant_node); end
 
-    # source://packwerk//lib/packwerk/node_helpers.rb#63
-    sig { params(node: ::AST::Node).returns(T.untyped) }
-    def each_child(node); end
+    # source://packwerk//lib/packwerk/node_helpers.rb#68
+    sig do
+      params(
+        node: ::AST::Node,
+        block: T.nilable(T.proc.params(arg0: ::Parser::AST::Node).void)
+      ).returns(T::Enumerable[::AST::Node])
+    end
+    def each_child(node, &block); end
 
-    # source://packwerk//lib/packwerk/node_helpers.rb#74
+    # source://packwerk//lib/packwerk/node_helpers.rb#79
     sig { params(starting_node: ::AST::Node, ancestors: T::Array[::AST::Node]).returns(T::Array[::String]) }
     def enclosing_namespace_path(starting_node, ancestors:); end
 
-    # source://packwerk//lib/packwerk/node_helpers.rb#127
+    # source://packwerk//lib/packwerk/node_helpers.rb#132
     sig { params(node: ::AST::Node).returns(T::Boolean) }
     def hash?(node); end
 
-    # source://packwerk//lib/packwerk/node_helpers.rb#87
+    # source://packwerk//lib/packwerk/node_helpers.rb#92
     sig { params(string_or_symbol_node: ::AST::Node).returns(T.any(::String, ::Symbol)) }
     def literal_value(string_or_symbol_node); end
 
-    # source://packwerk//lib/packwerk/node_helpers.rb#101
+    # source://packwerk//lib/packwerk/node_helpers.rb#106
     sig { params(node: ::Parser::AST::Node).returns(::Packwerk::Node::Location) }
     def location(node); end
 
     # @raise [TypeError]
     #
-    # source://packwerk//lib/packwerk/node_helpers.rb#142
+    # source://packwerk//lib/packwerk/node_helpers.rb#147
     sig { params(method_call_node: ::AST::Node).returns(T::Array[::AST::Node]) }
     def method_arguments(method_call_node); end
 
-    # source://packwerk//lib/packwerk/node_helpers.rb#122
+    # source://packwerk//lib/packwerk/node_helpers.rb#127
     sig { params(node: ::AST::Node).returns(T::Boolean) }
     def method_call?(node); end
 
     # @raise [TypeError]
     #
-    # source://packwerk//lib/packwerk/node_helpers.rb#151
+    # source://packwerk//lib/packwerk/node_helpers.rb#156
     sig { params(method_call_node: ::AST::Node).returns(::Symbol) }
     def method_name(method_call_node); end
 
-    # source://packwerk//lib/packwerk/node_helpers.rb#160
+    # source://packwerk//lib/packwerk/node_helpers.rb#165
     sig { params(node: ::AST::Node).returns(T.nilable(::String)) }
     def module_name_from_definition(node); end
 
-    # source://packwerk//lib/packwerk/node_helpers.rb#185
-    sig { params(node: ::Parser::AST::Node).returns(T.nilable(::Packwerk::Node::Location)) }
+    # source://packwerk//lib/packwerk/node_helpers.rb#190
+    sig { params(node: ::AST::Node).returns(T.nilable(::Packwerk::Node::Location)) }
     def name_location(node); end
 
     # @raise [TypeError]
     #
-    # source://packwerk//lib/packwerk/node_helpers.rb#195
+    # source://packwerk//lib/packwerk/node_helpers.rb#200
     sig { params(class_node: ::AST::Node).returns(T.nilable(::AST::Node)) }
     def parent_class(class_node); end
 
-    # source://packwerk//lib/packwerk/node_helpers.rb#204
+    # source://packwerk//lib/packwerk/node_helpers.rb#209
     sig { params(ancestors: T::Array[::AST::Node]).returns(::String) }
     def parent_module_name(ancestors:); end
 
-    # source://packwerk//lib/packwerk/node_helpers.rb#132
+    # source://packwerk//lib/packwerk/node_helpers.rb#137
     sig { params(node: ::AST::Node).returns(T::Boolean) }
     def string?(node); end
 
-    # source://packwerk//lib/packwerk/node_helpers.rb#137
+    # source://packwerk//lib/packwerk/node_helpers.rb#142
     sig { params(node: ::AST::Node).returns(T::Boolean) }
     def symbol?(node); end
 
     # @raise [TypeError]
     #
-    # source://packwerk//lib/packwerk/node_helpers.rb#216
+    # source://packwerk//lib/packwerk/node_helpers.rb#221
     sig { params(hash_node: ::AST::Node, key: ::Symbol).returns(T.untyped) }
     def value_from_hash(hash_node, key); end
 
     private
 
-    # source://packwerk//lib/packwerk/node_helpers.rb#298
+    # source://packwerk//lib/packwerk/node_helpers.rb#303
     sig { params(node: T.nilable(::AST::Node)).returns(T::Boolean) }
     def dynamic_class_creation?(node); end
 
     # @raise [TypeError]
     #
-    # source://packwerk//lib/packwerk/node_helpers.rb#249
+    # source://packwerk//lib/packwerk/node_helpers.rb#254
     sig { params(hash_pair_node: ::AST::Node).returns(T.untyped) }
     def hash_pair_key(hash_pair_node); end
 
     # @raise [TypeError]
     #
-    # source://packwerk//lib/packwerk/node_helpers.rb#260
+    # source://packwerk//lib/packwerk/node_helpers.rb#265
     sig { params(hash_pair_node: ::AST::Node).returns(T.untyped) }
     def hash_pair_value(hash_pair_node); end
 
     # @raise [TypeError]
     #
-    # source://packwerk//lib/packwerk/node_helpers.rb#271
+    # source://packwerk//lib/packwerk/node_helpers.rb#276
     sig { params(hash_node: ::AST::Node).returns(T::Array[::AST::Node]) }
     def hash_pairs(hash_node); end
 
     # @raise [TypeError]
     #
-    # source://packwerk//lib/packwerk/node_helpers.rb#280
+    # source://packwerk//lib/packwerk/node_helpers.rb#285
     sig { params(block_node: ::AST::Node).returns(::AST::Node) }
     def method_call_node(block_node); end
 
-    # source://packwerk//lib/packwerk/node_helpers.rb#289
+    # source://packwerk//lib/packwerk/node_helpers.rb#294
     sig { params(node: ::AST::Node).returns(T::Boolean) }
     def module_creation?(node); end
 
-    # source://packwerk//lib/packwerk/node_helpers.rb#305
+    # source://packwerk//lib/packwerk/node_helpers.rb#310
     sig { params(node: ::AST::Node).returns(T.nilable(::String)) }
     def name_from_block_definition(node); end
 
-    # source://packwerk//lib/packwerk/node_helpers.rb#313
+    # source://packwerk//lib/packwerk/node_helpers.rb#318
     sig { params(node: ::AST::Node).returns(T.nilable(::String)) }
     def name_part_from_definition(node); end
 
-    # source://packwerk//lib/packwerk/node_helpers.rb#323
+    # source://packwerk//lib/packwerk/node_helpers.rb#328
     sig { params(method_call_or_block_node: ::AST::Node).returns(T.nilable(::AST::Node)) }
     def receiver(method_call_or_block_node); end
 
-    # source://packwerk//lib/packwerk/node_helpers.rb#244
+    # source://packwerk//lib/packwerk/node_helpers.rb#249
     sig { params(node: ::AST::Node).returns(::Symbol) }
     def type_of(node); end
   end
@@ -1094,7 +1056,7 @@ class Packwerk::NodeProcessorFactory < ::T::Struct
   def reference_extractor(node:); end
 
   class << self
-    # source://sorbet-runtime/0.5.10520/lib/types/struct.rb#13
+    # source://sorbet-runtime/0.5.10672/lib/types/struct.rb#13
     def inherited(s); end
   end
 end
@@ -1107,7 +1069,14 @@ class Packwerk::NodeVisitor
   sig { params(node_processor: ::Packwerk::NodeProcessor).void }
   def initialize(node_processor:); end
 
-  # source://packwerk//lib/packwerk/node_visitor.rb#14
+  # source://packwerk//lib/packwerk/node_visitor.rb#21
+  sig do
+    params(
+      node: ::Parser::AST::Node,
+      ancestors: T::Array[::Parser::AST::Node],
+      result: T::Array[::Packwerk::UnresolvedReference]
+    ).void
+  end
   def visit(node, ancestors:, result:); end
 end
 
@@ -1207,19 +1176,19 @@ module Packwerk::OffensesFormatter
 
   # @abstract
   #
-  # source://packwerk//lib/packwerk/offenses_formatter.rb#69
+  # source://packwerk//lib/packwerk/offenses_formatter.rb#78
   sig { abstract.returns(::String) }
   def identifier; end
 
   # @abstract
   #
-  # source://packwerk//lib/packwerk/offenses_formatter.rb#61
+  # source://packwerk//lib/packwerk/offenses_formatter.rb#70
   sig { abstract.params(offenses: T::Array[T.nilable(::Packwerk::Offense)]).returns(::String) }
   def show_offenses(offenses); end
 
   # @abstract
   #
-  # source://packwerk//lib/packwerk/offenses_formatter.rb#65
+  # source://packwerk//lib/packwerk/offenses_formatter.rb#74
   sig do
     abstract
       .params(
@@ -1231,16 +1200,16 @@ module Packwerk::OffensesFormatter
 
   # @abstract
   #
-  # source://packwerk//lib/packwerk/offenses_formatter.rb#73
+  # source://packwerk//lib/packwerk/offenses_formatter.rb#82
   sig { abstract.params(strict_mode_violations: T::Array[::Packwerk::ReferenceOffense]).returns(::String) }
   def show_strict_mode_violations(strict_mode_violations); end
 
   class << self
-    # source://packwerk//lib/packwerk/offenses_formatter.rb#31
+    # source://packwerk//lib/packwerk/offenses_formatter.rb#29
     sig { returns(T::Array[::Packwerk::OffensesFormatter]) }
     def all; end
 
-    # source://packwerk//lib/packwerk/offenses_formatter.rb#36
+    # source://packwerk//lib/packwerk/offenses_formatter.rb#35
     sig { params(identifier: ::String).returns(::Packwerk::OffensesFormatter) }
     def find(identifier); end
 
@@ -1250,9 +1219,17 @@ module Packwerk::OffensesFormatter
 
     private
 
-    # source://packwerk//lib/packwerk/offenses_formatter.rb#43
+    # source://packwerk//lib/packwerk/offenses_formatter.rb#52
     sig { params(name: ::String).returns(::Packwerk::OffensesFormatter) }
     def formatter_by_identifier(name); end
+
+    # source://packwerk//lib/packwerk/offenses_formatter.rb#42
+    sig { void }
+    def load_defaults; end
+
+    # source://packwerk//lib/packwerk/offenses_formatter.rb#47
+    sig { returns(T::Array[::Class]) }
+    def offenses_formatters; end
   end
 end
 
@@ -1288,7 +1265,7 @@ module Packwerk::OutputStyle
   def reset; end
 end
 
-# source://packwerk//lib/packwerk.rb#40
+# source://packwerk//lib/packwerk.rb#35
 module Packwerk::OutputStyles
   extend ::ActiveSupport::Autoload
 end
@@ -1338,8 +1315,8 @@ class Packwerk::Package
   include ::Comparable
 
   # source://packwerk//lib/packwerk/package.rb#24
-  sig { params(name: ::String, config: T.nilable(T.any(::FalseClass, T::Hash[T.untyped, T.untyped]))).void }
-  def initialize(name:, config:); end
+  sig { params(name: ::String, config: T.nilable(T::Hash[::String, T.untyped])).void }
+  def initialize(name:, config: T.unsafe(nil)); end
 
   # source://packwerk//lib/packwerk/package.rb#49
   sig { params(other: T.untyped).returns(T.nilable(::Integer)) }
@@ -1455,47 +1432,85 @@ Packwerk::PackageSet::PACKAGE_CONFIG_FILENAME = T.let(T.unsafe(nil), String)
 
 # source://packwerk//lib/packwerk/package_todo.rb#7
 class Packwerk::PackageTodo
-  # source://packwerk//lib/packwerk/package_todo.rb#15
-  sig { params(package: ::Packwerk::Package, filepath: ::String).void }
-  def initialize(package, filepath); end
+  # source://packwerk//lib/packwerk/package_todo.rb#19
+  sig { params(package: ::Packwerk::Package, path: ::String).void }
+  def initialize(package, path); end
 
-  # source://packwerk//lib/packwerk/package_todo.rb#39
+  # source://packwerk//lib/packwerk/package_todo.rb#43
   sig { params(reference: ::Packwerk::Reference, violation_type: ::String).returns(T::Boolean) }
   def add_entries(reference, violation_type); end
 
-  # source://packwerk//lib/packwerk/package_todo.rb#114
+  # source://packwerk//lib/packwerk/package_todo.rb#97
   sig { void }
   def delete_if_exists; end
 
-  # source://packwerk//lib/packwerk/package_todo.rb#93
+  # source://packwerk//lib/packwerk/package_todo.rb#75
   sig { void }
   def dump; end
 
-  # source://packwerk//lib/packwerk/package_todo.rb#26
+  # source://packwerk//lib/packwerk/package_todo.rb#30
   sig { params(reference: ::Packwerk::Reference, violation_type: ::String).returns(T::Boolean) }
   def listed?(reference, violation_type:); end
 
-  # source://packwerk//lib/packwerk/package_todo.rb#54
+  # source://packwerk//lib/packwerk/package_todo.rb#58
   sig { params(for_files: T::Set[::String]).returns(T::Boolean) }
   def stale_violations?(for_files); end
 
   private
 
-  # source://packwerk//lib/packwerk/package_todo.rb#143
-  sig { params(filepath: ::String).returns(T::Hash[::String, T.untyped]) }
-  def load_yaml(filepath); end
+  # source://packwerk//lib/packwerk/package_todo.rb#107
+  sig { params(package: ::String).returns(T::Array[::String]) }
+  def deleted_files_for(package); end
 
-  # source://packwerk//lib/packwerk/package_todo.rb#121
-  sig { returns(T::Hash[::String, T.untyped]) }
+  # source://packwerk//lib/packwerk/package_todo.rb#171
+  sig { params(path: ::String).returns(T::Hash[::String, T::Hash[::String, T::Hash[::String, T::Array[::String]]]]) }
+  def load_yaml_file(path); end
+
+  # source://packwerk//lib/packwerk/package_todo.rb#104
+  sig { returns(T::Hash[::String, T::Hash[::String, T::Hash[::String, T::Array[::String]]]]) }
+  def new_entries; end
+
+  # source://packwerk//lib/packwerk/package_todo.rb#166
+  sig { returns(T::Hash[::String, T::Hash[::String, T::Hash[::String, T::Array[::String]]]]) }
+  def old_entries; end
+
+  # source://packwerk//lib/packwerk/package_todo.rb#136
+  sig do
+    params(
+      package_violations: T::Hash[::String, T::Hash[::String, T::Array[::String]]],
+      files: T::Set[::String]
+    ).returns(T::Hash[::String, T::Hash[::String, T::Array[::String]]])
+  end
+  def package_violations_for(package_violations, files:); end
+
+  # source://packwerk//lib/packwerk/package_todo.rb#153
+  sig { returns(T::Hash[::String, T::Hash[::String, T::Hash[::String, T::Array[::String]]]]) }
   def prepare_entries_for_dump; end
 
-  # source://packwerk//lib/packwerk/package_todo.rb#134
-  sig { returns(T::Hash[::String, T.untyped]) }
-  def todo_list; end
+  # source://packwerk//lib/packwerk/package_todo.rb#114
+  sig do
+    params(
+      package: ::String,
+      violations: T::Hash[::String, T::Hash[::String, T::Array[::String]]]
+    ).returns(T::Boolean)
+  end
+  def stale_violation_for_package?(package, violations:); end
 end
 
+# source://packwerk//lib/packwerk/package_todo.rb#11
+Packwerk::PackageTodo::ConstantName = T.type_alias { ::String }
+
+# source://packwerk//lib/packwerk/package_todo.rb#14
+Packwerk::PackageTodo::Entries = T.type_alias { T::Hash[::String, T::Hash[::String, T::Hash[::String, T::Array[::String]]]] }
+
+# source://packwerk//lib/packwerk/package_todo.rb#13
+Packwerk::PackageTodo::Entry = T.type_alias { T::Hash[::String, T::Hash[::String, T::Array[::String]]] }
+
+# source://packwerk//lib/packwerk/package_todo.rb#12
+Packwerk::PackageTodo::FilePath = T.type_alias { ::String }
+
 # source://packwerk//lib/packwerk/package_todo.rb#10
-Packwerk::PackageTodo::EntriesType = T.type_alias { T::Hash[::String, T.untyped] }
+Packwerk::PackageTodo::PackageName = T.type_alias { ::String }
 
 # source://packwerk//lib/packwerk/parse_run.rb#7
 class Packwerk::ParseRun
@@ -1545,28 +1560,41 @@ Packwerk::ParseRun::ProcessFileProc = T.type_alias { T.proc.params(path: ::Strin
 #
 # source://packwerk//lib/packwerk/parsed_constant_definitions.rb#8
 class Packwerk::ParsedConstantDefinitions
-  # @return [ParsedConstantDefinitions] a new instance of ParsedConstantDefinitions
-  #
-  # source://packwerk//lib/packwerk/parsed_constant_definitions.rb#24
+  # source://packwerk//lib/packwerk/parsed_constant_definitions.rb#30
+  sig { params(root_node: T.nilable(::AST::Node)).void }
   def initialize(root_node:); end
 
-  # @return [Boolean]
-  #
-  # source://packwerk//lib/packwerk/parsed_constant_definitions.rb#30
+  # source://packwerk//lib/packwerk/parsed_constant_definitions.rb#43
+  sig do
+    params(
+      constant_name: ::String,
+      location: T.nilable(::Packwerk::Node::Location),
+      namespace_path: T::Array[::String]
+    ).returns(T::Boolean)
+  end
   def local_reference?(constant_name, location: T.unsafe(nil), namespace_path: T.unsafe(nil)); end
 
   private
 
-  # source://packwerk//lib/packwerk/parsed_constant_definitions.rb#58
+  # source://packwerk//lib/packwerk/parsed_constant_definitions.rb#79
+  sig do
+    params(
+      constant_name: ::String,
+      current_namespace_path: T::Array[T.nilable(::String)],
+      location: T.nilable(::Packwerk::Node::Location)
+    ).void
+  end
   def add_definition(constant_name, current_namespace_path, location); end
 
-  # source://packwerk//lib/packwerk/parsed_constant_definitions.rb#41
+  # source://packwerk//lib/packwerk/parsed_constant_definitions.rb#55
+  sig { params(node: ::AST::Node, current_namespace_path: T::Array[T.nilable(::String)]).void }
   def collect_local_definitions_from_root(node, current_namespace_path = T.unsafe(nil)); end
 
   class << self
     # What fully qualified constants can this constant refer to in this context?
     #
-    # source://packwerk//lib/packwerk/parsed_constant_definitions.rb#11
+    # source://packwerk//lib/packwerk/parsed_constant_definitions.rb#16
+    sig { params(constant_name: ::String, namespace_path: T::Array[T.nilable(::String)]).returns(T::Array[::String]) }
     def reference_qualifications(constant_name, namespace_path:); end
   end
 end
@@ -1638,14 +1666,12 @@ Packwerk::Parsers::Factory::RUBY_REGEX = T.let(T.unsafe(nil), Regexp)
 
 # source://packwerk//lib/packwerk/parsers.rb#13
 class Packwerk::Parsers::ParseError < ::StandardError
-  # @return [ParseError] a new instance of ParseError
-  #
-  # source://packwerk//lib/packwerk/parsers.rb#16
+  # source://packwerk//lib/packwerk/parsers.rb#20
+  sig { params(result: ::Packwerk::Parsers::ParseResult).void }
   def initialize(result); end
 
-  # Returns the value of attribute result.
-  #
-  # source://packwerk//lib/packwerk/parsers.rb#14
+  # source://packwerk//lib/packwerk/parsers.rb#17
+  sig { returns(::Packwerk::Parsers::ParseResult) }
   def result; end
 end
 
@@ -1696,6 +1722,50 @@ end
 
 # source://packwerk//lib/packwerk/package_set.rb#8
 Packwerk::PathSpec = T.type_alias { T.any(::String, T::Array[::String]) }
+
+# Extracts the load paths from the analyzed application so that we can map constant names to paths.
+#
+# source://packwerk//lib/packwerk/rails_load_paths.rb#10
+module Packwerk::RailsLoadPaths
+  class << self
+    # source://packwerk//lib/packwerk/rails_load_paths.rb#15
+    sig { params(root: ::String, environment: ::String).returns(T::Hash[::String, ::Module]) }
+    def for(root, environment:); end
+
+    private
+
+    # source://packwerk//lib/packwerk/rails_load_paths.rb#65
+    sig { params(paths: T::Hash[T.untyped, ::Module]).void }
+    def assert_load_paths_present(paths); end
+
+    # source://packwerk//lib/packwerk/rails_load_paths.rb#26
+    sig { returns(T::Hash[::String, ::Module]) }
+    def extract_application_autoload_paths; end
+
+    # source://packwerk//lib/packwerk/rails_load_paths.rb#36
+    sig do
+      params(
+        all_paths: T::Hash[::String, ::Module],
+        bundle_path: ::Pathname,
+        rails_root: ::Pathname
+      ).returns(T::Hash[::Pathname, ::Module])
+    end
+    def filter_relevant_paths(all_paths, bundle_path: T.unsafe(nil), rails_root: T.unsafe(nil)); end
+
+    # source://packwerk//lib/packwerk/rails_load_paths.rb#47
+    sig do
+      params(
+        load_paths: T::Hash[::Pathname, ::Module],
+        rails_root: ::Pathname
+      ).returns(T::Hash[::String, ::Module])
+    end
+    def relative_path_strings(load_paths, rails_root: T.unsafe(nil)); end
+
+    # source://packwerk//lib/packwerk/rails_load_paths.rb#52
+    sig { params(root: ::String, environment: ::String).void }
+    def require_application(root, environment); end
+  end
+end
 
 # A reference from a file in one package to a constant that may be defined in a different package.
 #
@@ -1761,12 +1831,12 @@ class Packwerk::Reference < ::Struct
   end
 end
 
-# source://packwerk//lib/packwerk.rb#96
+# source://packwerk//lib/packwerk.rb#90
 module Packwerk::ReferenceChecking
   extend ::ActiveSupport::Autoload
 end
 
-# source://packwerk//lib/packwerk.rb#101
+# source://packwerk//lib/packwerk.rb#95
 module Packwerk::ReferenceChecking::Checkers
   extend ::ActiveSupport::Autoload
 end
@@ -2034,7 +2104,7 @@ module Packwerk::Validator
 
   # @abstract
   #
-  # source://packwerk//lib/packwerk/validator.rb#36
+  # source://packwerk//lib/packwerk/validator.rb#50
   sig do
     abstract
       .params(
@@ -2044,7 +2114,7 @@ module Packwerk::Validator
   end
   def call(package_set, configuration); end
 
-  # source://packwerk//lib/packwerk/validator.rb#67
+  # source://packwerk//lib/packwerk/validator.rb#81
   sig do
     params(
       results: T::Array[::Packwerk::Validator::Result],
@@ -2055,11 +2125,11 @@ module Packwerk::Validator
   end
   def merge_results(results, separator: T.unsafe(nil), before_errors: T.unsafe(nil), after_errors: T.unsafe(nil)); end
 
-  # source://packwerk//lib/packwerk/validator.rb#55
+  # source://packwerk//lib/packwerk/validator.rb#69
   sig { params(configuration: ::Packwerk::Configuration).returns(T.any(::String, T::Array[::String])) }
   def package_glob(configuration); end
 
-  # source://packwerk//lib/packwerk/validator.rb#48
+  # source://packwerk//lib/packwerk/validator.rb#62
   sig do
     params(
       configuration: ::Packwerk::Configuration,
@@ -2068,28 +2138,38 @@ module Packwerk::Validator
   end
   def package_manifests(configuration, glob_pattern = T.unsafe(nil)); end
 
-  # source://packwerk//lib/packwerk/validator.rb#40
+  # source://packwerk//lib/packwerk/validator.rb#54
   sig { params(configuration: ::Packwerk::Configuration, setting: T.untyped).returns(T.untyped) }
   def package_manifests_settings_for(configuration, setting); end
 
   # @abstract
   #
-  # source://packwerk//lib/packwerk/validator.rb#32
+  # source://packwerk//lib/packwerk/validator.rb#46
   sig { abstract.returns(T::Array[::String]) }
   def permitted_keys; end
 
-  # source://packwerk//lib/packwerk/validator.rb#86
+  # source://packwerk//lib/packwerk/validator.rb#100
   sig { params(configuration: ::Packwerk::Configuration, path: ::String).returns(::Pathname) }
   def relative_path(configuration, path); end
 
   class << self
-    # source://packwerk//lib/packwerk/validator.rb#26
+    # source://packwerk//lib/packwerk/validator.rb#27
     sig { returns(T::Array[::Packwerk::Validator]) }
     def all; end
 
-    # source://packwerk//lib/packwerk/validator.rb#19
+    # source://packwerk//lib/packwerk/validator.rb#22
     sig { params(base: ::Class).void }
     def included(base); end
+
+    private
+
+    # source://packwerk//lib/packwerk/validator.rb#35
+    sig { void }
+    def load_defaults; end
+
+    # source://packwerk//lib/packwerk/validator.rb#40
+    sig { returns(T::Array[::Class]) }
+    def validators; end
   end
 end
 
@@ -2103,13 +2183,15 @@ class Packwerk::Validator::Result < ::T::Struct
   def ok?; end
 
   class << self
-    # source://sorbet-runtime/0.5.10520/lib/types/struct.rb#13
+    # source://sorbet-runtime/0.5.10672/lib/types/struct.rb#13
     def inherited(s); end
   end
 end
 
-# source://packwerk//lib/packwerk/validators/dependency_validator.rb#5
-module Packwerk::Validators; end
+# source://packwerk//lib/packwerk.rb#53
+module Packwerk::Validators
+  extend ::ActiveSupport::Autoload
+end
 
 # source://packwerk//lib/packwerk/validators/dependency_validator.rb#6
 class Packwerk::Validators::DependencyValidator
@@ -2139,11 +2221,11 @@ class Packwerk::Validators::DependencyValidator
   #
   #   ["a -> b -> c -> a", "b -> c -> b"]
   #
-  # source://packwerk//lib/packwerk/validators/dependency_validator.rb#144
+  # source://packwerk//lib/packwerk/validators/dependency_validator.rb#145
   sig { params(cycles: T.untyped).returns(T::Array[::String]) }
   def build_cycle_strings(cycles); end
 
-  # source://packwerk//lib/packwerk/validators/dependency_validator.rb#66
+  # source://packwerk//lib/packwerk/validators/dependency_validator.rb#67
   sig { params(package_set: Packwerk::PackageSet).returns(::Packwerk::Validator::Result) }
   def check_acyclic_graph(package_set); end
 
@@ -2151,11 +2233,11 @@ class Packwerk::Validators::DependencyValidator
   sig { params(configuration: ::Packwerk::Configuration).returns(::Packwerk::Validator::Result) }
   def check_package_manifest_syntax(configuration); end
 
-  # source://packwerk//lib/packwerk/validators/dependency_validator.rb#92
+  # source://packwerk//lib/packwerk/validators/dependency_validator.rb#93
   sig { params(configuration: ::Packwerk::Configuration).returns(::Packwerk::Validator::Result) }
   def check_valid_package_dependencies(configuration); end
 
-  # source://packwerk//lib/packwerk/validators/dependency_validator.rb#128
+  # source://packwerk//lib/packwerk/validators/dependency_validator.rb#129
   sig { params(configuration: ::Packwerk::Configuration, path: T.untyped).returns(T::Boolean) }
   def invalid_package_path?(configuration, path); end
 end

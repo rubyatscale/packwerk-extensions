@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/Shopify/packwerk
-  revision: 6e57928e1508afd0f651ab68682c06b3a361d399
+  revision: 816c080d296e068bb41d57e0740c54baee00e240
   branch: main
   specs:
-    packwerk (2.2.1)
+    packwerk (3.0.1)
       activesupport (>= 6.0)
       ast
       better_html
