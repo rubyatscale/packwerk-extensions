@@ -7,6 +7,7 @@ require 'packwerk'
 require 'packwerk/privacy/checker'
 require 'packwerk/visibility/checker'
 require 'packwerk/architecture/checker'
+require 'packwerk/unnecessary_dependency/checker'
 
 module Packwerk
   module Extensions
