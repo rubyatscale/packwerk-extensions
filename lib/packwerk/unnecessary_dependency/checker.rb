@@ -15,6 +15,7 @@ module Packwerk
 
       VIOLATION_TYPE = T.let('unnecessary_dependency', String)
       DEPENDENCIES_YML = Pathname.new('tmp/packwerk/dependencies.yml')
+      DEPENDENCIES_YML_MUTEX = Mutex.new
 
       sig { override.returns(String) }
       def violation_type
@@ -27,16 +28,22 @@ module Packwerk
           .returns(T::Boolean)
       end
       def invalid_reference?(reference)
-        existing_references = if DEPENDENCIES_YML.exist?
-                                YAML.load_file(DEPENDENCIES_YML)
-                              else
-                                FileUtils.mkdir_p(DEPENDENCIES_YML.dirname)
-                                {}
-                              end
+        # We need a mutex so only one file can read/write to the DEPENDENCIES_YML at one time
+        DEPENDENCIES_YML_MUTEX.synchronize do
+          existing_references = if DEPENDENCIES_YML.exist?
+                                  YAML.load_file(DEPENDENCIES_YML)
+                                else
+                                  FileUtils.mkdir_p(DEPENDENCIES_YML.dirname)
+                                  {}
+                                end
 
-        existing_references[reference.package.name] ||= []
-        existing_references[reference.package.name] << reference.constant.package.name
-        DEPENDENCIES_YML.write(existing_references.to_yaml)
+          if existing_references == false
+            
+          end
+          existing_references[reference.package.name] ||= []
+          existing_references[reference.package.name] << reference.constant.package.name
+          DEPENDENCIES_YML.write(existing_references.to_yaml)
+        end
 
         false
       end

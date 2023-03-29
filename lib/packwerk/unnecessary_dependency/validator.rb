@@ -32,6 +32,9 @@ module Packwerk
           )
         end
 
+        # Delete this, since it will need to be regenerated to validate again
+        Checker::DEPENDENCIES_YML.delete
+
         merge_results(results, separator: "\n---\n")
       end
 
