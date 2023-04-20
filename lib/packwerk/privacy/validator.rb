@@ -42,7 +42,8 @@ module Packwerk
         results = T.let([], T::Array[Result])
         resolver = ConstantResolver.new(
           root_path: configuration.root_path,
-          load_paths: configuration.load_paths
+          load_paths: configuration.load_paths,
+          inflector: ActiveSupport::Inflector
         )
 
         private_constants_setting.each do |config_file_path, setting|

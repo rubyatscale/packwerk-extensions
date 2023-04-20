@@ -3,6 +3,10 @@
 
 require 'rails'
 
+ActiveSupport::Inflector.inflections(:en) do |inflect|
+  inflect.acronym 'GraphQL'
+end
+
 class Dummy < Rails::Application
   class << self
     def skeleton(*path)

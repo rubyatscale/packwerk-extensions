@@ -39,6 +39,15 @@ module Packwerk
       assert result.ok?
     end
 
+    test 'check_all returns success when inflector defines acronym' do
+      use_template(:skeleton)
+
+      result = Packwerk::Privacy::Validator.new.call(package_set, config)
+
+      assert result.ok?
+      assert_nil result.error_value
+    end
+
     test 'check_all returns an error for invalid public_path value' do
       use_template(:minimal)
       merge_into_app_yaml_file('package.yml', { 'public_path' => [] })
