@@ -17,7 +17,7 @@ GIT
 PATH
   remote: .
   specs:
-    packwerk-extensions (0.1.4)
+    packwerk-extensions (0.1.5)
       packwerk (>= 2.2.1)
       railties (>= 6.0.0)
       sorbet-runtime
@@ -124,6 +124,7 @@ GEM
       sorbet-static (= 0.5.10672)
     sorbet-runtime (0.5.10672)
     sorbet-static (0.5.10672-universal-darwin-20)
+    sorbet-static (0.5.10672-universal-darwin-22)
     sorbet-static (0.5.10672-x86_64-linux)
     sorbet-static-and-runtime (0.5.10672)
       sorbet (= 0.5.10672)
@@ -158,6 +159,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-20
+  arm64-darwin-22
   x86_64-linux
 
 DEPENDENCIES

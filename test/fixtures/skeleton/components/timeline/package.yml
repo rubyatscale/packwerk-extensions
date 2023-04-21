@@ -1,3 +1,4 @@
 enforce_privacy: true
 private_constants:
   - "::PrivateThing"
+  - "::GraphQL::PrivateThing"
