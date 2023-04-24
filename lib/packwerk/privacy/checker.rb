@@ -32,6 +32,8 @@ module Packwerk
         privacy_option = privacy_package.enforce_privacy
         return false if enforcement_disabled?(privacy_option)
 
+        return false if privacy_package.ignored_private_constants.include?(reference.constant.name)
+
         explicitly_private_constant?(reference.constant, explicitly_private_constants: privacy_package.private_constants)
       end
 
