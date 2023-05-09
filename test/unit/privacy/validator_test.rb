@@ -110,11 +110,18 @@ module Packwerk
       )
     end
 
+    test 'does not create a validation error when using ignored_dependencies' do
+      use_template(:minimal)
+      merge_into_app_yaml_file('package.yml', { 'ignored_dependencies' => ['packs/my_other_pack'] })
+      result = validator.call(package_set, config)
+      assert result.ok?
+    end
+
     private
 
-    sig { returns(Packwerk::ApplicationValidator) }
+    sig { returns(ApplicationValidator) }
     def validator
-      @validator ||= Packwerk::ApplicationValidator.new
+      @validator ||= ApplicationValidator.new
     end
   end
 end
