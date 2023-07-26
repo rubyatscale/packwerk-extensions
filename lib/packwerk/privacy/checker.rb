@@ -44,6 +44,9 @@ module Packwerk
       end
       def strict_mode_violation?(listed_offense)
         publishing_package = listed_offense.reference.constant.package
+
+        return false if exclude_from_strict?(publishing_package.config['ignored_strict_privacy_for_paths'] || [], Pathname.new(listed_offense.reference.relative_path).cleanpath)
+
         publishing_package.config['enforce_privacy'] == 'strict'
       end
 
@@ -97,6 +100,13 @@ module Packwerk
         MESSAGE
 
         standard_message.chomp
+      end
+
+      sig { params(globs: T::Array[String], path: Pathname).returns(T::Boolean) }
+      def exclude_from_strict?(globs, path)
+        globs.any? do |glob|
+          path.fnmatch(glob, File::FNM_EXTGLOB)
+        end
       end
     end
   end

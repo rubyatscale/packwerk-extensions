@@ -31,7 +31,7 @@ module Packwerk
 
       sig { override.returns(T::Array[String]) }
       def permitted_keys
-        %w[public_path enforce_privacy private_constants ignored_private_constants]
+        %w[public_path enforce_privacy private_constants ignored_private_constants ignored_strict_privacy_for_paths]
       end
 
       private
