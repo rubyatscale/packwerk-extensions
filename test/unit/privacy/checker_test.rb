@@ -107,7 +107,7 @@ module Packwerk
       end
 
       test 'ignores strict mode if excluded path' do
-        destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => 'strict', 'ignored_strict_privacy_for_paths' => ['some/**'] })
+        destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => 'strict', 'strict_privacy_ignored_patterns' => ['some/**'] })
         checker = privacy_checker
         reference = build_reference(destination_package: destination_package, constant_location: 'destination_package/app/public/')
         offense = Packwerk::ReferenceOffense.new(reference: reference, violation_type: 'privacy', message: '')
@@ -116,7 +116,7 @@ module Packwerk
       end
 
       test 'detects strict mode if not excluded path' do
-        destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => 'strict', 'ignored_strict_privacy_for_paths' => ['test/**'] })
+        destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => 'strict', 'strict_privacy_ignored_patterns' => ['test/**'] })
         checker = privacy_checker
         reference = build_reference(destination_package: destination_package, constant_location: 'destination_package/app/public/')
         offense = Packwerk::ReferenceOffense.new(reference: reference, violation_type: 'privacy', message: '')

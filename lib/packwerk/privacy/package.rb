@@ -11,7 +11,7 @@ module Packwerk
       const :enforce_privacy, T.nilable(T.any(T::Boolean, String))
       const :private_constants, T::Array[String]
       const :ignored_private_constants, T::Array[String]
-      const :ignored_strict_privacy_for_paths, T::Array[String]
+      const :strict_privacy_ignored_patterns, T::Array[String]
 
       sig { params(path: String).returns(T::Boolean) }
       def public_path?(path)
@@ -29,7 +29,7 @@ module Packwerk
             enforce_privacy: package.config['enforce_privacy'],
             private_constants: package.config['private_constants'] || [],
             ignored_private_constants: package.config['ignored_private_constants'] || [],
-            ignored_strict_privacy_for_paths: package.config['ignored_strict_privacy_for_paths'] || []
+            strict_privacy_ignored_patterns: package.config['strict_privacy_ignored_patterns'] || []
           )
         end
 

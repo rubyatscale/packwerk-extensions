@@ -45,9 +45,13 @@ module Packwerk
       def strict_mode_violation?(listed_offense)
         publishing_package = listed_offense.reference.constant.package
 
-        return false if exclude_from_strict?(publishing_package.config['ignored_strict_privacy_for_paths'] || [], Pathname.new(listed_offense.reference.relative_path).cleanpath)
+        return false unless publishing_package.config['enforce_privacy'] == 'strict'
+        return false if exclude_from_strict?(
+          publishing_package.config['strict_privacy_ignored_patterns'] || [],
+          Pathname.new(listed_offense.reference.relative_path).cleanpath
+        )
 
-        publishing_package.config['enforce_privacy'] == 'strict'
+        true
       end
 
       sig do
