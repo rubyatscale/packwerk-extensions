@@ -57,6 +57,18 @@ public_path: my/custom/path/
 ### Using specific private constants
 Sometimes it is desirable to only enforce privacy on a subset of constants in a package. You can do so by defining a `private_constants` list in your package.yml. Note that `enforce_privacy` must be set to `true` or `'strict'` for this to work.
 
+### Ignore strict mode for violation coming from specific path patterns
+If you want to activate `'strict'` mode on you package but have a few privacy violations you know you will deal with later,
+you can set a list of patterns to exclude.
+
+```yaml
+enforce_privacy: strict
+strict_privacy_ignored_patterns:
+- engines/another_engine/test/**/*
+```
+
+In this example, violations on constants of your engine referenced in those files `engines/another_engine/test/**/*` will not fail Packwerk checks.
+
 ### Package Privacy violation
 Packwerk thinks something is a privacy violation if you're referencing a constant, class, or module defined in the private implementation (i.e. not the public folder) of another package. We care about these because we want to make sure we only use parts of a package that have been exposed as public API.
 
