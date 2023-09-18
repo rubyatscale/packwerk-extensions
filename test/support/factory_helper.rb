@@ -16,6 +16,8 @@ module FactoryHelper
       destination_package
     )
 
+    Packwerk::Privacy::Checker.publicized_locations['some/location.rb'] = false
+
     Packwerk::Reference.new(
       package: source_package,
       relative_path: path,

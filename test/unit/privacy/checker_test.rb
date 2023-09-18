@@ -48,6 +48,14 @@ module Packwerk
         assert checker.invalid_reference?(reference)
       end
 
+      test 'does not complain about private constant if enforcing privacy for everything and the destination is publicizing the file' do
+        destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => true })
+        checker = privacy_checker
+        reference = build_reference(destination_package: destination_package)
+        Packwerk::Privacy::Checker.publicized_locations['some/location.rb'] = true
+        refute checker.invalid_reference?(reference)
+      end
+
       test 'does not complain about private constant if it is an ignored_private_constant when using enforce_privacy' do
         destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'ignored_private_constants' => ['::SomeName'], 'enforce_privacy' => true })
         checker = privacy_checker

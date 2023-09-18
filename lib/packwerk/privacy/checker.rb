@@ -12,6 +12,37 @@ module Packwerk
       include Packwerk::Checker
 
       VIOLATION_TYPE = T.let('privacy', String)
+      PUBLICIZED_SIGIL = T.let('packwerk#publicize!', String)
+      PUBLICIZED_SIGIL_REGEX = T.let(/#.*#{PUBLICIZED_SIGIL}/, Regexp)
+      @@publicized_locations = T.let({}, T::Hash[String, T::Boolean])
+
+      class << self
+        extend T::Sig
+
+        sig { returns(T::Hash[String, T::Boolean]) }
+        def publicized_locations
+          @@publicized_locations
+        end
+
+        sig { params(location: String).returns(T::Boolean) }
+        def publicized_location?(location)
+          unless publicized_locations.key?(location)
+            publicized_locations[location] = check_for_publicized_sigil(location)
+          end
+
+          T.must(publicized_locations[location])
+        end
+
+        sig { params(location: String).returns(T::Boolean) }
+        def check_for_publicized_sigil(location)
+          content_contains_sigil?(File.readlines(location))
+        end
+
+        sig { params(lines: T::Array[String]).returns(T::Boolean) }
+        def content_contains_sigil?(lines)
+          lines.any? { |l| l =~ PUBLICIZED_SIGIL_REGEX }
+        end
+      end
 
       sig { override.returns(String) }
       def violation_type
@@ -28,6 +59,7 @@ module Packwerk
         privacy_package = Package.from(constant_package)
 
         return false if privacy_package.public_path?(reference.constant.location)
+        return false if self.class.publicized_location?(reference.constant.location)
 
         privacy_option = privacy_package.enforce_privacy
         return false if enforcement_disabled?(privacy_option)
