@@ -114,6 +114,23 @@ module Packwerk
         MSG
       end
 
+      test 'content_contains_sigil?' do
+        content_with_valid_sigils = [
+          ['line 1', 'line 2', 'line 3', 'line 4', '# public_api: true'],
+          ['#public_api:true', 'line 2', 'line 3'],
+          ['line 1', '#       public_api:         true']
+        ]
+        content_with_invalid_or_missing_sigils = [
+          ['line 1', 'line 2', 'line 3', 'line 4', 'line 5', '# public_api: true'],
+          ['#pulic_api:', 'line 2', 'line 3'],
+          ['line 1', '#       public_api:         false'],
+          ['# public_api: false', 'line 2', 'line 3'],
+          ['line 1', 'EOF']
+        ]
+        assert content_with_valid_sigils.all? { |content|  Privacy::Checker.content_contains_sigil?(content) }
+        assert content_with_invalid_or_missing_sigils.none? { |content|  Privacy::Checker.content_contains_sigil?(content) }
+      end
+
       private
 
       sig { returns(Checker) }

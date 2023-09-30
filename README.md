@@ -55,20 +55,20 @@ public_path: my/custom/path/
 ```
 
 ### Defining public constants through sigil
-You may make individual files public withhin a private package by usage of a comment within the `.rb` file containing `packwerk#publicize!`.
+You may make individual files public withhin a private package by usage of a comment within the first 5 lines of the `.rb` file containing `public_api: true`.
 
 Example:
 
 ```ruby
+# public_api: true
 module Foo
   class Update
-    # packwerk#publicize!
   end
 end
 ```
 Now `Foo::Update` is considered public even though the `foo` package might be set to `enforce_private: (true || :strict)`.
 
-It's important to note that when combining `packwerk#publicize!` with the declaration of `private_constants`,
+It's important to note that when combining `puclic_api: true` with the declaration of `private_constants`,
 `packwerk validate` will raise an exception if both are used for the same constant. This must be resolved by removing
 the sigil from the `.rb` file or removing the constant from the list of `private_constants`.
 

@@ -1,6 +1,6 @@
 # typed: ignore
 # frozen_string_literal: true
-# packwerk#publicize!
+# public_api: true
 
 class Order
   class Foo

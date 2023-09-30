@@ -12,8 +12,8 @@ module Packwerk
       include Packwerk::Checker
 
       VIOLATION_TYPE = T.let('privacy', String)
-      PUBLICIZED_SIGIL = T.let('packwerk#publicize!', String)
-      PUBLICIZED_SIGIL_REGEX = T.let(/#.*#{PUBLICIZED_SIGIL}/, Regexp)
+      PUBLICIZED_SIGIL = T.let('public_api: true', String)
+      PUBLICIZED_SIGIL_REGEX = T.let(/#.*public_api:[ ]*true/, Regexp)
       @@publicized_locations = T.let({}, T::Hash[String, T::Boolean])
 
       class << self
@@ -40,7 +40,7 @@ module Packwerk
 
         sig { params(lines: T::Array[String]).returns(T::Boolean) }
         def content_contains_sigil?(lines)
-          lines.any? { |l| l =~ PUBLICIZED_SIGIL_REGEX }
+          lines[0..4].any? { |l| l =~ PUBLICIZED_SIGIL_REGEX }
         end
       end
 
