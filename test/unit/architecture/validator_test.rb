@@ -90,7 +90,7 @@ module Packwerk
 
         refute result.ok?
 
-        assert_match(/Cannot set 'enforce_architecture' option in.*?package.yml" until `architectural_layers` have been specified in `packwerk.yml`/, result.error_value)
+        assert_match(/Cannot set 'enforce_architecture' option in.*?package.yml" until `architecture_layers` have been specified in `packwerk.yml`/, result.error_value)
       end
 
       test 'call returns no error for valid layer value' do

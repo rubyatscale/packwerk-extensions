@@ -102,7 +102,7 @@ module Packwerk
         elsif activated_value && !layers_set
           Result.new(
             ok: false,
-            error_value: "Cannot set 'enforce_architecture' option in #{config_file_path.inspect} until `architectural_layers` have been specified in `packwerk.yml`"
+            error_value: "Cannot set 'enforce_architecture' option in #{config_file_path.inspect} until `architecture_layers` have been specified in `packwerk.yml`"
           )
         else
           Result.new(ok: true)
