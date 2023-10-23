@@ -5,7 +5,8 @@
 Currently, it ships the following checkers to help improve the boundaries between packages. These checkers are:
 - A `privacy` checker that ensures other packages are using your package's public API
 - A `visibility` checker that allows packages to be private except to an explicit group of other packages.
-- An experimental `architecture` checker that allows packages to specify their "layer" and requires that each layer only communicate with layers below it.
+- A `folder_visibility` checker that allows packages to their sibling packs and parent pack (to be used in an application that uses folder packs)
+- An `architecture` checker that allows packages to specify their "layer" and requires that each layer only communicate with layers below it.
 
 ## Installation
 
@@ -24,6 +25,7 @@ Alternatively, you can require individual checkers:
 require:
   - packwerk/privacy/checker
   - packwerk/visibility/checker
+  - packwerk/folder_visibility/checker
   - packwerk/architecture/checker
 ```
 
@@ -87,6 +89,30 @@ visible_to:
   - components/other_package
 ```
 
+## Folder-Visibility Checker
+The folder visibility checker can be used to allow a package to be private to their sibling packs and parent packs and will create todos if used by any other package.
+
+To enforce visibility for your package, set `enforce_folder_visibility` to `true` on your pack.
+
+```yaml
+# components/merchandising/package.yml
+enforce_folder_visibility: true
+```
+
+Here is an example of paths and whether their use of `packs/b/packs/e` is OK or not, assuming that protects itself via `enforce_folder_visibility`
+
+```
+.                         OK (parent of parent)
+packs/a                   VIOLATION
+packs/b                   OK (parent)
+packs/b/packs/d           OK (sibling)
+packs/b/packs/e           ENFORCE_NESTED_VISIBILITY: TRUE
+packs/b/packs/e/packs/f   VIOLATION
+packs/b/packs/e/packs/g   VIOLATION
+packs/b/packs/h           OK (sibling)
+packs/c                   VIOLATION
+```
+
 ## Architecture Checker
 The architecture checker can be used to enforce constraints on what can depend on what.
 
@@ -105,3 +131,19 @@ layer: utility
 ```
 
 Now this pack can only depend on other utility packages.
+
+
+## Contributing
+
+Got another checker you would like to add? Add it to this repo!
+
+Please ensure these commands pass for you locally:
+
+```
+bundle
+srb tc
+bin/rubocop
+bin/rake test
+```
+
+Then, submit a PR!
