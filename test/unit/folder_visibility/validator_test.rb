@@ -7,7 +7,7 @@ require 'test_helper'
 require 'fixtures/skeleton/components/timeline/app/models/private_thing'
 
 module Packwerk
-  module NestedVisibility
+  module FolderVisibility
     class ValidatorTest < Minitest::Test
       extend T::Sig
       include ApplicationFixtureHelper
@@ -23,26 +23,26 @@ module Packwerk
 
       # test 'call returns an error for invalid enforce_visibility value' do
       #   use_template(:minimal)
-      #   merge_into_app_yaml_file('package.yml', { 'enforce_nested_visibility' => 'yes, please.' })
+      #   merge_into_app_yaml_file('package.yml', { 'enforce_folder_visibility' => 'yes, please.' })
 
       #   result = validator.call(package_set, config)
 
       #   refute result.ok?
-      #   assert_match(/Invalid 'enforce_nested_visibility' option/, result.error_value)
+      #   assert_match(/Invalid 'enforce_folder_visibility' option/, result.error_value)
       # end
 
-      test 'call returns success when enforce_nested_visibility is set to strict' do
+      test 'call returns success when enforce_folder_visibility is set to strict' do
         use_template(:minimal)
-        merge_into_app_yaml_file('package.yml', { 'enforce_nested_visibility' => 'strict' })
+        merge_into_app_yaml_file('package.yml', { 'enforce_folder_visibility' => 'strict' })
 
         result = validator.call(package_set, config)
 
         assert result.ok?
       end
 
-      sig { returns(Packwerk::NestedVisibility::Validator) }
+      sig { returns(Packwerk::FolderVisibility::Validator) }
       def validator
-        @validator ||= Packwerk::NestedVisibility::Validator.new
+        @validator ||= Packwerk::FolderVisibility::Validator.new
       end
     end
   end

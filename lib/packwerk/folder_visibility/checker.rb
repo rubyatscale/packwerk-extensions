@@ -1,16 +1,16 @@
 # typed: strict
 # frozen_string_literal: true
 
-require 'packwerk/nested_visibility/package'
-require 'packwerk/nested_visibility/validator'
+require 'packwerk/folder_visibility/package'
+require 'packwerk/folder_visibility/validator'
 
 module Packwerk
-  module NestedVisibility
+  module FolderVisibility
     class Checker
       extend T::Sig
       include Packwerk::Checker
 
-      VIOLATION_TYPE = T.let('nested_visibility', String)
+      VIOLATION_TYPE = T.let('folder_visibility', String)
 
       sig { override.returns(String) }
       def violation_type
@@ -25,7 +25,7 @@ module Packwerk
       def invalid_reference?(reference)
         constant_package = reference.constant.package
         visibility_package = Package.from(constant_package)
-        visibility_option = visibility_package.enforce_nested_visibility
+        visibility_option = visibility_package.enforce_folder_visibility
         return false if enforcement_disabled?(visibility_option)
 
         # p "#{Pathname.new(constant_package.name).dirname} != #{Pathname.new(reference.package.name).dirname}"
@@ -48,7 +48,7 @@ module Packwerk
       end
       def strict_mode_violation?(listed_offense)
         publishing_package = listed_offense.reference.constant.package
-        publishing_package.config['enforce_nested_visibility'] == 'strict'
+        publishing_package.config['enforce_folder_visibility'] == 'strict'
       end
 
       sig do
@@ -60,7 +60,7 @@ module Packwerk
         source_desc = "'#{reference.package}'"
 
         message = <<~MESSAGE
-          Nested Visibility violation: '#{reference.constant.name}' belongs to '#{reference.constant.package}', which is not visible to #{source_desc} as it is not a sibling pack or parent pack.
+          Folder Visibility violation: '#{reference.constant.name}' belongs to '#{reference.constant.package}', which is not visible to #{source_desc} as it is not a sibling pack or parent pack.
           Is there a different package to use instead, or should '#{reference.constant.package}' also be visible to #{source_desc}?
 
           #{standard_help_message(reference)}

@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 module Packwerk
-  module NestedVisibility
+  module FolderVisibility
     class Validator
       extend T::Sig
       include Packwerk::Validator
@@ -13,14 +13,14 @@ module Packwerk
       def call(package_set, configuration)
         results = T.let([], T::Array[Result])
 
-        package_manifests_settings_for(configuration, 'enforce_nested_visibility').each do |config, setting|
+        package_manifests_settings_for(configuration, 'enforce_folder_visibility').each do |config, setting|
           next if setting.nil?
 
           next if [TrueClass, FalseClass].include?(setting.class) || setting == 'strict'
 
           results << Result.new(
             ok: false,
-            error_value: "\tInvalid 'enforce_nested_visibility' option: #{setting.inspect} in #{config.inspect}"
+            error_value: "\tInvalid 'enforce_folder_visibility' option: #{setting.inspect} in #{config.inspect}"
           )
         end
 
@@ -29,7 +29,7 @@ module Packwerk
 
       sig { override.returns(T::Array[String]) }
       def permitted_keys
-        %w[enforce_nested_visibility]
+        %w[enforce_folder_visibility]
       end
     end
   end
