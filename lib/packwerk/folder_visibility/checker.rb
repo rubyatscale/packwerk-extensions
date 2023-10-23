@@ -23,20 +23,20 @@ module Packwerk
           .returns(T::Boolean)
       end
       def invalid_reference?(reference)
-        constant_package = reference.constant.package
-        visibility_package = Package.from(constant_package)
-        visibility_option = visibility_package.enforce_folder_visibility
-        return false if enforcement_disabled?(visibility_option)
+        referencing_package = reference.package
+        referenced_package = reference.constant.package
 
-        # p "#{Pathname.new(constant_package.name).dirname} != #{Pathname.new(reference.package.name).dirname}"
-        packages_are_siblings = Pathname.new(constant_package.name).dirname == Pathname.new(reference.package.name).dirname
-        # p packages_are_siblings
-        return false if packages_are_siblings
+        return false if enforcement_disabled?(Package.from(referenced_package).enforce_folder_visibility)
 
-        return false if reference.package.name == '.'
+        # the root pack is parent folder of all packs, so we short-circuit this here
+        referencing_package_is_root_pack = referencing_package.name == '.'
+        return false if referencing_package_is_root_pack
 
-        reference_is_parent = Pathname.new(constant_package.name).dirname.to_s.start_with?(reference.package.name)
-        return false if reference_is_parent
+        packages_are_sibling_folders = Pathname.new(referenced_package.name).dirname == Pathname.new(referencing_package.name).dirname
+        return false if packages_are_sibling_folders
+
+        referencing_package_is_parent_folder = Pathname.new(referenced_package.name).to_s.start_with?(referencing_package.name)
+        return false if referencing_package_is_parent_folder
 
         true
       end
