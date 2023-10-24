@@ -116,19 +116,19 @@ module Packwerk
 
       test 'content_contains_sigil?' do
         content_with_valid_sigils = [
-          ['line 1', 'line 2', 'line 3', 'line 4', '# public_api: true'],
-          ['#public_api:true', 'line 2', 'line 3'],
-          ['line 1', '#       public_api:         true']
+          ['line 1', 'line 2', 'line 3', 'line 4', '# pack_public: true'],
+          ['#pack_public:true', 'line 2', 'line 3'],
+          ['line 1', '#       pack_public:         true']
         ]
         content_with_invalid_or_missing_sigils = [
-          ['line 1', 'line 2', 'line 3', 'line 4', 'line 5', '# public_api: true'],
+          ['line 1', 'line 2', 'line 3', 'line 4', 'line 5', '# pack_public: true'],
           ['#pulic_api:', 'line 2', 'line 3'],
-          ['line 1', '#       public_api:         false'],
-          ['# public_api: false', 'line 2', 'line 3'],
+          ['line 1', '#       pack_public:         false'],
+          ['# pack_public: false', 'line 2', 'line 3'],
           ['line 1', 'EOF']
         ]
-        assert content_with_valid_sigils.all? { |content|  Privacy::Checker.content_contains_sigil?(content) }
-        assert content_with_invalid_or_missing_sigils.none? { |content|  Privacy::Checker.content_contains_sigil?(content) }
+        assert(content_with_valid_sigils.all? { |content| Privacy::Checker.content_contains_sigil?(content) })
+        assert(content_with_invalid_or_missing_sigils.none? { |content| Privacy::Checker.content_contains_sigil?(content) })
       end
 
       private

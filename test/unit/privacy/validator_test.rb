@@ -40,7 +40,7 @@ module Packwerk
         assert result.ok?
       end
 
-      test 'check_all returns an error when a privatized constant is declared and the constant is also declaring public_api: true' do
+      test 'check_all returns an error when a privatized constant is declared and the constant is also declaring pack_public: true' do
         use_template(:skeleton)
         merge_into_app_yaml_file('/components/sales/package.yml', { 'private_constants' => ['::Order::Foo'] })
         result = Packwerk::Privacy::Validator.new.call(package_set, config)

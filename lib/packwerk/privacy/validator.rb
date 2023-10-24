@@ -110,7 +110,7 @@ module Packwerk
       def check_private_constant_location(configuration, package_set, name, location, config_file_path)
         declared_package = package_set.package_from_path(relative_path(configuration, config_file_path))
         constant_package = package_set.package_from_path(location)
-        result = if constant_package == declared_package
+        if constant_package == declared_package
           check_for_publicized_constant(location, constant_package, name)
         else
           Result.new(
@@ -130,7 +130,7 @@ module Packwerk
             error_value: "'#{name}' is an explicitly publicized constant declared in #{location} through usage of " \
                          "'#{sigil}'. However, the package '#{constant_package}' is also declaring it as a private " \
                          "constant. This conflict must be resolved. Either remove '#{sigil}' from #{location} or " \
-                         "remove this constant from the list of private constants in the config for " \
+                         'remove this constant from the list of private constants in the config for ' \
                          "'#{constant_package}'."
           )
         else

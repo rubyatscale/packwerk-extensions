@@ -1,6 +1,6 @@
+# pack_public: true
 # typed: ignore
 # frozen_string_literal: true
-# public_api: true
 
 class Order
   class Foo
