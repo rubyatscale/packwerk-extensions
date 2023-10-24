@@ -56,6 +56,55 @@ Example:
 public_path: my/custom/path/
 ```
 
+### Defining public constants through sigil
+You may make individual files public withhin a private package by usage of a comment within the first 5 lines of the `.rb` file containing `pack_public: true`.
+
+Example:
+
+```ruby
+# pack_public: true
+module Foo
+  class Update
+  end
+end
+```
+Now `Foo::Update` is considered public even though the `foo` package might be set to `enforce_private: (true || :strict)`.
+
+It's important to note that when combining `public_api: true` with the declaration of `private_constants`,
+`packwerk validate` will raise an exception if both are used for the same constant. This must be resolved by removing
+the sigil from the `.rb` file or removing the constant from the list of `private_constants`.
+
+If you are using rubocop, it may be configured in such a way that there must be an empty line after the magic keywords at the top of the file. Currently, this extension is not modifying rubocop in anyway so it does not recognize `public_pack: true` as a valid magic keyword option. That means placing it at the end of the magic keywords will throw a rubocop exception. However, you can place it first in the list to avoid an exception in rubocop.
+```
+-----
+# typed: ignore
+# frozen_string_literal: true
+# pack_public: true
+
+class Foo
+...
+end => Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
+
+------
+# typed: ignore
+# frozen_string_literal: true
+
+# pack_public: true
+
+class Foo
+...
+end => Less than ideal. This won't raise an issue in rubocop, however, only the first 5 lines are scanned for the magic comment of public_pack so there is risk at it being missed. It also is requiring extra empty lines in the group of magic comments.
+
+-----
+# pack_public: true
+# typed: ignore
+# frozen_string_literal: true
+
+class Foo
+...
+end => Ideal solution. No exceptions from rubocop and very low risk of the magic comment being out of range since
+```
+
 ### Using specific private constants
 Sometimes it is desirable to only enforce privacy on a subset of constants in a package. You can do so by defining a `private_constants` list in your package.yml. Note that `enforce_privacy` must be set to `true` or `'strict'` for this to work.
 

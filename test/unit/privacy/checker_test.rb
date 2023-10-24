@@ -48,6 +48,14 @@ module Packwerk
         assert checker.invalid_reference?(reference)
       end
 
+      test 'does not complain about private constant if enforcing privacy for everything and the destination is publicizing the file' do
+        destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => true })
+        checker = privacy_checker
+        reference = build_reference(destination_package: destination_package)
+        Packwerk::Privacy::Checker.publicized_locations['some/location.rb'] = true
+        refute checker.invalid_reference?(reference)
+      end
+
       test 'does not complain about private constant if it is an ignored_private_constant when using enforce_privacy' do
         destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'ignored_private_constants' => ['::SomeName'], 'enforce_privacy' => true })
         checker = privacy_checker
@@ -104,6 +112,23 @@ module Packwerk
           Inference details: this is a reference to ::SomeName which seems to be defined in some/location.rb.
           To receive help interpreting or resolving this error message, see: https://github.com/Shopify/packwerk/blob/main/TROUBLESHOOT.md#Troubleshooting-violations
         MSG
+      end
+
+      test 'content_contains_sigil?' do
+        content_with_valid_sigils = [
+          ['line 1', 'line 2', 'line 3', 'line 4', '# pack_public: true'],
+          ['#pack_public:true', 'line 2', 'line 3'],
+          ['line 1', '#       pack_public:         true']
+        ]
+        content_with_invalid_or_missing_sigils = [
+          ['line 1', 'line 2', 'line 3', 'line 4', 'line 5', '# pack_public: true'],
+          ['#pulic_api:', 'line 2', 'line 3'],
+          ['line 1', '#       pack_public:         false'],
+          ['# pack_public: false', 'line 2', 'line 3'],
+          ['line 1', 'EOF']
+        ]
+        assert(content_with_valid_sigils.all? { |content| Privacy::Checker.content_contains_sigil?(content) })
+        assert(content_with_invalid_or_missing_sigils.none? { |content| Privacy::Checker.content_contains_sigil?(content) })
       end
 
       private
