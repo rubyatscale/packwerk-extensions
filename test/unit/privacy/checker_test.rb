@@ -96,6 +96,42 @@ module Packwerk
         refute checker.invalid_reference?(reference)
       end
 
+      test 'ignores strict mode if not enabled' do
+        destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => true })
+        checker = privacy_checker
+        reference = build_reference(destination_package: destination_package, constant_location: 'destination_package/app/public/')
+        offense = Packwerk::ReferenceOffense.new(reference: reference, violation_type: 'privacy', message: '')
+
+        refute checker.strict_mode_violation?(offense)
+      end
+
+      test 'detect strict mode if enabled' do
+        destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => 'strict' })
+        checker = privacy_checker
+        reference = build_reference(destination_package: destination_package, constant_location: 'destination_package/app/public/')
+        offense = Packwerk::ReferenceOffense.new(reference: reference, violation_type: 'privacy', message: '')
+
+        assert checker.strict_mode_violation?(offense)
+      end
+
+      test 'ignores strict mode if excluded path' do
+        destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => 'strict', 'strict_privacy_ignored_patterns' => ['some/**'] })
+        checker = privacy_checker
+        reference = build_reference(destination_package: destination_package, constant_location: 'destination_package/app/public/')
+        offense = Packwerk::ReferenceOffense.new(reference: reference, violation_type: 'privacy', message: '')
+
+        refute checker.strict_mode_violation?(offense)
+      end
+
+      test 'detects strict mode if not excluded path' do
+        destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => 'strict', 'strict_privacy_ignored_patterns' => ['test/**'] })
+        checker = privacy_checker
+        reference = build_reference(destination_package: destination_package, constant_location: 'destination_package/app/public/')
+        offense = Packwerk::ReferenceOffense.new(reference: reference, violation_type: 'privacy', message: '')
+
+        assert checker.strict_mode_violation?(offense)
+      end
+
       test 'only checks the package TODO file for private constants' do
         destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => true, 'private_constants' => ['::SomeName'] })
         checker = privacy_checker
