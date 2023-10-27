@@ -64,7 +64,7 @@ public_path: my/custom/path/
 > There are a couple of other places that will require changes related to this sigil. Namely, everything that is coupled to the public folder implementation of privacy.
 >
 > In the rubyatscale org:
-> 
+>
 > * pack_stats, example https://github.com/rubyatscale/pack_stats/blob/main/lib/pack_stats/private/metrics/public_usage.rb. (IMO though we can just remove this metric – it has never been useful)
 > * Other places that mention public_path or app/public.
 >   * Org wide search for app/public link
@@ -73,7 +73,7 @@ public_path: my/custom/path/
 
 
 
-You may make individual files public withhin a private package by usage of a comment within the first 5 lines of the `.rb` file containing `pack_public: true`.
+You may make individual files public within a private package by usage of a comment within the first 5 lines of the `.rb` file containing `pack_public: true`.
 
 Example:
 
@@ -90,7 +90,7 @@ It's important to note that when combining `public_api: true` with the declarati
 `packwerk validate` will raise an exception if both are used for the same constant. This must be resolved by removing
 the sigil from the `.rb` file or removing the constant from the list of `private_constants`.
 
-If you are using rubocop, it may be configured in such a way that there must be an empty line after the magic keywords at the top of the file. Currently, this extension is not modifying rubocop in anyway so it does not recognize `public_pack: true` as a valid magic keyword option. That means placing it at the end of the magic keywords will throw a rubocop exception. However, you can place it first in the list to avoid an exception in rubocop.
+If you are using rubocop, it may be configured in such a way that there must be an empty line after the magic keywords at the top of the file. Currently, this extension is not modifying rubocop in any way so it does not recognize `public_pack: true` as a valid magic keyword option. That means placing it at the end of the magic keywords will throw a rubocop exception. However, you can place it first in the list to avoid an exception in rubocop.
 ```
 -----
 # typed: ignore
@@ -125,7 +125,7 @@ end => Ideal solution. No exceptions from rubocop and very low risk of the magic
 Sometimes it is desirable to only enforce privacy on a subset of constants in a package. You can do so by defining a `private_constants` list in your package.yml. Note that `enforce_privacy` must be set to `true` or `'strict'` for this to work.
 
 ### Ignore strict mode for violation coming from specific path patterns
-If you want to activate `'strict'` mode on you package but have a few privacy violations you know you will deal with later,
+If you want to activate `'strict'` mode on your package but have a few privacy violations you know you will deal with later,
 you can set a list of patterns to exclude.
 
 ```yaml
@@ -155,7 +155,7 @@ You may be accessing the implementation of a piece of functionality that is supp
 The functionality you’re looking for may not be intended to be reused across packages at all. If there is no public interface for it but you have a good reason to use it from outside of its package, find the people responsible for the package and discuss a solution with them.
 
 ## Visibility Checker
-The visibility checker can be used to allow a package to be private implementation detail of other packages.
+The visibility checker can be used to allow a package to be a private implementation detail of other packages.
 
 To enforce visibility for your package, set `enforce_visibility` to `true` on your pack and specify `visible_to` for other packages that can use your package.
 
