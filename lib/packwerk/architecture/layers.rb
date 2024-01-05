@@ -27,8 +27,6 @@ module Packwerk
         @names ||= Set.new(names_list)
       end
 
-      private
-
       sig { returns(T::Array[String]) }
       def names_list
         @names_list ||= YAML.load_file('packwerk.yml')['architecture_layers'] || []
