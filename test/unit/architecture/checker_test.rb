@@ -106,7 +106,12 @@ module Packwerk
         assert_equal architecture_checker.message(reference), <<~MSG.chomp
           Architecture layer violation: '::SomeName' belongs to 'packs/orchestrator', whose architecture layer type is "orchestrator."
           This constant cannot be referenced by 'packs/utility', whose architecture layer type is "utility."
-          Can we organize our code logic to respect the layers of these packs? See all layers in packwerk.yml.
+          Packs in a lower layer may not access packs in a higher layer. See the `architecture_layers` in packwerk.yml. Current hierarchy:
+          - orchestrator
+          - business_domain
+          - platform
+          - utility
+          - specification
 
           Inference details: this is a reference to ::SomeName which seems to be defined in some/location.rb.
           To receive help interpreting or resolving this error message, see: https://github.com/Shopify/packwerk/blob/main/TROUBLESHOOT.md#Troubleshooting-violations

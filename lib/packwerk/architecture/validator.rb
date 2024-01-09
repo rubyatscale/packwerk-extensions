@@ -82,7 +82,7 @@ module Packwerk
         else
           Result.new(
             ok: false,
-            error_value: "Invalid 'layer' option in #{config_file_path.inspect}: #{layer.inspect}. Must be one of #{layers.names.to_a.inspect}"
+            error_value: "Invalid 'layer' option in #{config_file_path.inspect}: #{layer.inspect}. Must be one of #{layers.names_list.inspect}"
           )
         end
       end

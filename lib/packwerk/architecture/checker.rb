@@ -70,7 +70,8 @@ module Packwerk
         message = <<~MESSAGE
           Architecture layer violation: '#{reference.constant.name}' belongs to '#{reference.constant.package}', whose architecture layer type is "#{constant_package.layer}."
           This constant cannot be referenced by '#{reference.package}', whose architecture layer type is "#{referencing_package.layer}."
-          Can we organize our code logic to respect the layers of these packs? See all layers in packwerk.yml.
+          Packs in a lower layer may not access packs in a higher layer. See the `architecture_layers` in packwerk.yml. Current hierarchy:
+          - #{layers.names_list.join("\n- ")}
 
           #{standard_help_message(reference)}
         MESSAGE
