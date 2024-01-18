@@ -4,10 +4,11 @@
 require 'sorbet-runtime'
 require 'packwerk'
 
+require 'packwerk/architecture/checker'
+require 'packwerk/folder_visibility/checker'
+require 'packwerk/service_boundary/checker'
 require 'packwerk/privacy/checker'
 require 'packwerk/visibility/checker'
-require 'packwerk/folder_visibility/checker'
-require 'packwerk/architecture/checker'
 
 module Packwerk
   module Extensions
