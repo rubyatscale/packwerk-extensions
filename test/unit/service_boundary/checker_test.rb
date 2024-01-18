@@ -51,9 +51,9 @@ module Packwerk
 
       test 'provides a useful message' do
         assert_equal service_boundary_checker.message(build_reference), <<~MSG.chomp
-          Folder Visibility violation: '::SomeName' belongs to 'components/destination', which is not visible to 'components/source' as it is not a sibling pack or parent pack.
-          Is there a different package to use instead, or should 'components/destination' also be visible to 'components/source'?
-
+          Service Boundary violation: '::SomeName' belongs to 'components/destination', which is in a different product service to 'components/source'.
+          Please reach out to the owners of that product service to find out if there should be a product service API for this code.
+          
           Inference details: this is a reference to ::SomeName which seems to be defined in some/location.rb.
           To receive help interpreting or resolving this error message, see: https://github.com/Shopify/packwerk/blob/main/TROUBLESHOOT.md#Troubleshooting-violations
         MSG

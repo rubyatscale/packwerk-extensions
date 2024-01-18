@@ -60,8 +60,8 @@ module Packwerk
         source_desc = "'#{reference.package}'"
 
         message = <<~MESSAGE
-          Folder Visibility violation: '#{reference.constant.name}' belongs to '#{reference.constant.package}', which is not visible to #{source_desc} as it is not a sibling pack or parent pack.
-          Is there a different package to use instead, or should '#{reference.constant.package}' also be visible to #{source_desc}?
+          Service Boundary violation: '#{reference.constant.name}' belongs to '#{reference.constant.package}', which is in a different product service to #{source_desc}.
+          Please reach out to the owners of that product service to find out if there should be a product service API for this code.
 
           #{standard_help_message(reference)}
         MESSAGE
