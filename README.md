@@ -34,14 +34,16 @@ The privacy checker extension was originally extracted from [packwerk](https://g
 
 A package's privacy boundary is violated when there is a reference to the package's private constants from a source outside the package.
 
-To enforce privacy for your package, set `enforce_privacy` to `true` on your pack:
+To enforce privacy for your package, set `enforce_privacy` to `true` or `strict` on your pack:
 
 ```yaml
 # components/merchandising/package.yml
 enforce_privacy: true
 ```
 
-Setting `enforce_privacy` to true will make all references to private constants in your package a violation.
+Setting `enforce_privacy` to `true` will make all references to private constants in your package a violation.
+
+Setting `enforce_privacy` to `strict` will have the same effect as `true`, and it will also forbid other packages from having violations towards your package. **This include violations that have been added to their `package_todo.yml` file.**
 
 ### Using public folders
 You may enforce privacy either way mentioned above and still expose a public API for your package by placing constants in the public folder, which by default is `app/public`. The constants in the public folder will be made available for use by the rest of the application.
@@ -84,7 +86,7 @@ module Foo
   end
 end
 ```
-Now `Foo::Update` is considered public even though the `foo` package might be set to `enforce_private: (true || :strict)`.
+Now `Foo::Update` is considered public even though the `foo` package might be set to `enforce_privacy: (true || strict)`.
 
 It's important to note that when combining `public_api: true` with the declaration of `private_constants`,
 `packwerk validate` will raise an exception if both are used for the same constant. This must be resolved by removing
