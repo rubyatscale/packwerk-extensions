@@ -43,7 +43,9 @@ enforce_privacy: true
 
 Setting `enforce_privacy` to `true` will make all references to private constants in your package a violation.
 
-Setting `enforce_privacy` to `strict` will have the same effect as `true`, and it will also forbid other packages from having violations towards your package. **This include violations that have been added to their `package_todo.yml` file.**
+Setting `enforce_privacy` to `strict` will forbid all references to private constants in your package. **This includes violations that have been added to other packages' `package_todo.yml` files.** 
+
+Note: You will need to remove all existing privacy violations before setting `enforce_privacy` to `strict`.
 
 ### Using public folders
 You may enforce privacy either way mentioned above and still expose a public API for your package by placing constants in the public folder, which by default is `app/public`. The constants in the public folder will be made available for use by the rest of the application.
