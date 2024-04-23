@@ -106,15 +106,6 @@ module Packwerk
         assert result.ok?
       end
 
-      test 'call returns an error if a dependency violates architecture layers' do
-        merge_into_app_yaml_file('packs/my_utility/package.yml', { 'dependencies' => ['packs/my_pack'], 'enforce_architecture' => true, 'layer' => 'utility' })
-        merge_into_app_yaml_file('packs/my_pack/package.yml', { 'enforce_architecture' => false, 'layer' => 'package' })
-
-        result = validator.call(package_set, config)
-
-        assert_match(%r{Invalid 'dependencies' in.*?packs/my_utility/package.yml"..*?packs/my_utility/package.yml' has a layer type of 'utility,' which cannot rely on 'packs/my_pack,' which has a layer type of 'package.' `architecture_layers` can be found in packwerk.yml.}, result.error_value)
-      end
-
       sig { returns(Packwerk::Architecture::Validator) }
       def validator
         @validator ||= Packwerk::Architecture::Validator.new

@@ -27,8 +27,6 @@ module Packwerk
           result = check_layer_setting(package, f)
           results << result
           next if !result.ok?
-
-          results += check_dependencies_setting(package_set, package, f)
         end
 
         merge_results(results, separator: "\n---\n")
@@ -42,27 +40,6 @@ module Packwerk
       sig { override.returns(T::Array[String]) }
       def permitted_keys
         %w[enforce_architecture layer]
-      end
-
-      sig do
-        params(package_set: PackageSet, package: Package, config_file_path: String).returns(T::Array[Result])
-      end
-      def check_dependencies_setting(package_set, package, config_file_path)
-        results = T.let([], T::Array[Result])
-        package.config.fetch('dependencies', []).each do |dependency|
-          other_packwerk_package = package_set.fetch(dependency)
-          next if other_packwerk_package.nil?
-
-          other_package = Package.from(other_packwerk_package, layers)
-          next if package.can_depend_on?(other_package, layers: layers)
-
-          results << Result.new(
-            ok: false,
-            error_value: "Invalid 'dependencies' in #{config_file_path.inspect}. '#{config_file_path}' has a layer type of '#{package.layer},' which cannot rely on '#{other_packwerk_package.name},' which has a layer type of '#{other_package.layer}.' `architecture_layers` can be found in packwerk.yml."
-          )
-        end
-
-        results
       end
 
       sig do
