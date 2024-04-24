@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 module Packwerk
-  module Architecture
+  module Layer
     class Validator
       extend T::Sig
       include Packwerk::Validator
@@ -18,7 +18,7 @@ module Packwerk
           f = Pathname.new(package.name).join('package.yml').to_s
           next if !config
 
-          result = check_enforce_architecture_setting(f, config['enforce_architecture'])
+          result = check_enforce_layers_setting(f, config['enforce_layers'])
           results << result
           next if !result.ok?
 
@@ -34,12 +34,12 @@ module Packwerk
 
       sig { returns(Layers) }
       def layers
-        @layers ||= T.let(Layers.new, T.nilable(Packwerk::Architecture::Layers))
+        @layers ||= T.let(Layers.new, T.nilable(Packwerk::Layer::Layers))
       end
 
       sig { override.returns(T::Array[String]) }
       def permitted_keys
-        %w[enforce_architecture layer]
+        %w[enforce_layers layer]
       end
 
       sig do
@@ -52,7 +52,7 @@ module Packwerk
         if layer.nil? && package.enforces?
           Result.new(
             ok: false,
-            error_value: "Invalid 'layer' option in #{config_file_path.inspect}: #{package.layer.inspect}. `layer` must be set if `enforce_architecture` is on."
+            error_value: "Invalid 'layer' option in #{config_file_path.inspect}: #{package.layer.inspect}. `layer` must be set if `enforce_layers` is on."
           )
         elsif valid_layer
           Result.new(ok: true)
@@ -67,19 +67,19 @@ module Packwerk
       sig do
         params(config_file_path: String, setting: T.untyped).returns(Result)
       end
-      def check_enforce_architecture_setting(config_file_path, setting)
+      def check_enforce_layers_setting(config_file_path, setting)
         activated_value = [true, 'strict'].include?(setting)
         valid_value = [true, nil, false, 'strict'].include?(setting)
         layers_set = layers.names.any?
         if !valid_value
           Result.new(
             ok: false,
-            error_value: "Invalid 'enforce_architecture' option in #{config_file_path.inspect}: #{setting.inspect}"
+            error_value: "Invalid 'enforce_layers' option in #{config_file_path.inspect}: #{setting.inspect}"
           )
         elsif activated_value && !layers_set
           Result.new(
             ok: false,
-            error_value: "Cannot set 'enforce_architecture' option in #{config_file_path.inspect} until `architectural_layers` have been specified in `packwerk.yml`"
+            error_value: "Cannot set 'enforce_layers' option in #{config_file_path.inspect} until `layers` have been specified in `packwerk.yml`"
           )
         else
           Result.new(ok: true)

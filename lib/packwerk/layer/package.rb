@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 module Packwerk
-  module Architecture
+  module Layer
     class Package < T::Struct
       extend T::Sig
 
@@ -46,7 +46,7 @@ module Packwerk
 
           Package.new(
             layer: layer,
-            enforcement_setting: config['enforce_architecture'],
+            enforcement_setting: config['enforce_layers'],
             config: config
           )
         end

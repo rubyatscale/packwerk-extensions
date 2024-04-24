@@ -6,7 +6,7 @@ Currently, it ships the following checkers to help improve the boundaries betwee
 - A `privacy` checker that ensures other packages are using your package's public API
 - A `visibility` checker that allows packages to be private except to an explicit group of other packages.
 - A `folder_visibility` checker that allows packages to their sibling packs and parent pack (to be used in an application that uses folder packs)
-- An `architecture` checker that allows packages to specify their "layer" and requires that each layer only communicate with layers below it.
+- An `layer` checker that allows packages to specify their "layer" and requires that each layer only communicate with layers below it.
 
 ## Installation
 
@@ -26,7 +26,7 @@ require:
   - packwerk/privacy/checker
   - packwerk/visibility/checker
   - packwerk/folder_visibility/checker
-  - packwerk/architecture/checker
+  - packwerk/layer/checker
 ```
 
 ## Privacy Checker
@@ -194,12 +194,12 @@ packs/b/packs/h           OK (sibling)
 packs/c                   VIOLATION
 ```
 
-## Architecture Checker
-The architecture checker can be used to enforce constraints on what can depend on what.
+## Layer Checker
+The layer checker can be used to enforce constraints on what can depend on what.
 
-To enforce architecture for your package, first define the `architecture_layers` in `packwerk.yml`, for example:
+To enforce layers for your package, first define the `layers` in `packwerk.yml`, for example:
 ```
-architecture_layers:
+layers:
   - package
   - utility
 ```
@@ -207,7 +207,7 @@ architecture_layers:
 Then, turn on the checker in your package:
 ```yaml
 # components/merchandising/package.yml
-enforce_architecture: true
+enforce_layers: true
 layer: utility
 ```
 

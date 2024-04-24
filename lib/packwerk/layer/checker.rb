@@ -1,16 +1,16 @@
 # typed: strict
 # frozen_string_literal: true
 
-require 'packwerk/architecture/layers'
-require 'packwerk/architecture/package'
-require 'packwerk/architecture/validator'
+require 'packwerk/layer/layers'
+require 'packwerk/layer/package'
+require 'packwerk/layer/validator'
 
 module Packwerk
-  module Architecture
+  module Layer
     # This enforces "layered architecture," which allows each class to be designated as one of N layers
     # configured by the client in `packwerk.yml`, for example:
     #
-    # architecture_layers:
+    # layers:
     #   - orchestrator
     #   - business_domain
     #   - platform
@@ -18,7 +18,7 @@ module Packwerk
     #   - specification
     #
     # Then a package can configure:
-    # enforce_architecture: true | false | strict
+    # enforce_layers: true | false | strict
     # layer: utility
     #
     # This is intended to provide:
@@ -30,7 +30,7 @@ module Packwerk
       extend T::Sig
       include Packwerk::Checker
 
-      VIOLATION_TYPE = T.let('architecture', String)
+      VIOLATION_TYPE = T.let('layer', String)
 
       sig { override.returns(String) }
       def violation_type
@@ -55,7 +55,7 @@ module Packwerk
       end
       def strict_mode_violation?(listed_offense)
         constant_package = listed_offense.reference.package
-        constant_package.config['enforce_architecture'] == 'strict'
+        constant_package.config['enforce_layers'] == 'strict'
       end
 
       sig do
@@ -68,9 +68,9 @@ module Packwerk
         referencing_package = Package.from(reference.package, layers)
 
         message = <<~MESSAGE
-          Architecture layer violation: '#{reference.constant.name}' belongs to '#{reference.constant.package}', whose architecture layer type is "#{constant_package.layer}."
-          This constant cannot be referenced by '#{reference.package}', whose architecture layer type is "#{referencing_package.layer}."
-          Packs in a lower layer may not access packs in a higher layer. See the `architecture_layers` in packwerk.yml. Current hierarchy:
+          Layer violation: '#{reference.constant.name}' belongs to '#{reference.constant.package}', whose layer type is "#{constant_package.layer}."
+          This constant cannot be referenced by '#{reference.package}', whose layer type is "#{referencing_package.layer}."
+          Packs in a lower layer may not access packs in a higher layer. See the `layers` in packwerk.yml. Current hierarchy:
           - #{layers.names_list.join("\n- ")}
 
           #{standard_help_message(reference)}
@@ -92,7 +92,7 @@ module Packwerk
 
       sig { returns(Layers) }
       def layers
-        @layers ||= T.let(Layers.new, T.nilable(Packwerk::Architecture::Layers))
+        @layers ||= T.let(Layers.new, T.nilable(Packwerk::Layer::Layers))
       end
     end
   end
