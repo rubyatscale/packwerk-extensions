@@ -69,11 +69,11 @@ GEM
     minitest (5.17.0)
     mocha (2.0.2)
       ruby2_keywords (>= 0.0.5)
-    nokogiri (1.14.2-arm64-darwin)
+    nokogiri (1.16.4-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.14.2-x86_64-darwin)
+    nokogiri (1.16.4-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.14.2-x86_64-linux)
+    nokogiri (1.16.4-x86_64-linux)
       racc (~> 1.4)
     parallel (1.22.1)
     parser (3.2.1.0)
@@ -169,4 +169,4 @@ DEPENDENCIES
   tapioca
 
 BUNDLED WITH
-   2.4.7
+   2.5.9
