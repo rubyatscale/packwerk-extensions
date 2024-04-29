@@ -14,7 +14,7 @@ module Packwerk
         visible_settings = package_manifests_settings_for(configuration, 'visible_to')
         results = T.let([], T::Array[Result])
 
-        all_package_names = package_set.map(&:name).to_set
+        all_package_names = package_set.to_set(&:name)
 
         package_manifests_settings_for(configuration, 'enforce_visibility').each do |config, setting|
           next if setting.nil?

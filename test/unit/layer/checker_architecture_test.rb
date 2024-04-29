@@ -12,7 +12,7 @@ module Packwerk
 
       def write_config
         write_app_file('packwerk.yml', <<~YML)
-          layers:
+          architecture_layers:
             - orchestrator
             - business_domain
             - platform
@@ -37,10 +37,6 @@ module Packwerk
 
       teardown do
         teardown_application_fixture
-      end
-
-      test 'determines violation type' do
-        assert_equal layer_checker.violation_type, 'layer'
       end
 
       test 'ignores if origin package is not enforcing' do

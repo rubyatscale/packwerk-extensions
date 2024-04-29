@@ -1,6 +1,7 @@
 # typed: strict
 # frozen_string_literal: true
 
+require 'packwerk/layer/config'
 require 'packwerk/layer/layers'
 require 'packwerk/layer/package'
 require 'packwerk/layer/validator'
@@ -30,11 +31,14 @@ module Packwerk
       extend T::Sig
       include Packwerk::Checker
 
-      VIOLATION_TYPE = T.let('layer', String)
+      sig { void }
+      def initialize
+        @violation_type = T.let(@violation_type, T.nilable(String))
+      end
 
       sig { override.returns(String) }
       def violation_type
-        VIOLATION_TYPE
+        @violation_type ||= Config.new.violation_key
       end
 
       sig do
@@ -68,8 +72,8 @@ module Packwerk
         referencing_package = Package.from(reference.package, layers)
 
         message = <<~MESSAGE
-          Layer violation: '#{reference.constant.name}' belongs to '#{reference.constant.package}', whose layer type is "#{constant_package.layer}."
-          This constant cannot be referenced by '#{reference.package}', whose layer type is "#{referencing_package.layer}."
+          Layer violation: '#{reference.constant.name}' belongs to '#{reference.constant.package}', whose layer type is "#{constant_package.layer}".
+          This constant cannot be referenced by '#{reference.package}', whose layer type is "#{referencing_package.layer}".
           Packs in a lower layer may not access packs in a higher layer. See the `layers` in packwerk.yml. Current hierarchy:
           - #{layers.names_list.join("\n- ")}
 

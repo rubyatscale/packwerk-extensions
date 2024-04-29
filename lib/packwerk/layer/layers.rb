@@ -29,7 +29,7 @@ module Packwerk
 
       sig { returns(T::Array[String]) }
       def names_list
-        @names_list ||= YAML.load_file('packwerk.yml')['layers'] || []
+        @names_list ||= Config.new.layers_list
       end
     end
   end

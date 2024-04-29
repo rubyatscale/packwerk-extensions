@@ -46,7 +46,7 @@ module Packwerk
 
           Package.new(
             layer: layer,
-            enforcement_setting: config['enforce_layers'],
+            enforcement_setting: config[Config.new.enforce_key],
             config: config
           )
         end

@@ -18,6 +18,15 @@ module Packwerk
         YML
       end
 
+      def write_architecture_config
+        write_config
+        write_app_file('packwerk.yml', <<~YML)
+          architecture_layers:
+            - package
+            - utility
+        YML
+      end
+
       setup do
         setup_application_fixture
         use_template(:minimal)
@@ -37,7 +46,7 @@ module Packwerk
         assert result.ok?
       end
 
-      test 'call returns an error for invalid enforce_visibility value' do
+      test 'call returns an error for invalid enforce_layers value' do
         merge_into_app_yaml_file('package.yml', { 'enforce_layers' => 'yes, please.' })
 
         result = validator.call(package_set, config)
@@ -46,11 +55,51 @@ module Packwerk
         assert_match(/Invalid 'enforce_layers' option/, result.error_value)
       end
 
+      test 'call returns an error for invalid enforce_architecture value' do
+        write_architecture_config
+
+        merge_into_app_yaml_file('package.yml', { 'enforce_architecture' => 'yes, please.' })
+
+        result = validator.call(package_set, config)
+
+        refute result.ok?
+        assert_match(/Invalid 'enforce_architecture' option/, result.error_value)
+      end
+
       test 'call returns success when enforce_layers is set to strict' do
         merge_into_app_yaml_file('package.yml', { 'enforce_layers' => 'strict', 'layer' => 'utility' })
 
         result = validator.call(package_set, config)
         assert result.ok?
+      end
+
+      test 'call returns success when enforce_architecture is set to strict' do
+        write_architecture_config
+
+        merge_into_app_yaml_file('package.yml', { 'enforce_architecture' => 'strict', 'layer' => 'utility' })
+
+        result = validator.call(package_set, config)
+        assert result.ok?
+      end
+
+      test 'call returns error when enforce_layers is set to strict, but enforce_architecture is required' do
+        write_architecture_config
+
+        merge_into_app_yaml_file('package.yml', { 'enforce_layers' => 'strict', 'layer' => 'utility' })
+
+        result = validator.call(package_set, config)
+        refute result.ok?
+
+        assert_match(/Unexpected `enforce_layers` option in/, result.error_value)
+      end
+
+      test 'call returns error when enforce_architecture is set to strict, but enforce_layers is required' do
+        merge_into_app_yaml_file('package.yml', { 'enforce_architecture' => 'strict', 'layer' => 'utility' })
+
+        result = validator.call(package_set, config)
+        refute result.ok?
+
+        assert_match(/Unexpected `enforce_architecture` option in/, result.error_value)
       end
 
       test 'call returns an error for invalid layer value' do
@@ -80,6 +129,17 @@ module Packwerk
         assert_match(/Invalid 'layer' option in.*?package.yml": nil. `layer` must be set if `enforce_layers` is on./, result.error_value)
       end
 
+      test 'call returns an error if a layer is unset with enforce_architecture on' do
+        write_architecture_config
+
+        merge_into_app_yaml_file('package.yml', { 'enforce_architecture' => true })
+
+        result = validator.call(package_set, config)
+
+        refute result.ok?
+        assert_match(/Invalid 'layer' option in.*?package.yml": nil. `layer` must be set if `enforce_architecture` is on./, result.error_value)
+      end
+
       test 'call returns an error if enforce_layers is set without layers specified' do
         write_app_file('packwerk.yml', <<~YML)
           {}
@@ -104,6 +164,15 @@ module Packwerk
         merge_into_app_yaml_file('utility/package.yml', { 'enforce_layers' => true })
         result = validator.call(package_set, config)
         assert result.ok?
+      end
+
+      test 'call permitted keys' do 
+        assert_equal validator.permitted_keys, ['enforce_layers', 'layer']
+      end
+
+      test 'call permitted keys when architecture' do 
+        write_architecture_config
+        assert_equal validator.permitted_keys, ['enforce_architecture', 'layer']
       end
 
       sig { returns(Packwerk::Layer::Validator) }

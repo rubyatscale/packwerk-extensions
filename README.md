@@ -6,7 +6,7 @@ Currently, it ships the following checkers to help improve the boundaries betwee
 - A `privacy` checker that ensures other packages are using your package's public API
 - A `visibility` checker that allows packages to be private except to an explicit group of other packages.
 - A `folder_visibility` checker that allows packages to their sibling packs and parent pack (to be used in an application that uses folder packs)
-- An `layer` checker that allows packages to specify their "layer" and requires that each layer only communicate with layers below it.
+- An `layer` (formerly `architecture`) checker that allows packages to specify their "layer" and requires that each layer only communicate with layers below it.
 
 ## Installation
 
@@ -212,6 +212,13 @@ layer: utility
 ```
 
 Now this pack can only depend on other utility packages.
+
+### Deprecated Architecture Checker
+The "Layer Checker" was formerly named "Architecture Checker". The associated keys were:
+- packwerk.yml `architecture_layers`, which is now `layers`
+- package.yml `enforce_architecture`, which is now `enforce_layers`
+- package.yml `layer` is still a valid key
+- package_todo.yml - `architecture`, which is now `layer`
 
 
 ## Contributing
