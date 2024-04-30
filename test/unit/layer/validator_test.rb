@@ -166,13 +166,13 @@ module Packwerk
         assert result.ok?
       end
 
-      test 'call permitted keys' do 
-        assert_equal validator.permitted_keys, ['enforce_layers', 'layer']
+      test 'call permitted keys' do
+        assert_equal validator.permitted_keys, %w[enforce_layers layer]
       end
 
-      test 'call permitted keys when architecture' do 
+      test 'call permitted keys when architecture' do
         write_architecture_config
-        assert_equal validator.permitted_keys, ['enforce_architecture', 'layer']
+        assert_equal validator.permitted_keys, %w[enforce_architecture layer]
       end
 
       sig { returns(Packwerk::Layer::Validator) }

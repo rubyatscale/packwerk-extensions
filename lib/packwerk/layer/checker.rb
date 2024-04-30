@@ -38,7 +38,7 @@ module Packwerk
 
       sig { override.returns(String) }
       def violation_type
-        @violation_type ||= Config.new.violation_key
+        @violation_type ||= layer_config.violation_key
       end
 
       sig do
@@ -59,7 +59,7 @@ module Packwerk
       end
       def strict_mode_violation?(listed_offense)
         constant_package = listed_offense.reference.package
-        constant_package.config['enforce_layers'] == 'strict'
+        constant_package.config[layer_config.enforce_key] == 'strict'
       end
 
       sig do
@@ -97,6 +97,11 @@ module Packwerk
       sig { returns(Layers) }
       def layers
         @layers ||= T.let(Layers.new, T.nilable(Packwerk::Layer::Layers))
+      end
+
+      sig { returns(Config) }
+      def layer_config
+        @layer_config ||= T.let(Config.new, T.nilable(Config))
       end
     end
   end

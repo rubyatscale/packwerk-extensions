@@ -6,7 +6,7 @@ Currently, it ships the following checkers to help improve the boundaries betwee
 - A `privacy` checker that ensures other packages are using your package's public API
 - A `visibility` checker that allows packages to be private except to an explicit group of other packages.
 - A `folder_visibility` checker that allows packages to their sibling packs and parent pack (to be used in an application that uses folder packs)
-- An `layer` (formerly `architecture`) checker that allows packages to specify their "layer" and requires that each layer only communicate with layers below it.
+- A `layer` (formerly `architecture`) checker that allows packages to specify their "layer" and requires that each layer only communicate with layers below it.
 
 ## Installation
 
@@ -219,6 +219,19 @@ The "Layer Checker" was formerly named "Architecture Checker". The associated ke
 - package.yml `enforce_architecture`, which is now `enforce_layers`
 - package.yml `layer` is still a valid key
 - package_todo.yml - `architecture`, which is now `layer`
+
+```bash
+  # script to migrate code from deprecated "architecture" violations to "layer" violations
+
+  # replace 'architecture_layers' with 'layers' in packwerk.yml
+  sed -i '' 's/architecture_layers/layers/g' ./packwerk.yml
+  
+  # replace 'enforce_architecture' with 'enforce_layers' in package.yml files
+  `rg -l 'enforce_architecture' -g 'package.yml' | xargs sed -i '' 's,enforce_architecture,enforce_layers,g'`
+
+  # replace '- architecture' with '- layer' in package_todo.yml files
+  `rg -l 'architecture' -g 'package_todo.yml' | xargs sed -i '' 's/- architecture/- layer/g'`
+```
 
 
 ## Contributing
