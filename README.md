@@ -222,6 +222,7 @@ The "Layer Checker" was formerly named "Architecture Checker". The associated ke
 
 ```bash
   # script to migrate code from deprecated "architecture" violations to "layer" violations
+  # sed and ripgrep required
 
   # replace 'architecture_layers' with 'layers' in packwerk.yml
   sed -i '' 's/architecture_layers/layers/g' ./packwerk.yml
