@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 module Packwerk
-  module Architecture
+  module Layer
     class Layers
       extend T::Sig
 
@@ -29,7 +29,7 @@ module Packwerk
 
       sig { returns(T::Array[String]) }
       def names_list
-        @names_list ||= YAML.load_file('packwerk.yml')['architecture_layers'] || []
+        @names_list ||= Config.new.layers_list
       end
     end
   end

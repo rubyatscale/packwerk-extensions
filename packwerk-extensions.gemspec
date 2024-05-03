@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = 'packwerk-extensions'
-  spec.version       = '0.1.11'
+  spec.version       = '0.2.0'
   spec.authors       = ['Gusto Engineers']
   spec.email         = ['dev@gusto.com']
 
@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
           'public gem pushes.'
   end
 
-  spec.required_ruby_version = Gem::Requirement.new('>= 2.6.0')
+  spec.required_ruby_version = Gem::Requirement.new('>= 2.7')
   # Specify which files should be added to the gem when it is released.
   spec.files = Dir['README.md', 'lib/**/*']
 
