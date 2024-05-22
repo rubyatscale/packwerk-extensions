@@ -8,7 +8,7 @@ on:
 
 jobs:
   call-workflow-from-shared-config:
-    uses: rubyatscale/shared-config/.github/workflows/ci.yml@jms/test_command_input
+    uses: rubyatscale/shared-config/.github/workflows/ci.yml@main
     secrets: inherit
     with:
       test-command: "bundle exec rake"
