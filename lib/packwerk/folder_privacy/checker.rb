@@ -1,16 +1,16 @@
 # typed: strict
 # frozen_string_literal: true
 
-require 'packwerk/folder_visibility/package'
-require 'packwerk/folder_visibility/validator'
+require 'packwerk/folder_privacy/package'
+require 'packwerk/folder_privacy/validator'
 
 module Packwerk
-  module FolderVisibility
+  module FolderPrivacy
     class Checker
       extend T::Sig
       include Packwerk::Checker
 
-      VIOLATION_TYPE = T.let('folder_visibility', String)
+      VIOLATION_TYPE = T.let('folder_privacy', String)
 
       sig { override.returns(String) }
       def violation_type
@@ -26,7 +26,7 @@ module Packwerk
         referencing_package = reference.package
         referenced_package = reference.constant.package
 
-        return false if enforcement_disabled?(Package.from(referenced_package).enforce_folder_visibility)
+        return false if enforcement_disabled?(Package.from(referenced_package).enforce_folder_privacy)
 
         # the root pack is parent folder of all packs, so we short-circuit this here
         referencing_package_is_root_pack = referencing_package.name == '.'
@@ -48,7 +48,7 @@ module Packwerk
       end
       def strict_mode_violation?(listed_offense)
         publishing_package = listed_offense.reference.constant.package
-        publishing_package.config['enforce_folder_visibility'] == 'strict'
+        publishing_package.config['enforce_folder_privacy'] == 'strict'
       end
 
       sig do
@@ -60,7 +60,7 @@ module Packwerk
         source_desc = "'#{reference.package}'"
 
         message = <<~MESSAGE
-          Folder Visibility violation: '#{reference.constant.name}' belongs to '#{reference.constant.package}', which is not visible to #{source_desc} as it is not a sibling pack or parent pack.
+          Folder Privacy violation: '#{reference.constant.name}' belongs to '#{reference.constant.package}', which is private to #{source_desc} as it is not a sibling pack or parent pack.
           Is there a different package to use instead, or should '#{reference.constant.package}' also be visible to #{source_desc}?
 
           #{standard_help_message(reference)}

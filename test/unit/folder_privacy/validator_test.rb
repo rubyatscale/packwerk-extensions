@@ -7,7 +7,7 @@ require 'test_helper'
 require 'fixtures/skeleton/components/timeline/app/models/private_thing'
 
 module Packwerk
-  module FolderVisibility
+  module FolderPrivacy
     class ValidatorTest < Minitest::Test
       extend T::Sig
       include ApplicationFixtureHelper
@@ -23,26 +23,26 @@ module Packwerk
 
       # test 'call returns an error for invalid enforce_visibility value' do
       #   use_template(:minimal)
-      #   merge_into_app_yaml_file('package.yml', { 'enforce_folder_visibility' => 'yes, please.' })
+      #   merge_into_app_yaml_file('package.yml', { 'enforce_folder_privacy' => 'yes, please.' })
 
       #   result = validator.call(package_set, config)
 
       #   refute result.ok?
-      #   assert_match(/Invalid 'enforce_folder_visibility' option/, result.error_value)
+      #   assert_match(/Invalid 'enforce_folder_privacy' option/, result.error_value)
       # end
 
-      test 'call returns success when enforce_folder_visibility is set to strict' do
+      test 'call returns success when enforce_folder_privacy is set to strict' do
         use_template(:minimal)
-        merge_into_app_yaml_file('package.yml', { 'enforce_folder_visibility' => 'strict' })
+        merge_into_app_yaml_file('package.yml', { 'enforce_folder_privacy' => 'strict' })
 
         result = validator.call(package_set, config)
 
         assert result.ok?
       end
 
-      sig { returns(Packwerk::FolderVisibility::Validator) }
+      sig { returns(Packwerk::FolderPrivacy::Validator) }
       def validator
-        @validator ||= Packwerk::FolderVisibility::Validator.new
+        @validator ||= Packwerk::FolderPrivacy::Validator.new
       end
     end
   end

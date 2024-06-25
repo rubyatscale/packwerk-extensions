@@ -5,7 +5,7 @@
 Currently, it ships the following checkers to help improve the boundaries between packages. These checkers are:
 - A `privacy` checker that ensures other packages are using your package's public API
 - A `visibility` checker that allows packages to be private except to an explicit group of other packages.
-- A `folder_visibility` checker that allows packages to their sibling packs and parent pack (to be used in an application that uses folder packs)
+- A `folder_privacy` checker that allows packages to their sibling packs and parent pack (to be used in an application that uses folder packs)
 - A `layer` (formerly `architecture`) checker that allows packages to specify their "layer" and requires that each layer only communicate with layers below it.
 
 ## Installation
@@ -25,7 +25,7 @@ Alternatively, you can require individual checkers:
 require:
   - packwerk/privacy/checker
   - packwerk/visibility/checker
-  - packwerk/folder_visibility/checker
+  - packwerk/folder_privacy/checker
   - packwerk/layer/checker
 ```
 
@@ -43,7 +43,7 @@ enforce_privacy: true
 
 Setting `enforce_privacy` to `true` will make all references to private constants in your package a violation.
 
-Setting `enforce_privacy` to `strict` will forbid all references to private constants in your package. **This includes violations that have been added to other packages' `package_todo.yml` files.** 
+Setting `enforce_privacy` to `strict` will forbid all references to private constants in your package. **This includes violations that have been added to other packages' `package_todo.yml` files.**
 
 Note: You will need to remove all existing privacy violations before setting `enforce_privacy` to `strict`.
 
@@ -171,16 +171,16 @@ visible_to:
 ```
 
 ## Folder-Visibility Checker
-The folder visibility checker can be used to allow a package to be private to their sibling packs and parent packs and will create todos if used by any other package.
+The folder privacy checker can be used to allow a package to be private to their sibling packs and parent packs and will create todos if used by any other package.
 
-To enforce visibility for your package, set `enforce_folder_visibility` to `true` on your pack.
+To enforce folder privacy for your package, set `enforce_folder_privacy` to `true` on your pack.
 
 ```yaml
 # components/merchandising/package.yml
-enforce_folder_visibility: true
+enforce_folder_privacy: true
 ```
 
-Here is an example of paths and whether their use of `packs/b/packs/e` is OK or not, assuming that protects itself via `enforce_folder_visibility`
+Here is an example of paths and whether their use of `packs/b/packs/e` is OK or not, assuming that protects itself via `enforce_folder_privacy`
 
 ```
 .                         OK (parent of parent)
@@ -226,7 +226,7 @@ The "Layer Checker" was formerly named "Architecture Checker". The associated ke
 
   # replace 'architecture_layers' with 'layers' in packwerk.yml
   sed -i '' 's/architecture_layers/layers/g' ./packwerk.yml
-  
+
   # replace 'enforce_architecture' with 'enforce_layers' in package.yml files
   `rg -l 'enforce_architecture' -g 'package.yml' | xargs sed -i '' 's,enforce_architecture,enforce_layers,g'`
 
