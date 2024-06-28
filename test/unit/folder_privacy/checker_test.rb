@@ -4,7 +4,7 @@
 require 'test_helper'
 
 module Packwerk
-  module FolderVisibility
+  module FolderPrivacy
     class CheckerTest < Minitest::Test
       extend T::Sig
       include FactoryHelper
@@ -37,21 +37,21 @@ module Packwerk
         [true_, 'packs/a',         'packs/a/packs/1', true_, 'access to parent not ok'],
         [true_, 'packs/b',         'packs/a/packs/1', true_, 'not siblings or child']
       ].each do |test|
-        test "if #{test[1]} has enforce_folder_visibility: #{test[0]} than a reference from #{test[2]} is #{test[3] ? 'A VIOLATION' : 'OK'}" do
+        test "if #{test[1]} has enforce_folder_privacy: #{test[0]} than a reference from #{test[2]} is #{test[3] ? 'A VIOLATION' : 'OK'}" do
           source_package = Packwerk::Package.new(name: test[2])
-          destination_package = Packwerk::Package.new(name: test[1], config: { 'enforce_folder_visibility' => test[0] })
+          destination_package = Packwerk::Package.new(name: test[1], config: { 'enforce_folder_privacy' => test[0] })
           reference = build_reference(
             source_package: source_package,
             destination_package: destination_package
           )
 
-          assert_equal test[3], folder_visibility_checker.invalid_reference?(reference)
+          assert_equal test[3], folder_privacy_checker.invalid_reference?(reference)
         end
       end
 
       test 'provides a useful message' do
-        assert_equal folder_visibility_checker.message(build_reference), <<~MSG.chomp
-          Folder Visibility violation: '::SomeName' belongs to 'components/destination', which is not visible to 'components/source' as it is not a sibling pack or parent pack.
+        assert_equal folder_privacy_checker.message(build_reference), <<~MSG.chomp
+          Folder Privacy violation: '::SomeName' belongs to 'components/destination', which is private to 'components/source' as it is not a sibling pack or parent pack.
           Is there a different package to use instead, or should 'components/destination' also be visible to 'components/source'?
 
           Inference details: this is a reference to ::SomeName which seems to be defined in some/location.rb.
@@ -62,8 +62,8 @@ module Packwerk
       private
 
       sig { returns(Checker) }
-      def folder_visibility_checker
-        FolderVisibility::Checker.new
+      def folder_privacy_checker
+        FolderPrivacy::Checker.new
       end
     end
   end

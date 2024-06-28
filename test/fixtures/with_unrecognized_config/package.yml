@@ -1,0 +1,8 @@
+enforce_folder_privacy: true
+
+enforcement_globs_ignore:
+- enforcements:
+  - privacy
+  ignores:
+  - "**/*"
+  - "!packs/product_services/serv1/**/*"
