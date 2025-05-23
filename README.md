@@ -6,7 +6,7 @@ Currently, it ships the following checkers to help improve the boundaries betwee
 - A `privacy` checker that ensures other packages are using your package's public API
 - A `visibility` checker that allows packages to be private except to an explicit group of other packages.
 - A `folder_privacy` checker that allows packages to their sibling packs and parent pack (to be used in an application that uses folder packs)
-- A `layer` (formerly `architecture`) checker that allows packages to specify their "layer" and requires that each layer only communicate with layers below it.
+- A `layer` (formerly `architecture`) checker that allows packages to specify their "layer" and ensures they cannot use packages from higher layers
 
 ## Installation
 
@@ -195,12 +195,15 @@ packs/c                   VIOLATION
 ```
 
 ## Layer Checker
-The layer checker can be used to enforce constraints on what can depend on what.
+The layer checker can be used to define layers and then enforce constraints on the dependencies that packages can have.
+Dependencies are only allowed to packages in or below the same layer.
 
 To enforce layers for your package, first define the `layers` in `packwerk.yml`, for example:
+
 ```
 layers:
-  - package
+  - feature
+  - core
   - utility
 ```
 
@@ -208,10 +211,10 @@ Then, turn on the checker in your package:
 ```yaml
 # components/merchandising/package.yml
 enforce_layers: true
-layer: utility
+layer: core
 ```
 
-Now this pack can only depend on other utility packages.
+Now this pack can only depend on other packages from the `core` or `utility` layers. It cannot depend on packages from the higher `feature` layer.
 
 ### Deprecated Architecture Checker
 The "Layer Checker" was formerly named "Architecture Checker". The associated keys were:
