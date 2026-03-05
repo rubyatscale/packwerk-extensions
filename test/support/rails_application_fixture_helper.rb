@@ -17,7 +17,7 @@ module RailsApplicationFixtureHelper
 
     attr_reader :main, :once
 
-    def each(&block)
+    def each(&)
       yield(main)
       yield(once)
     end
@@ -28,7 +28,7 @@ module RailsApplicationFixtureHelper
   end
 
   def use_template(template)
-    super(template)
+    super
 
     Rails.stubs(:autoloaders).returns(Autoloaders.new)
 

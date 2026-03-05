@@ -44,7 +44,7 @@ module Packwerk
       end
 
       test 'finds the layers' do
-        assert_equal config_instance.layers_list, %w[orchestrator business_domain]
+        assert_equal config_instance.layers_list, %w(orchestrator business_domain)
       end
 
       test 'determines architecture keys' do
@@ -53,7 +53,7 @@ module Packwerk
         assert_equal config_instance.layers_key, 'architecture_layers'
         assert_equal config_instance.violation_key, 'architecture'
         assert_equal config_instance.enforce_key, 'enforce_architecture'
-        assert_equal config_instance.layers_list, %w[orchestrator business_domain]
+        assert_equal config_instance.layers_list, %w(orchestrator business_domain)
       end
 
       private

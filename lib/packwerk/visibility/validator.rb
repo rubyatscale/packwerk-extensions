@@ -52,7 +52,7 @@ module Packwerk
 
       sig { override.returns(T::Array[String]) }
       def permitted_keys
-        %w[visible_to enforce_visibility]
+        %w(visible_to enforce_visibility)
       end
     end
   end

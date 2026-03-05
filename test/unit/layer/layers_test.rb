@@ -29,7 +29,7 @@ module Packwerk
       end
 
       test 'finds the configured layers' do
-        assert_equal layers_class.names, Set.new(%w[orchestrator business_domain])
+        assert_equal layers_class.names, Set.new(%w(orchestrator business_domain))
       end
 
       private

@@ -29,7 +29,7 @@ module Packwerk
 
       sig { override.returns(T::Array[String]) }
       def permitted_keys
-        %w[enforce_folder_privacy]
+        %w(enforce_folder_privacy)
       end
     end
   end

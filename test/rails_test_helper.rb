@@ -21,7 +21,7 @@ class Dummy < Rails::Application
   config.autoload_once_paths = [
     skeleton('components', 'timeline', 'app', 'models'),
     skeleton('components', 'timeline', 'app', 'models', 'concerns'),
-    skeleton('vendor', 'cache', 'gems', 'example', 'models')
+    skeleton('vendor', 'cache', 'gems', 'example', 'models'),
   ]
   config.root = skeleton('.')
   config.logger = Logger.new('/dev/null')

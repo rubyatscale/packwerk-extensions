@@ -29,7 +29,7 @@ module Packwerk
         checker = visibility_checker
         destination_package = Packwerk::Package.new(
           name: 'destination_package',
-          config: { 'enforce_visibility' => true, visible_to: 'other_pack' }
+          config: { 'enforce_visibility' => true, :visible_to => 'other_pack' }
         )
         reference = build_reference(destination_package: destination_package)
 
