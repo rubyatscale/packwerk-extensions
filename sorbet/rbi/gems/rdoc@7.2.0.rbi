@@ -5526,8 +5526,16 @@ end
 #   ## Heading 2
 #   ### Heading 3
 #
-# source://rdoc//lib/rdoc/markup/heading.rb#29
-class RDoc::Markup::Heading < ::Struct
+# source://rdoc//lib/rdoc/markup/heading.rb#8
+class RDoc::Markup::Heading < ::RDoc::Markup::Element
+  # @return [Heading] a new instance of Heading
+  #
+  # source://rdoc//lib/rdoc/markup/heading.rb#16
+  def initialize(level, text); end
+
+  # source://rdoc//lib/rdoc/markup/heading.rb#24
+  def ==(other); end
+
   # source://rdoc//lib/rdoc/markup/heading.rb#70
   def accept(visitor); end
 
@@ -5595,11 +5603,11 @@ class RDoc::Markup::Heading < ::Struct
   # source://rdoc//lib/rdoc/markup/heading.rb#141
   def legacy_label(context = T.unsafe(nil)); end
 
-  # source://rdoc//lib/rdoc/markup/heading.rb#29
+  # source://rdoc//lib/rdoc/markup/heading.rb#13
   def level; end
 
-  # source://rdoc//lib/rdoc/markup/heading.rb#29
-  def level=(_); end
+  # source://rdoc//lib/rdoc/markup/heading.rb#13
+  def level=(_arg0); end
 
   # HTML markup of the text of this label without the surrounding header element.
   #
@@ -5609,28 +5617,10 @@ class RDoc::Markup::Heading < ::Struct
   # source://rdoc//lib/rdoc/markup/heading.rb#166
   def pretty_print(q); end
 
-  # source://rdoc//lib/rdoc/markup/heading.rb#29
+  # source://rdoc//lib/rdoc/markup/heading.rb#10
   def text; end
 
-  # source://rdoc//lib/rdoc/markup/heading.rb#29
-  def text=(_); end
-
   class << self
-    # source://rdoc//lib/rdoc/markup/heading.rb#29
-    def [](*_arg0); end
-
-    # source://rdoc//lib/rdoc/markup/heading.rb#29
-    def inspect; end
-
-    # source://rdoc//lib/rdoc/markup/heading.rb#29
-    def keyword_init?; end
-
-    # source://rdoc//lib/rdoc/markup/heading.rb#29
-    def members; end
-
-    # source://rdoc//lib/rdoc/markup/heading.rb#29
-    def new(*_arg0); end
-
     # A singleton plain HTML formatter for headings. Used for creating labels for the Table of Contents
     #
     # source://rdoc//lib/rdoc/markup/heading.rb#53
@@ -13373,6 +13363,8 @@ module Rake
   extend ::FileUtils::StreamUtils_
   extend ::FileUtils
 end
+
+class Rake::CommandLineOptionError < ::StandardError; end
 
 # For backwards compatibility
 #
