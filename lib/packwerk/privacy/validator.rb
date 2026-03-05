@@ -31,7 +31,7 @@ module Packwerk
 
       sig { override.returns(T::Array[String]) }
       def permitted_keys
-        %w[public_path enforce_privacy private_constants ignored_private_constants strict_privacy_ignored_patterns]
+        %w(public_path enforce_privacy private_constants ignored_private_constants strict_privacy_ignored_patterns)
       end
 
       private
@@ -65,10 +65,10 @@ module Packwerk
 
           constant_locations.each do |name, location|
             results << if location
-                         check_private_constant_location(configuration, package_set, name, location, config_file_path)
-                       else
-                         private_constant_unresolvable(name, config_file_path)
-                       end
+              check_private_constant_location(configuration, package_set, name, location, config_file_path)
+            else
+              private_constant_unresolvable(name, config_file_path)
+            end
           end
         end
 
@@ -104,8 +104,10 @@ module Packwerk
       end
 
       sig do
-        params(configuration: Configuration, package_set: PackageSet, name: T.untyped, location: T.untyped,
-               config_file_path: T.untyped).returns(Result)
+        params(
+configuration: Configuration, package_set: PackageSet, name: T.untyped, location: T.untyped,
+config_file_path: T.untyped
+).returns(Result)
       end
       def check_private_constant_location(configuration, package_set, name, location, config_file_path)
         declared_package = package_set.package_from_path(relative_path(configuration, config_file_path))

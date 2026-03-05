@@ -93,7 +93,7 @@ module Packwerk
 
         refute result.ok?, result.error_value
         assert_match(
-          %r{'::PrivateThing' is declared as private in the 'components/timeline' package},
+          %r('::PrivateThing' is declared as private in the 'components/timeline' package),
           result.error_value
         )
         assert_match(

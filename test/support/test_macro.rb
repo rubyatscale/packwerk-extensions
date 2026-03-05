@@ -2,16 +2,16 @@
 # frozen_string_literal: true
 
 module TestMacro
-  def test(description, &block)
+  def test(description, &)
     method_name = "test_#{description}".gsub(/\W/, '_')
-    define_method(method_name, &block)
+    define_method(method_name, &)
   end
 
-  def setup(&block)
-    define_method(:setup, &block)
+  def setup(&)
+    define_method(:setup, &)
   end
 
-  def teardown(&block)
-    define_method(:teardown, &block)
+  def teardown(&)
+    define_method(:teardown, &)
   end
 end

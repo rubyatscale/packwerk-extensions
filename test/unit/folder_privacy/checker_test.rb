@@ -35,7 +35,7 @@ module Packwerk
         [true_, 'packs/a',         'packs/b/packs/c', true_, 'not siblings or child'],
         [true_, 'packs/a/packs/1', 'packs/b/packs/1', true_, 'not siblings or child'],
         [true_, 'packs/a',         'packs/a/packs/1', true_, 'access to parent not ok'],
-        [true_, 'packs/b',         'packs/a/packs/1', true_, 'not siblings or child']
+        [true_, 'packs/b',         'packs/a/packs/1', true_, 'not siblings or child'],
       ].each do |test|
         test "if #{test[1]} has enforce_folder_privacy: #{test[0]} than a reference from #{test[2]} is #{test[3] ? 'A VIOLATION' : 'OK'}" do
           source_package = Packwerk::Package.new(name: test[2])
