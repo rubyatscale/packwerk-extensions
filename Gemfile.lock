@@ -1,25 +1,8 @@
-GIT
-  remote: https://github.com/Shopify/packwerk
-  revision: 5b06827b1d4be60a54dbf68a2cab5661b3fd3dcf
-  branch: main
-  specs:
-    packwerk (3.2.3)
-      activesupport (>= 6.0)
-      ast
-      better_html
-      bundler
-      constant_resolver (>= 0.3)
-      parallel
-      parser
-      prism (>= 0.25.0)
-      sorbet-runtime (>= 0.5.9914)
-      zeitwerk (>= 2.6.1)
-
 PATH
   remote: .
   specs:
     packwerk-extensions (0.3.0)
-      packwerk (>= 2.2.1)
+      packwerk (>= 3)
       railties (>= 6.0.0)
       sorbet-runtime
       zeitwerk
@@ -112,6 +95,17 @@ GEM
       racc (~> 1.4)
     nokogiri (1.19.1-x86_64-linux-gnu)
       racc (~> 1.4)
+    packwerk (3.2.3)
+      activesupport (>= 6.0)
+      ast
+      better_html
+      bundler
+      constant_resolver (>= 0.3)
+      parallel
+      parser
+      prism (>= 0.25.0)
+      sorbet-runtime (>= 0.5.9914)
+      zeitwerk (>= 2.6.1)
     parallel (1.27.0)
     parser (3.3.10.2)
       ast (~> 2.4.1)
@@ -241,7 +235,6 @@ PLATFORMS
 DEPENDENCIES
   minitest
   mocha
-  packwerk!
   packwerk-extensions!
   pry
   rake
