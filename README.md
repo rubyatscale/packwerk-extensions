@@ -5,7 +5,7 @@
 Currently, it ships the following checkers to help improve the boundaries between packages. These checkers are:
 - A `privacy` checker that ensures other packages are using your package's public API
 - A `visibility` checker that allows packages to be private except to an explicit group of other packages.
-- A `folder_privacy` checker that allows packages to their sibling packs and parent pack (to be used in an application that uses folder packs)
+- A `folder_privacy` checker that allows packages to be private to their sibling packs and parent pack (to be used in an application that uses folder packs)
 - A `layer` (formerly `architecture`) checker that allows packages to specify their "layer" and ensures they cannot use packages from higher layers
 
 ## Installation
@@ -63,7 +63,7 @@ public_path: my/custom/path/
 ### Defining public constants through sigil
 
 > [!WARNING]
-> This way of of defining the public API of a package should be considered WIP. It is not supported by all tooling in the RubyAtScale ecosystem, as @alexevanczuk pointed out in a [comment on the PR](https://github.com/rubyatscale/packwerk-extensions/pull/35#discussion_r1334331797):
+> This way of defining the public API of a package should be considered WIP. It is not supported by all tooling in the RubyAtScale ecosystem, as @alexevanczuk pointed out in a [comment on the PR](https://github.com/rubyatscale/packwerk-extensions/pull/35#discussion_r1334331797):
 >
 > There are a couple of other places that will require changes related to this sigil. Namely, everything that is coupled to the public folder implementation of privacy.
 >
