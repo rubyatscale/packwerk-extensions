@@ -1,6 +1,7 @@
 # typed: strict
 # frozen_string_literal: true
 
+require 'sorbet-runtime'
 require 'packwerk/visibility/package'
 require 'packwerk/visibility/validator'
 

@@ -1,6 +1,7 @@
 # typed: strict
 # frozen_string_literal: true
 
+require 'sorbet-runtime'
 require 'packwerk/layer/config'
 require 'packwerk/layer/layers'
 require 'packwerk/layer/package'
