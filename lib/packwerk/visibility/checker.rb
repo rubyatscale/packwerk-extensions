@@ -11,7 +11,7 @@ module Packwerk
       extend T::Sig
       include Packwerk::Checker
 
-      VIOLATION_TYPE = T.let('visibility', String)
+      VIOLATION_TYPE = 'visibility'
 
       sig { override.returns(String) }
       def violation_type

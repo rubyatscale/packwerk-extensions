@@ -10,7 +10,7 @@ module Packwerk
       extend T::Sig
       include Packwerk::Checker
 
-      VIOLATION_TYPE = T.let('folder_privacy', String)
+      VIOLATION_TYPE = 'folder_privacy'
 
       sig { override.returns(String) }
       def violation_type

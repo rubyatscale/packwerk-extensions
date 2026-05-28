@@ -6,10 +6,10 @@ module Packwerk
     class Config
       extend T::Sig
 
-      ARCHITECTURE_VIOLATION_TYPE = T.let('architecture', String)
-      ARCHITECTURE_ENFORCE = T.let('enforce_architecture', String)
-      LAYER_VIOLATION_TYPE = T.let('layer', String)
-      LAYER_ENFORCE = T.let('enforce_layers', String)
+      ARCHITECTURE_VIOLATION_TYPE = 'architecture'
+      ARCHITECTURE_ENFORCE = 'enforce_architecture'
+      LAYER_VIOLATION_TYPE = 'layer'
+      LAYER_ENFORCE = 'enforce_layers'
 
       sig { void }
       def initialize

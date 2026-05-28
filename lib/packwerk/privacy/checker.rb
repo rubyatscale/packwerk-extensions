@@ -11,9 +11,9 @@ module Packwerk
       extend T::Sig
       include Packwerk::Checker
 
-      VIOLATION_TYPE = T.let('privacy', String)
-      PUBLICIZED_SIGIL = T.let('pack_public: true', String)
-      PUBLICIZED_SIGIL_REGEX = T.let(/#.*pack_public:\s*true/, Regexp)
+      VIOLATION_TYPE = 'privacy'
+      PUBLICIZED_SIGIL = 'pack_public: true'
+      PUBLICIZED_SIGIL_REGEX = /#.*pack_public:\s*true/
       @publicized_locations = T.let({}, T::Hash[String, T::Boolean])
 
       class << self
