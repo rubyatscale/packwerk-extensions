@@ -25,7 +25,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'packwerk', '>= 3'
   spec.add_dependency 'railties', '>= 6.0.0'
-  spec.add_dependency 'sorbet-runtime'
   spec.add_dependency 'zeitwerk'
 
   spec.add_development_dependency 'minitest'

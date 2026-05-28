@@ -4,14 +4,14 @@
 module Packwerk
   module FolderPrivacy
     class Validator
-      extend T::Sig
       include Packwerk::Validator
 
       Result = Packwerk::Validator::Result
 
-      sig { override.params(package_set: PackageSet, configuration: Configuration).returns(Result) }
+      # @override
+      #: (PackageSet package_set, Configuration configuration) -> Result
       def call(package_set, configuration)
-        results = T.let([], T::Array[Result])
+        results = [] #: Array[Result]
 
         package_manifests_settings_for(configuration, 'enforce_folder_privacy').each do |config, setting|
           next if setting.nil?
@@ -27,7 +27,8 @@ module Packwerk
         merge_results(results, separator: "\n---\n")
       end
 
-      sig { override.returns(T::Array[String]) }
+      # @override
+      #: -> Array[String]
       def permitted_keys
         %w(enforce_folder_privacy)
       end

@@ -8,21 +8,18 @@ module Packwerk
   module Visibility
     # Checks whether a given reference references a constant from a package that does not permit visibility
     class Checker
-      extend T::Sig
       include Packwerk::Checker
 
       VIOLATION_TYPE = 'visibility'
 
-      sig { override.returns(String) }
+      # @override
+      #: -> String
       def violation_type
         VIOLATION_TYPE
       end
 
-      sig do
-        override
-          .params(reference: Packwerk::Reference)
-          .returns(T::Boolean)
-      end
+      # @override
+      #: (Packwerk::Reference reference) -> bool
       def invalid_reference?(reference)
         constant_package = reference.constant.package
         visibility_package = Package.from(constant_package)
@@ -32,21 +29,15 @@ module Packwerk
         !visibility_package.visible_to.include?(reference.package.name)
       end
 
-      sig do
-        override
-          .params(listed_offense: Packwerk::ReferenceOffense)
-          .returns(T::Boolean)
-      end
+      # @override
+      #: (Packwerk::ReferenceOffense listed_offense) -> bool
       def strict_mode_violation?(listed_offense)
         publishing_package = listed_offense.reference.constant.package
         publishing_package.config['enforce_visibility'] == 'strict'
       end
 
-      sig do
-        override
-          .params(reference: Packwerk::Reference)
-          .returns(String)
-      end
+      # @override
+      #: (Packwerk::Reference reference) -> String
       def message(reference)
         source_desc = "'#{reference.package}'"
 
@@ -62,15 +53,12 @@ module Packwerk
 
       private
 
-      sig do
-        params(visibility_option: T.nilable(T.any(T::Boolean, String)))
-          .returns(T::Boolean)
-      end
+      #: ((bool | String)? visibility_option) -> bool
       def enforcement_disabled?(visibility_option)
         [false, nil].include?(visibility_option)
       end
 
-      sig { params(reference: Reference).returns(String) }
+      #: (Reference reference) -> String
       def standard_help_message(reference)
         standard_message = <<~MESSAGE.chomp
           Inference details: this is a reference to #{reference.constant.name} which seems to be defined in #{reference.constant.location}.

@@ -4,20 +4,18 @@
 module Packwerk
   module Privacy
     class Validator
-      extend T::Sig
       include Packwerk::Validator
 
       Result = Packwerk::Validator::Result
 
-      sig { override.params(package_set: PackageSet, configuration: Configuration).returns(Result) }
+      # @override
+      #: (PackageSet package_set, Configuration configuration) -> Result
       def call(package_set, configuration)
         privacy_settings = package_manifests_settings_for(configuration, 'enforce_privacy')
 
-        results = T.let([], T::Array[Result])
-
-        privacy_settings.each do |config_file_path, setting|
-          results << check_enforce_privacy_setting(config_file_path, setting)
-        end
+        results = privacy_settings.map do |config_file_path, setting|
+          check_enforce_privacy_setting(config_file_path, setting)
+        end #: Array[Result]
 
         results += verify_private_constants_setting(package_set, configuration)
 
@@ -29,17 +27,18 @@ module Packwerk
         merge_results(results, separator: "\n---\n")
       end
 
-      sig { override.returns(T::Array[String]) }
+      # @override
+      #: -> Array[String]
       def permitted_keys
         %w(public_path enforce_privacy private_constants ignored_private_constants strict_privacy_ignored_patterns)
       end
 
       private
 
-      sig { params(package_set: PackageSet, configuration: Configuration).returns(T::Array[Result]) }
+      #: (PackageSet package_set, Configuration configuration) -> Array[Result]
       def verify_private_constants_setting(package_set, configuration)
         private_constants_setting = package_manifests_settings_for(configuration, 'private_constants')
-        results = T.let([], T::Array[Result])
+        results = [] #: Array[Result]
         resolver = ConstantResolver.new(
           root_path: configuration.root_path,
           load_paths: configuration.load_paths,
@@ -75,9 +74,7 @@ module Packwerk
         results
       end
 
-      sig do
-        params(config_file_path: String, setting: T.untyped).returns(Result)
-      end
+      #: (String config_file_path, untyped setting) -> Result
       def check_public_path(config_file_path, setting)
         if setting.is_a?(String) || setting.nil?
           Result.new(ok: true)
@@ -89,9 +86,7 @@ module Packwerk
         end
       end
 
-      sig do
-        params(config_file_path: String, setting: T.untyped).returns(Result)
-      end
+      #: (String config_file_path, untyped setting) -> Result
       def check_enforce_privacy_setting(config_file_path, setting)
         if [TrueClass, FalseClass, NilClass].include?(setting.class) || setting == 'strict'
           Result.new(ok: true)
@@ -103,12 +98,13 @@ module Packwerk
         end
       end
 
-      sig do
-        params(
-configuration: Configuration, package_set: PackageSet, name: T.untyped, location: T.untyped,
-config_file_path: T.untyped
-).returns(Result)
-      end
+      #: (
+      #|   Configuration configuration,
+      #|   PackageSet package_set,
+      #|   untyped name,
+      #|   untyped location,
+      #|   untyped config_file_path
+      #| ) -> Result
       def check_private_constant_location(configuration, package_set, name, location, config_file_path)
         declared_package = package_set.package_from_path(relative_path(configuration, config_file_path))
         constant_package = package_set.package_from_path(location)
@@ -123,7 +119,7 @@ config_file_path: T.untyped
         end
       end
 
-      sig { params(location: String, constant_package: Packwerk::Package, name: T.untyped).returns(Result) }
+      #: (String location, Packwerk::Package constant_package, untyped name) -> Result
       def check_for_publicized_constant(location, constant_package, name)
         if Packwerk::Privacy::Checker.publicized_location?(location)
           sigil = Packwerk::Privacy::Checker::PUBLICIZED_SIGIL
@@ -140,7 +136,7 @@ config_file_path: T.untyped
         end
       end
 
-      sig { params(constants: T.untyped, config_file_path: String).returns(T::Array[Result]) }
+      #: (untyped constants, String config_file_path) -> Array[Result]
       def assert_constants_can_be_loaded(constants, config_file_path)
         constants.map do |constant|
           if constant.start_with?('::')
@@ -157,7 +153,7 @@ config_file_path: T.untyped
         end
       end
 
-      sig { params(name: T.untyped, config_file_path: T.untyped).returns(Result) }
+      #: (untyped name, untyped config_file_path) -> Result
       def private_constant_unresolvable(name, config_file_path)
         explicit_filepath = "#{(name.start_with?('::') ? name[2..] : name).underscore}.rb"
 

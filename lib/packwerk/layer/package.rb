@@ -3,19 +3,29 @@
 
 module Packwerk
   module Layer
-    class Package < T::Struct
-      extend T::Sig
+    class Package
+      #: String?
+      attr_reader :layer
 
-      const :layer, T.nilable(String)
-      const :enforcement_setting, T.nilable(T.any(T::Boolean, String, T::Array[String]))
-      const :config, T::Hash[T.untyped, T.untyped]
+      #: (bool | String | Array[String])?
+      attr_reader :enforcement_setting
 
-      sig { returns(T::Boolean) }
+      #: Hash[untyped, untyped]
+      attr_reader :config
+
+      #: (layer: String?, enforcement_setting: (bool | String | Array[String])?, config: Hash[untyped, untyped]) -> void
+      def initialize(layer:, enforcement_setting:, config:)
+        @layer = layer
+        @enforcement_setting = enforcement_setting
+        @config = config
+      end
+
+      #: -> bool
       def enforces?
         enforcement_setting == true || enforcement_setting == 'strict'
       end
 
-      sig { params(other_package: Package, layers: Layers).returns(T::Boolean) }
+      #: (Package other_package, layers: Layers) -> bool
       def can_depend_on?(other_package, layers:)
         return true if !enforces?
 
@@ -28,9 +38,7 @@ module Packwerk
       end
 
       class << self
-        extend T::Sig
-
-        sig { params(package: ::Packwerk::Package, layers: Layers).returns(Package) }
+        #: (::Packwerk::Package package, Layers layers) -> Package
         def from(package, layers)
           config = package.config
 

@@ -28,45 +28,31 @@ module Packwerk
     # C) A potential sequencing for modularizing a system (starting with lower layers first).
     #
     class Checker
-      extend T::Sig
       include Packwerk::Checker
 
-      sig { void }
-      def initialize
-        @violation_type = T.let(@violation_type, T.nilable(String))
-      end
-
-      sig { override.returns(String) }
+      # @override
+      #: -> String
       def violation_type
-        @violation_type ||= layer_config.violation_key
+        @violation_type ||= layer_config.violation_key #: String?
       end
 
-      sig do
-        override
-          .params(reference: Packwerk::Reference)
-          .returns(T::Boolean)
-      end
+      # @override
+      #: (Packwerk::Reference reference) -> bool
       def invalid_reference?(reference)
         constant_package = Package.from(reference.constant.package, layers)
         referencing_package = Package.from(reference.package, layers)
         !referencing_package.can_depend_on?(constant_package, layers: layers)
       end
 
-      sig do
-        override
-          .params(listed_offense: Packwerk::ReferenceOffense)
-          .returns(T::Boolean)
-      end
+      # @override
+      #: (Packwerk::ReferenceOffense listed_offense) -> bool
       def strict_mode_violation?(listed_offense)
         constant_package = listed_offense.reference.package
         constant_package.config[layer_config.enforce_key] == 'strict'
       end
 
-      sig do
-        override
-          .params(reference: Packwerk::Reference)
-          .returns(String)
-      end
+      # @override
+      #: (Packwerk::Reference reference) -> String
       def message(reference)
         constant_package = Package.from(reference.constant.package, layers)
         referencing_package = Package.from(reference.package, layers)
@@ -84,7 +70,7 @@ module Packwerk
       end
 
       # TODO: Extract this out into a common helper, can call it StandardViolationHelpMessage.new(...) and implements .to_s
-      sig { params(reference: Reference).returns(String) }
+      #: (Reference reference) -> String
       def standard_help_message(reference)
         standard_message = <<~MESSAGE.chomp
           Inference details: this is a reference to #{reference.constant.name} which seems to be defined in #{reference.constant.location}.
@@ -94,14 +80,14 @@ module Packwerk
         standard_message.chomp
       end
 
-      sig { returns(Layers) }
+      #: -> Layers
       def layers
-        @layers ||= T.let(Layers.new, T.nilable(Packwerk::Layer::Layers))
+        @layers ||= Layers.new #: Packwerk::Layer::Layers?
       end
 
-      sig { returns(Config) }
+      #: -> Config
       def layer_config
-        @layer_config ||= T.let(Config.new, T.nilable(Config))
+        @layer_config ||= Config.new #: Config?
       end
     end
   end

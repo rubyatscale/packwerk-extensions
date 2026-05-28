@@ -4,15 +4,15 @@
 module Packwerk
   module Visibility
     class Validator
-      extend T::Sig
       include Packwerk::Validator
 
       Result = Packwerk::Validator::Result
 
-      sig { override.params(package_set: PackageSet, configuration: Configuration).returns(Result) }
+      # @override
+      #: (PackageSet package_set, Configuration configuration) -> Result
       def call(package_set, configuration)
         visible_settings = package_manifests_settings_for(configuration, 'visible_to')
-        results = T.let([], T::Array[Result])
+        results = [] #: Array[Result]
 
         all_package_names = package_set.to_set(&:name)
 
@@ -50,7 +50,8 @@ module Packwerk
         merge_results(results, separator: "\n---\n")
       end
 
-      sig { override.returns(T::Array[String]) }
+      # @override
+      #: -> Array[String]
       def permitted_keys
         %w(visible_to enforce_visibility)
       end

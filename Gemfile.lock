@@ -13,7 +13,6 @@ PATH
     packwerk-extensions (0.3.0)
       packwerk (>= 3)
       railties (>= 6.0.0)
-      sorbet-runtime
       zeitwerk
 
 GEM
