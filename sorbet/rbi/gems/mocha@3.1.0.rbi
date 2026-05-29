@@ -5,7 +5,6 @@
 # Please instead update this file by running `bin/tapioca gem mocha`.
 
 
-# pkg:gem/mocha#lib/mocha/inspect.rb:59
 class Array
   include ::Enumerable
   include ::Mocha::Inspect::ArrayMethods
@@ -15,13 +14,11 @@ class Class < ::Module
   include ::Mocha::ClassMethods
 end
 
-# pkg:gem/mocha#lib/mocha/inspect.rb:71
 class Date
   include ::Comparable
   include ::Mocha::Inspect::DateMethods
 end
 
-# pkg:gem/mocha#lib/mocha/inspect.rb:63
 class Hash
   include ::Enumerable
   include ::Mocha::Inspect::HashMethods
@@ -300,6 +297,14 @@ class Mocha::BacktraceFilter
 
   # pkg:gem/mocha#lib/mocha/backtrace_filter.rb:11
   def filtered(backtrace); end
+
+  # pkg:gem/mocha#lib/mocha/backtrace_filter.rb:15
+  def filtered_locations(locations); end
+
+  private
+
+  # pkg:gem/mocha#lib/mocha/backtrace_filter.rb:21
+  def exclude?(path); end
 end
 
 # pkg:gem/mocha#lib/mocha/backtrace_filter.rb:5
@@ -810,21 +815,9 @@ end
 # pkg:gem/mocha#lib/mocha/deprecation.rb:6
 class Mocha::Deprecation
   class << self
-    # pkg:gem/mocha#lib/mocha/deprecation.rb:22
-    def logger; end
-
-    # pkg:gem/mocha#lib/mocha/deprecation.rb:16
-    def logger=(_arg0); end
-
-    # pkg:gem/mocha#lib/mocha/deprecation.rb:18
+    # pkg:gem/mocha#lib/mocha/deprecation.rb:8
     def warning(message); end
   end
-end
-
-# pkg:gem/mocha#lib/mocha/deprecation.rb:7
-class Mocha::Deprecation::Logger
-  # pkg:gem/mocha#lib/mocha/deprecation.rb:8
-  def call(message); end
 end
 
 # pkg:gem/mocha#lib/mocha/detection/minitest.rb:4
@@ -867,7 +860,7 @@ class Mocha::Expectation
   # @private
   #
   # pkg:gem/mocha#lib/mocha/expectation.rb:652
-  def initialize(mock, expected_method_name, backtrace = T.unsafe(nil)); end
+  def initialize(mock, expected_method_name, backtrace_locations = T.unsafe(nil)); end
 
   # @private
   #
@@ -957,12 +950,17 @@ class Mocha::Expectation
 
   # @private
   #
-  # pkg:gem/mocha#lib/mocha/expectation.rb:649
+  # pkg:gem/mocha#lib/mocha/expectation.rb:764
   def backtrace; end
 
   # @private
   #
-  # pkg:gem/mocha#lib/mocha/expectation.rb:764
+  # pkg:gem/mocha#lib/mocha/expectation.rb:649
+  def backtrace_locations; end
+
+  # @private
+  #
+  # pkg:gem/mocha#lib/mocha/expectation.rb:769
   def definition_location; end
 
   # @private
@@ -1928,13 +1926,21 @@ class Mocha::Invocation
   def argument_description; end
 end
 
-# pkg:gem/mocha#lib/mocha/logger.rb:4
+# pkg:gem/mocha#lib/mocha/logger.rb:6
 class Mocha::Logger
-  # pkg:gem/mocha#lib/mocha/logger.rb:5
-  def initialize(io); end
+  # pkg:gem/mocha#lib/mocha/logger.rb:19
+  def warning(message, category: T.unsafe(nil)); end
 
-  # pkg:gem/mocha#lib/mocha/logger.rb:9
-  def warn(message); end
+  class << self
+    # pkg:gem/mocha#lib/mocha/logger.rb:14
+    def logger; end
+
+    # pkg:gem/mocha#lib/mocha/logger.rb:8
+    def logger=(_arg0); end
+
+    # pkg:gem/mocha#lib/mocha/logger.rb:10
+    def warning(*args, **kwargs); end
+  end
 end
 
 # pkg:gem/mocha#lib/mocha/method_matcher.rb:4
@@ -2293,75 +2299,69 @@ end
 
 # pkg:gem/mocha#lib/mocha/mockery.rb:18
 class Mocha::Mockery
-  # pkg:gem/mocha#lib/mocha/mockery.rb:71
+  # pkg:gem/mocha#lib/mocha/mockery.rb:70
   def initialize(assertion_counter); end
 
-  # pkg:gem/mocha#lib/mocha/mockery.rb:154
-  def logger; end
-
-  # pkg:gem/mocha#lib/mocha/mockery.rb:152
-  def logger=(_arg0); end
-
-  # pkg:gem/mocha#lib/mocha/mockery.rb:133
+  # pkg:gem/mocha#lib/mocha/mockery.rb:132
   def mocha_inspect; end
 
-  # pkg:gem/mocha#lib/mocha/mockery.rb:83
+  # pkg:gem/mocha#lib/mocha/mockery.rb:82
   def mock_impersonating(object); end
 
-  # pkg:gem/mocha#lib/mocha/mockery.rb:87
+  # pkg:gem/mocha#lib/mocha/mockery.rb:86
   def mock_impersonating_any_instance_of(klass); end
 
-  # pkg:gem/mocha#lib/mocha/mockery.rb:121
+  # pkg:gem/mocha#lib/mocha/mockery.rb:120
   def mocks; end
 
-  # pkg:gem/mocha#lib/mocha/mockery.rb:75
+  # pkg:gem/mocha#lib/mocha/mockery.rb:74
   def named_mock(name); end
 
-  # pkg:gem/mocha#lib/mocha/mockery.rb:91
+  # pkg:gem/mocha#lib/mocha/mockery.rb:90
   def new_state_machine(name); end
 
-  # pkg:gem/mocha#lib/mocha/mockery.rb:141
+  # pkg:gem/mocha#lib/mocha/mockery.rb:140
   def on_stubbing(object, method); end
 
-  # pkg:gem/mocha#lib/mocha/mockery.rb:129
+  # pkg:gem/mocha#lib/mocha/mockery.rb:128
   def sequences; end
 
-  # pkg:gem/mocha#lib/mocha/mockery.rb:125
+  # pkg:gem/mocha#lib/mocha/mockery.rb:124
   def state_machines; end
 
-  # pkg:gem/mocha#lib/mocha/mockery.rb:117
+  # pkg:gem/mocha#lib/mocha/mockery.rb:116
   def stubba; end
 
-  # pkg:gem/mocha#lib/mocha/mockery.rb:111
+  # pkg:gem/mocha#lib/mocha/mockery.rb:110
   def teardown(origin = T.unsafe(nil)); end
 
-  # pkg:gem/mocha#lib/mocha/mockery.rb:79
+  # pkg:gem/mocha#lib/mocha/mockery.rb:78
   def unnamed_mock; end
 
-  # pkg:gem/mocha#lib/mocha/mockery.rb:95
+  # pkg:gem/mocha#lib/mocha/mockery.rb:94
   def verify; end
 
   private
 
-  # pkg:gem/mocha#lib/mocha/mockery.rb:183
+  # pkg:gem/mocha#lib/mocha/mockery.rb:176
   def add_mock(mock); end
 
-  # pkg:gem/mocha#lib/mocha/mockery.rb:188
+  # pkg:gem/mocha#lib/mocha/mockery.rb:181
   def add_state_machine(state_machine); end
 
-  # pkg:gem/mocha#lib/mocha/mockery.rb:160
+  # pkg:gem/mocha#lib/mocha/mockery.rb:153
   def check(action, description, signature_proc, backtrace = T.unsafe(nil)); end
 
-  # pkg:gem/mocha#lib/mocha/mockery.rb:171
+  # pkg:gem/mocha#lib/mocha/mockery.rb:164
   def expectations; end
 
-  # pkg:gem/mocha#lib/mocha/mockery.rb:193
+  # pkg:gem/mocha#lib/mocha/mockery.rb:186
   def reset; end
 
-  # pkg:gem/mocha#lib/mocha/mockery.rb:179
+  # pkg:gem/mocha#lib/mocha/mockery.rb:172
   def satisfied_expectations; end
 
-  # pkg:gem/mocha#lib/mocha/mockery.rb:175
+  # pkg:gem/mocha#lib/mocha/mockery.rb:168
   def unsatisfied_expectations; end
 
   class << self
@@ -2371,10 +2371,10 @@ class Mocha::Mockery
     # pkg:gem/mocha#lib/mocha/mockery.rb:49
     def setup(assertion_counter); end
 
-    # pkg:gem/mocha#lib/mocha/mockery.rb:60
+    # pkg:gem/mocha#lib/mocha/mockery.rb:59
     def teardown(origin = T.unsafe(nil)); end
 
-    # pkg:gem/mocha#lib/mocha/mockery.rb:56
+    # pkg:gem/mocha#lib/mocha/mockery.rb:55
     def verify; end
   end
 end
@@ -3977,7 +3977,6 @@ class Object < ::BasicObject
   include ::Mocha::ObjectMethods
 end
 
-# pkg:gem/mocha#lib/mocha/inspect.rb:67
 class Time
   include ::Comparable
   include ::Mocha::Inspect::TimeMethods

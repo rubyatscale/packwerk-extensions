@@ -368,24 +368,24 @@ RuboCop::Cop::Gusto::PaperclipOrAttachable::RESTRICT_ON_SEND = T.let(T.unsafe(ni
 #
 # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/perform_class_method.rb:28
 class RuboCop::Cop::Gusto::PerformClassMethod < ::RuboCop::Cop::Base
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/perform_class_method.rb:33
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/perform_class_method.rb:38
   def on_def(node); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/perform_class_method.rb:40
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/perform_class_method.rb:45
   def on_defs(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/perform_class_method.rb:34
+  def worker_module_include?(param0 = T.unsafe(nil)); end
 
   private
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/perform_class_method.rb:63
-  def is_include?(node); end
-
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/perform_class_method.rb:52
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/perform_class_method.rb:57
   def is_sidekiq_worker?(search_node, method_type); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/perform_class_method.rb:44
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/perform_class_method.rb:49
   def perform_class_method_type(node); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/perform_class_method.rb:67
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/perform_class_method.rb:65
   def worker_modules; end
 end
 
@@ -518,8 +518,16 @@ RuboCop::Cop::Gusto::RablExtends::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
 #
 # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/rails_env.rb:30
 class RuboCop::Cop::Gusto::RailsEnv < ::RuboCop::Cop::Base
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/rails_env.rb:58
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/rails_env.rb:65
   def on_send(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/rails_env.rb:58
+  def prohibited_rails_env?(param0 = T.unsafe(nil)); end
+
+  private
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/rails_env.rb:71
+  def prohibited_predicate?(name); end
 end
 
 # This allow list is derived from:
@@ -533,9 +541,6 @@ RuboCop::Cop::Gusto::RailsEnv::ALLOWED_LIST = T.let(T.unsafe(nil), Set)
 RuboCop::Cop::Gusto::RailsEnv::MSG = T.let(T.unsafe(nil), String)
 
 # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/rails_env.rb:55
-RuboCop::Cop::Gusto::RailsEnv::PROHIBITED_CLASS = T.let(T.unsafe(nil), String)
-
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/rails_env.rb:56
 RuboCop::Cop::Gusto::RailsEnv::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
 
 # Detects constants in a rake file because they are defined at the top level.
@@ -657,21 +662,24 @@ RuboCop::Cop::Gusto::RegexpBypass::PROHIBITED_END_ANCHOR = T.let(T.unsafe(nil), 
 #
 # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/rspec_date_time_mock.rb:27
 class RuboCop::Cop::Gusto::RspecDateTimeMock < ::RuboCop::Cop::Base
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/rspec_date_time_mock.rb:54
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/rspec_date_time_mock.rb:37
+  def and_call_original?(param0); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/rspec_date_time_mock.rb:59
   def on_send(node); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/rspec_date_time_mock.rb:43
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/rspec_date_time_mock.rb:48
   def time_mock?(param0 = T.unsafe(nil)); end
 
   private
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/rspec_date_time_mock.rb:89
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/rspec_date_time_mock.rb:92
   def and_call_original_in_chain?(node); end
 
   # Returns true if the given node is a const or a call chain whose root receiver
   # is one of the protected time classes (Date/Time/DateTime)
   #
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/rspec_date_time_mock.rb:69
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/rspec_date_time_mock.rb:74
   def rooted_in_time_class?(node); end
 end
 
@@ -686,15 +694,15 @@ RuboCop::Cop::Gusto::RspecDateTimeMock::RESTRICT_ON_SEND = T.let(T.unsafe(nil), 
 
 # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sidekiq_params.rb:6
 class RuboCop::Cop::Gusto::SidekiqParams < ::RuboCop::Cop::Base
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sidekiq_params.rb:10
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sidekiq_params.rb:14
   def on_def(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sidekiq_params.rb:10
+  def perform_with_kwargs?(param0 = T.unsafe(nil)); end
 end
 
 # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sidekiq_params.rb:7
 RuboCop::Cop::Gusto::SidekiqParams::MSG = T.let(T.unsafe(nil), String)
-
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sidekiq_params.rb:8
-RuboCop::Cop::Gusto::SidekiqParams::PROHIBITED_ARG_TYPES = T.let(T.unsafe(nil), Set)
 
 # Checks that no top-level constants (excluding classes and modules)
 # are defined. This rule exists to prevent accidental pollution of the
@@ -786,7 +794,7 @@ class RuboCop::Cop::Gusto::UsePaintNotColorize < ::RuboCop::Cop::Base
 
   private
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/use_paint_not_colorize.rb:222
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/use_paint_not_colorize.rb:219
   def build_paint_call(string_node, foreground, background, styles); end
 
   # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/use_paint_not_colorize.rb:130
@@ -795,7 +803,7 @@ class RuboCop::Cop::Gusto::UsePaintNotColorize < ::RuboCop::Cop::Base
   # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/use_paint_not_colorize.rb:136
   def correction(node); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/use_paint_not_colorize.rb:202
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/use_paint_not_colorize.rb:199
   def extract_string_and_operations(node); end
 
   # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/use_paint_not_colorize.rb:122
@@ -926,62 +934,153 @@ end
 # pkg:gem/rubocop-gusto#lib/rubocop/cop/internal_affairs/require_restrict_on_send.rb:27
 RuboCop::Cop::InternalAffairs::RequireRestrictOnSend::MSG = T.let(T.unsafe(nil), String)
 
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/rspec/scattered_let.rb:7
+module RuboCop::Cop::RSpec; end
+
+# Patches the upstream `RSpec/ScatteredLet` cop so that Sorbet `sig`
+# declarations attached to `let`/`let!` blocks (Sorbet's RSpec mode)
+# do not interrupt the consecutive-let chain.
+#
+# Without this patch the upstream cop flags valid `sig`+`let`
+# arrangements because the intervening `sig` block breaks the
+# consecutive-sibling check. (The sig-aware `MoveNode` patch in
+# `lib/rubocop/gusto/move_node_patch.rb` handles dragging the `sig`
+# along during autocorrect.)
+#
+# @example
+#   # good (no longer flagged)
+#   context "..." do
+#     sig { returns(Something) }
+#     let(:thing) { create(:something) }
+#
+#     sig { returns(Other) }
+#     let(:other) { create(:other) }
+#   end
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/rspec/scattered_let.rb:27
+class RuboCop::Cop::RSpec::ScatteredLet < ::RuboCop::Cop::RSpec::Base
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rspec/scattered_let.rb:32
+  def sig_block?(param0 = T.unsafe(nil)); end
+
+  private
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rspec/scattered_let.rb:60
+  def build_let_units(children); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rspec/scattered_let.rb:38
+  def check_let_declarations(body); end
+end
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/rspec/scattered_let.rb:28
+class RuboCop::Cop::RSpec::ScatteredLet::LetUnit < ::Struct
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rspec/scattered_let.rb:28
+  def length; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rspec/scattered_let.rb:28
+  def length=(_); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rspec/scattered_let.rb:28
+  def let; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rspec/scattered_let.rb:28
+  def let=(_); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rspec/scattered_let.rb:28
+  def start_index; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rspec/scattered_let.rb:28
+  def start_index=(_); end
+
+  class << self
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/rspec/scattered_let.rb:28
+    def [](*_arg0); end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/rspec/scattered_let.rb:28
+    def inspect; end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/rspec/scattered_let.rb:28
+    def keyword_init?; end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/rspec/scattered_let.rb:28
+    def members; end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/rspec/scattered_let.rb:28
+    def new(*_arg0); end
+  end
+end
+
 # pkg:gem/rubocop-gusto#lib/rubocop/cop/rack/lowercase_header_keys.rb:5
 module RuboCop::Cop::Rack; end
 
 # Detects HTTP response headers with uppercase characters.
-# HTTP response header keys should be lowercase for consistency
-# and compatibility with HTTP/2 and modern web standards.
+# HTTP response header keys should be lowercase for compatibility
+# with HTTP/2 and modern web standards.
+#
+# HTTP/2 (RFC 9113) requires all header field names to be lowercase.
+# Using lowercase keys ensures compatibility across HTTP versions
+# and Rack implementations.
 #
 # @example
 #   # bad
 #   headers['Content-Type'] = 'application/json'
 #   response.headers['Location'] = '/redirect'
+#   response.set_header('X-Custom', 'value')
+#   response.headers['Content-Security-Policy'] += policy
 #
 #   # good
 #   headers['content-type'] = 'application/json'
 #   response.headers['location'] = '/redirect'
+#   response.set_header('x-custom', 'value')
+#   response.headers['content-security-policy'] += policy
 #
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/rack/lowercase_header_keys.rb:19
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/rack/lowercase_header_keys.rb:27
 class RuboCop::Cop::Rack::LowercaseHeaderKeys < ::RuboCop::Cop::Base
   extend ::RuboCop::Cop::AutoCorrector
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rack/lowercase_header_keys.rb:61
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rack/lowercase_header_keys.rb:54
   def on_csend(node); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rack/lowercase_header_keys.rb:50
+  # Handle compound assignment: headers['Key'] += val
+  # Ruby parses this as an op_asgn node, not a []= send
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rack/lowercase_header_keys.rb:58
+  def on_op_asgn(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rack/lowercase_header_keys.rb:47
   def on_send(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rack/lowercase_header_keys.rb:34
+  def response_header_method?(param0 = T.unsafe(nil)); end
 
   private
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rack/lowercase_header_keys.rb:103
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rack/lowercase_header_keys.rb:123
   def add_offense_for_header(node, key_value); end
 
-  # Matches:
-  #   headers['...'] = value (bare method call in controller)
-  #   response.headers['...'] = value
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rack/lowercase_header_keys.rb:73
+  def check_bracket_access(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rack/lowercase_header_keys.rb:83
+  def check_header_method(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rack/lowercase_header_keys.rb:88
+  def check_key(key_node); end
+
+  # Matches headers receivers that are response-related:
+  #   headers (bare method call in controller)
+  #   response.headers
+  #   self.headers
   # Does NOT match:
   #   conn.headers, request.headers, client.headers, etc.
   #
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rack/lowercase_header_keys.rb:77
-  def headers_assignment?(node); end
-
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rack/lowercase_header_keys.rb:85
-  def headers_method_receiver?(receiver); end
-
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rack/lowercase_header_keys.rb:65
-  def uppercase_known_header?(key); end
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/rack/lowercase_header_keys.rb:102
+  def response_headers_receiver?(receiver); end
 end
 
-# Known HTTP headers (case-insensitive check)
-#
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/rack/lowercase_header_keys.rb:26
-RuboCop::Cop::Rack::LowercaseHeaderKeys::KNOWN_HEADERS = T.let(T.unsafe(nil), Set)
-
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/rack/lowercase_header_keys.rb:22
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/rack/lowercase_header_keys.rb:30
 RuboCop::Cop::Rack::LowercaseHeaderKeys::MSG = T.let(T.unsafe(nil), String)
 
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/rack/lowercase_header_keys.rb:23
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/rack/lowercase_header_keys.rb:31
 RuboCop::Cop::Rack::LowercaseHeaderKeys::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
 
 # RuboCop Gusto project namespace.
@@ -1005,3 +1104,52 @@ end
 
 # pkg:gem/rubocop-gusto#lib/rubocop/gusto/version.rb:5
 RuboCop::Gusto::VERSION = T.let(T.unsafe(nil), String)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/gusto/move_node_patch.rb:6
+module RuboCop::RSpec; end
+
+# pkg:gem/rubocop-gusto#lib/rubocop/gusto/move_node_patch.rb:7
+module RuboCop::RSpec::Corrector; end
+
+class RuboCop::RSpec::Corrector::MoveNode
+  include ::RuboCop::RSpec::Corrector::SigAwareMoveNode
+end
+
+# Patches `MoveNode` to treat Sorbet `sig { ... }` blocks as part of the
+# `let`/`subject`/hook they precede.
+#
+# Sorbet's RSpec mode attaches type signatures to memoized helpers via a
+# `sig` block immediately above the declaration:
+#
+#   sig { returns(Something) }
+#   let(:thing) { create(:something) }
+#
+# Several rubocop-rspec cops use `MoveNode` to relocate `let`/`subject`/
+# hook nodes (`ScatteredLet`, `LeadingSubject`, `LetBeforeExamples`,
+# `HooksBeforeExamples`). Without this patch, the move strands the `sig`
+# at the original location. This patch:
+#
+# 1. Extends the source range of the moved node to include a preceding
+#    `sig` block, so `sig` is carried with the move.
+# 2. In `move_before`, redirects the insertion point above a preceding
+#    `sig` on the destination, so the destination's `sig` pairing stays
+#    intact.
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/gusto/move_node_patch.rb:27
+module RuboCop::RSpec::Corrector::SigAwareMoveNode
+  extend ::RuboCop::AST::NodePattern::Macros
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/gusto/move_node_patch.rb:35
+  def move_before(other); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/gusto/move_node_patch.rb:31
+  def sig_block?(param0 = T.unsafe(nil)); end
+
+  private
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/gusto/move_node_patch.rb:42
+  def node_range(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/gusto/move_node_patch.rb:53
+  def preceding_sig_block(node); end
+end

@@ -8772,10 +8772,10 @@ module ActionView::Helpers::TagHelper
   #   cdata_section("hello]]>world")
   #   # => <![CDATA[hello]]]]><![CDATA[>world]]>
   #
-  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:555
+  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:558
   def cdata_section(content); end
 
-  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:540
+  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:543
   def class_names(*args); end
 
   # Returns an HTML block tag of type +name+ surrounding the +content+. Add
@@ -8807,7 +8807,7 @@ module ActionView::Helpers::TagHelper
   #   <% end -%>
   #    # => <div class="strong">Hello world!</div>
   #
-  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:513
+  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:516
   def content_tag(name, content_or_options_with_block = T.unsafe(nil), options = T.unsafe(nil), escape = T.unsafe(nil), &block); end
 
   # Returns an escaped version of +html+ without affecting existing escaped entities.
@@ -8818,7 +8818,7 @@ module ActionView::Helpers::TagHelper
   #   escape_once("&lt;&lt; Accept & Checkout")
   #   # => "&lt;&lt; Accept &amp; Checkout"
   #
-  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:567
+  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:570
   def escape_once(html); end
 
   # Returns an HTML tag.
@@ -8968,7 +8968,7 @@ module ActionView::Helpers::TagHelper
   #   tag("div", class: { highlight: current_user.admin? })
   #   # => <div class="highlight" />
   #
-  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:476
+  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:479
   def tag(name = T.unsafe(nil), options = T.unsafe(nil), open = T.unsafe(nil), escape = T.unsafe(nil)); end
 
   # Returns a string of tokens built from +args+.
@@ -8983,25 +8983,25 @@ module ActionView::Helpers::TagHelper
   #   token_list(nil, false, 123, "", "foo", { bar: true })
   #    # => "123 foo bar"
   #
-  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:535
+  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:538
   def token_list(*args); end
 
   private
 
-  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:577
+  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:580
   def build_tag_values(*args); end
 
-  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:572
+  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:575
   def ensure_valid_html5_tag_name(name); end
 
-  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:597
+  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:600
   def tag_builder; end
 
   class << self
-    # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:595
+    # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:598
     def build_tag_values(*args); end
 
-    # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:575
+    # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:578
     def ensure_valid_html5_tag_name(name); end
   end
 end
@@ -9427,25 +9427,25 @@ class ActionView::Helpers::TagHelper::TagBuilder
 
   private
 
-  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:288
+  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:291
   def boolean_tag_option(key); end
 
-  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:321
+  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:324
   def method_missing(called, *args, escape: T.unsafe(nil), **options, &block); end
 
-  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:309
+  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:312
   def prefix_tag_option(prefix, key, value, escape); end
 
-  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:317
+  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:320
   def respond_to_missing?(*args); end
 
-  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:284
+  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:287
   def self_closing_tag_string(name, options, escape = T.unsafe(nil), tag_suffix = T.unsafe(nil)); end
 
-  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:292
+  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:295
   def tag_option(key, value, escape); end
 
-  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:278
+  # pkg:gem/actionview#lib/action_view/helpers/tag_helper.rb:281
   def tag_string(name, content = T.unsafe(nil), options, escape: T.unsafe(nil), &block); end
 
   class << self
@@ -13007,7 +13007,7 @@ end
 # * Support streaming from child templates, partials and so on.
 # * Rack::Cache needs to support streaming bodies
 #
-# pkg:gem/actionview#lib/action_view/renderer/streaming_template_renderer.rb:9
+# pkg:gem/actionview#lib/action_view/renderer/streaming_template_renderer.rb:12
 class ActionView::StreamingTemplateRenderer < ::ActionView::TemplateRenderer
   # For streaming, instead of rendering a given a template, we return a Body
   # object that responds to each. This object is initialized with a block
@@ -13160,13 +13160,13 @@ class ActionView::Template
   # to ensure that references to the template object can be marshalled as well. This means forgoing
   # the marshalling of the compiler mutex and instantiating that again on unmarshalling.
   #
-  # pkg:gem/actionview#lib/action_view/template.rb:387
+  # pkg:gem/actionview#lib/action_view/template.rb:393
   def marshal_dump; end
 
-  # pkg:gem/actionview#lib/action_view/template.rb:391
+  # pkg:gem/actionview#lib/action_view/template.rb:397
   def marshal_load(array); end
 
-  # pkg:gem/actionview#lib/action_view/template.rb:396
+  # pkg:gem/actionview#lib/action_view/template.rb:402
   def method_name; end
 
   # Render a template. If the template was not compiled yet, it is done
@@ -13203,7 +13203,7 @@ class ActionView::Template
 
   # Returns whether a template is using strict locals.
   #
-  # pkg:gem/actionview#lib/action_view/template.rb:380
+  # pkg:gem/actionview#lib/action_view/template.rb:386
   def strict_locals?; end
 
   # Returns whether the underlying handler supports streaming. If so,
@@ -13244,44 +13244,44 @@ class ActionView::Template
   # In general, this means that templates will be UTF-8 inside of Rails,
   # regardless of the original source encoding.
   #
-  # pkg:gem/actionview#lib/action_view/template.rb:500
+  # pkg:gem/actionview#lib/action_view/template.rb:506
   def compile(mod); end
 
   # Compile a template. This method ensures a template is compiled
   # just once and removes the source after it is compiled.
   #
-  # pkg:gem/actionview#lib/action_view/template.rb:418
+  # pkg:gem/actionview#lib/action_view/template.rb:424
   def compile!(view); end
 
   # This method compiles the source of the template. The compilation of templates
   # involves setting strict_locals! if applicable, encoding the template, and setting
   # frozen string literal.
   #
-  # pkg:gem/actionview#lib/action_view/template.rb:443
+  # pkg:gem/actionview#lib/action_view/template.rb:449
   def compiled_source; end
 
-  # pkg:gem/actionview#lib/action_view/template.rb:405
+  # pkg:gem/actionview#lib/action_view/template.rb:411
   def find_node_by_id(node, node_id); end
 
-  # pkg:gem/actionview#lib/action_view/template.rb:549
+  # pkg:gem/actionview#lib/action_view/template.rb:555
   def handle_render_error(view, e); end
 
-  # pkg:gem/actionview#lib/action_view/template.rb:574
+  # pkg:gem/actionview#lib/action_view/template.rb:580
   def identifier_method_name; end
 
-  # pkg:gem/actionview#lib/action_view/template.rb:578
+  # pkg:gem/actionview#lib/action_view/template.rb:584
   def instrument(action, &block); end
 
-  # pkg:gem/actionview#lib/action_view/template.rb:586
+  # pkg:gem/actionview#lib/action_view/template.rb:592
   def instrument_payload; end
 
-  # pkg:gem/actionview#lib/action_view/template.rb:582
+  # pkg:gem/actionview#lib/action_view/template.rb:588
   def instrument_render_template(&block); end
 
-  # pkg:gem/actionview#lib/action_view/template.rb:561
+  # pkg:gem/actionview#lib/action_view/template.rb:567
   def locals_code; end
 
-  # pkg:gem/actionview#lib/action_view/template.rb:541
+  # pkg:gem/actionview#lib/action_view/template.rb:547
   def offset; end
 
   class << self
@@ -13658,7 +13658,7 @@ class ActionView::Template::Handlers::Raw
   def call(template, source); end
 end
 
-# pkg:gem/actionview#lib/action_view/template/inline.rb:5
+# pkg:gem/actionview#lib/action_view/template/inline.rb:7
 class ActionView::Template::Inline < ::ActionView::Template
   # pkg:gem/actionview#lib/action_view/template/inline.rb:16
   def compile(mod); end
@@ -13676,7 +13676,7 @@ ActionView::Template::LEADING_ENCODING_REGEXP = T.let(T.unsafe(nil), Regexp)
 # pkg:gem/actionview#lib/action_view/template.rb:197
 ActionView::Template::NONE = T.let(T.unsafe(nil), Object)
 
-# pkg:gem/actionview#lib/action_view/template.rb:558
+# pkg:gem/actionview#lib/action_view/template.rb:564
 ActionView::Template::RUBY_RESERVED_KEYWORDS = T.let(T.unsafe(nil), Array)
 
 # = Action View RawFile Template

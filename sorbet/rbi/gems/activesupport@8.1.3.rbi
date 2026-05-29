@@ -5597,7 +5597,7 @@ end
 # pkg:gem/activesupport#lib/active_support/core_ext/enumerable.rb:25
 ActiveSupport::EnumerableCoreExt::SoleItemExpectedError = Enumerable::SoleItemExpectedError
 
-# pkg:gem/activesupport#lib/active_support/environment_inquirer.rb:7
+# pkg:gem/activesupport#lib/active_support/environment_inquirer.rb:9
 class ActiveSupport::EnvironmentInquirer < ::ActiveSupport::StringInquirer
   # pkg:gem/activesupport#lib/active_support/environment_inquirer.rb:15
   def initialize(env); end
@@ -6332,42 +6332,45 @@ end
 # pkg:gem/activesupport#lib/active_support/execution_context.rb:4
 module ActiveSupport::ExecutionContext
   class << self
-    # pkg:gem/activesupport#lib/active_support/execution_context.rb:69
+    # pkg:gem/activesupport#lib/active_support/execution_context.rb:76
     def []=(key, value); end
 
-    # pkg:gem/activesupport#lib/active_support/execution_context.rb:40
+    # pkg:gem/activesupport#lib/active_support/execution_context.rb:47
     def after_change(&block); end
 
-    # pkg:gem/activesupport#lib/active_support/execution_context.rb:96
+    # pkg:gem/activesupport#lib/active_support/execution_context.rb:103
     def clear; end
 
-    # pkg:gem/activesupport#lib/active_support/execution_context.rb:100
+    # pkg:gem/activesupport#lib/active_support/execution_context.rb:111
     def current_attributes_instances; end
 
-    # pkg:gem/activesupport#lib/active_support/execution_context.rb:38
+    # pkg:gem/activesupport#lib/active_support/execution_context.rb:107
+    def flush; end
+
+    # pkg:gem/activesupport#lib/active_support/execution_context.rb:45
     def nestable; end
 
-    # pkg:gem/activesupport#lib/active_support/execution_context.rb:38
+    # pkg:gem/activesupport#lib/active_support/execution_context.rb:45
     def nestable=(_arg0); end
 
-    # pkg:gem/activesupport#lib/active_support/execution_context.rb:87
+    # pkg:gem/activesupport#lib/active_support/execution_context.rb:94
     def pop; end
 
-    # pkg:gem/activesupport#lib/active_support/execution_context.rb:78
+    # pkg:gem/activesupport#lib/active_support/execution_context.rb:85
     def push; end
 
     # Updates the execution context. If a block is given, it resets the provided keys to their
     # previous value once the block exits.
     #
-    # pkg:gem/activesupport#lib/active_support/execution_context.rb:46
+    # pkg:gem/activesupport#lib/active_support/execution_context.rb:53
     def set(**options); end
 
-    # pkg:gem/activesupport#lib/active_support/execution_context.rb:74
+    # pkg:gem/activesupport#lib/active_support/execution_context.rb:81
     def to_h; end
 
     private
 
-    # pkg:gem/activesupport#lib/active_support/execution_context.rb:105
+    # pkg:gem/activesupport#lib/active_support/execution_context.rb:116
     def record; end
   end
 end
@@ -6379,6 +6382,9 @@ class ActiveSupport::ExecutionContext::Record
 
   # pkg:gem/activesupport#lib/active_support/execution_context.rb:6
   def current_attributes_instances; end
+
+  # pkg:gem/activesupport#lib/active_support/execution_context.rb:27
+  def flush; end
 
   # pkg:gem/activesupport#lib/active_support/execution_context.rb:21
   def pop; end
@@ -7267,7 +7273,7 @@ module ActiveSupport::Inflector
   # The capitalization of the first word can be turned off by setting the
   # +:capitalize+ option to false (default is true).
   #
-  # The trailing '_id' can be kept and capitalized by setting the
+  # The trailing '_id' can be kept by setting the
   # optional parameter +keep_id_suffix+ to true (default is false).
   #
   #   humanize('employee_salary')                  # => "Employee salary"
@@ -7292,7 +7298,7 @@ module ActiveSupport::Inflector
   #     inflect.uncountable 'rails'
   #   end
   #
-  # pkg:gem/activesupport#lib/active_support/inflector/inflections.rb:282
+  # pkg:gem/activesupport#lib/active_support/inflector/inflections.rb:283
   def inflections(locale = T.unsafe(nil)); end
 
   # Returns the suffix that should be added to a number to denote the position
@@ -7945,22 +7951,22 @@ ActiveSupport::JSON::DATE_REGEX = T.let(T.unsafe(nil), Regexp)
 # pkg:gem/activesupport#lib/active_support/json/encoding.rb:59
 module ActiveSupport::JSON::Encoding
   class << self
-    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:239
+    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:241
     def encode_without_escape(value); end
 
-    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:235
+    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:237
     def encode_without_options(value); end
 
     # If true, encode >, <, & as escaped unicode sequences (e.g. > as \u003e)
     # as a safety measure.
     #
-    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:212
+    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:214
     def escape_html_entities_in_json; end
 
     # If true, encode >, <, & as escaped unicode sequences (e.g. > as \u003e)
     # as a safety measure.
     #
-    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:212
+    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:214
     def escape_html_entities_in_json=(_arg0); end
 
     # If true, encode LINE SEPARATOR (U+2028) and PARAGRAPH SEPARATOR (U+2029)
@@ -7969,7 +7975,7 @@ module ActiveSupport::JSON::Encoding
     # but that changed in ECMAScript 2019. As such it's no longer a concern in
     # modern browsers: https://caniuse.com/mdn-javascript_builtins_json_json_superset.
     #
-    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:219
+    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:221
     def escape_js_separators_in_json; end
 
     # If true, encode LINE SEPARATOR (U+2028) and PARAGRAPH SEPARATOR (U+2029)
@@ -7978,40 +7984,40 @@ module ActiveSupport::JSON::Encoding
     # but that changed in ECMAScript 2019. As such it's no longer a concern in
     # modern browsers: https://caniuse.com/mdn-javascript_builtins_json_json_superset.
     #
-    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:219
+    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:221
     def escape_js_separators_in_json=(_arg0); end
 
     # Sets the encoder used by \Rails to encode Ruby objects into JSON strings
     # in +Object#to_json+ and +ActiveSupport::JSON.encode+.
     #
-    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:227
+    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:229
     def json_encoder; end
 
-    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:229
+    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:231
     def json_encoder=(encoder); end
 
     # Sets the precision of encoded time values.
     # Defaults to 3 (equivalent to millisecond precision)
     #
-    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:223
+    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:225
     def time_precision; end
 
     # Sets the precision of encoded time values.
     # Defaults to 3 (equivalent to millisecond precision)
     #
-    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:223
+    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:225
     def time_precision=(_arg0); end
 
     # If true, use ISO 8601 format for dates and times. Otherwise, fall back
     # to the Active Support legacy format.
     #
-    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:208
+    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:210
     def use_standard_json_time_format; end
 
     # If true, use ISO 8601 format for dates and times. Otherwise, fall back
     # to the Active Support legacy format.
     #
-    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:208
+    # pkg:gem/activesupport#lib/active_support/json/encoding.rb:210
     def use_standard_json_time_format=(_arg0); end
   end
 end
@@ -8027,12 +8033,12 @@ ActiveSupport::JSON::Encoding::HTML_ENTITIES_REGEX = T.let(T.unsafe(nil), Regexp
 
 # pkg:gem/activesupport#lib/active_support/json/encoding.rb:150
 class ActiveSupport::JSON::Encoding::JSONGemCoderEncoder
-  # pkg:gem/activesupport#lib/active_support/json/encoding.rb:171
+  # pkg:gem/activesupport#lib/active_support/json/encoding.rb:173
   def initialize(options = T.unsafe(nil)); end
 
   # Encode the given object into a JSON string
   #
-  # pkg:gem/activesupport#lib/active_support/json/encoding.rb:183
+  # pkg:gem/activesupport#lib/active_support/json/encoding.rb:185
   def encode(value); end
 end
 
@@ -10985,7 +10991,7 @@ class ActiveSupport::NumberHelper::NumberToDelimitedConverter < ::ActiveSupport:
 
   private
 
-  # pkg:gem/activesupport#lib/active_support/number_helper/number_to_delimited_converter.rb:25
+  # pkg:gem/activesupport#lib/active_support/number_helper/number_to_delimited_converter.rb:40
   def delimiter_pattern; end
 
   # pkg:gem/activesupport#lib/active_support/number_helper/number_to_delimited_converter.rb:17
@@ -11737,28 +11743,28 @@ class ActiveSupport::SafeBuffer < ::String
   # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:103
   def []=(arg1, arg2, arg3 = T.unsafe(nil)); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:143
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:147
   def as_json(*_arg0); end
 
   # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:87
   def bytesplice(*args, value); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def capitalize(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def capitalize!(*args); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def chomp(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def chomp!(*args); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def chop(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def chop!(*args); end
 
   # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:59
@@ -11767,55 +11773,55 @@ class ActiveSupport::SafeBuffer < ::String
   # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:79
   def concat(value); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def delete(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def delete!(*args); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def delete_prefix(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def delete_prefix!(*args); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def delete_suffix(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def delete_suffix!(*args); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def downcase(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def downcase!(*args); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:151
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:155
   def encode_with(coder); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:171
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:175
   def gsub(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:171
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:175
   def gsub!(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:135
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:139
   def html_safe?; end
 
   # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:91
   def insert(index, value); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def lstrip(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def lstrip!(*args); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def next(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def next!(*args); end
 
   # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:95
@@ -11824,25 +11830,25 @@ class ActiveSupport::SafeBuffer < ::String
   # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:99
   def replace(value); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def reverse(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def reverse!(*args); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def rstrip(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def rstrip!(*args); end
 
   # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:65
   def safe_concat(value); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def scrub(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def scrub!(*args); end
 
   # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:49
@@ -11851,72 +11857,77 @@ class ActiveSupport::SafeBuffer < ::String
   # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:51
   def slice!(*args); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def squeeze(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def squeeze!(*args); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def strip(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def strip!(*args); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:171
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:175
   def sub(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:171
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:175
   def sub!(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def succ(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def succ!(*args); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def swapcase(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def swapcase!(*args); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:147
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:151
   def to_param; end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:139
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:143
   def to_s; end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def tr(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def tr!(*args); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def tr_s(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def tr_s!(*args); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def unicode_normalize(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def unicode_normalize!(*args); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def upcase(*args, &block); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:157
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:161
   def upcase!(*args); end
+
+  protected
+
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:202
+  def mark_unsafe!; end
 
   private
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:198
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:207
   def explicit_html_escape_interpolated_argument(arg); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:202
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:211
   def implicit_html_escape_interpolated_argument(arg); end
 
   # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:74
@@ -11925,10 +11936,10 @@ class ActiveSupport::SafeBuffer < ::String
   # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:28
   def original_concat(*_arg0); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:210
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:219
   def set_block_back_references(block, match_data); end
 
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:216
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:225
   def string_into_safe_buffer(new_string, is_html_safe); end
 end
 
@@ -13550,16 +13561,16 @@ class ActiveSupport::Testing::Parallelization::Worker
   # pkg:gem/activesupport#lib/active_support/testing/parallelization/worker.rb:7
   def initialize(number, url); end
 
-  # pkg:gem/activesupport#lib/active_support/testing/parallelization/worker.rb:82
+  # pkg:gem/activesupport#lib/active_support/testing/parallelization/worker.rb:84
   def after_fork; end
 
   # pkg:gem/activesupport#lib/active_support/testing/parallelization/worker.rb:42
   def perform_job(job); end
 
-  # pkg:gem/activesupport#lib/active_support/testing/parallelization/worker.rb:90
+  # pkg:gem/activesupport#lib/active_support/testing/parallelization/worker.rb:92
   def run_cleanup; end
 
-  # pkg:gem/activesupport#lib/active_support/testing/parallelization/worker.rb:58
+  # pkg:gem/activesupport#lib/active_support/testing/parallelization/worker.rb:60
   def safe_record(reporter, result); end
 
   # pkg:gem/activesupport#lib/active_support/testing/parallelization/worker.rb:14
@@ -13570,10 +13581,10 @@ class ActiveSupport::Testing::Parallelization::Worker
 
   private
 
-  # pkg:gem/activesupport#lib/active_support/testing/parallelization/worker.rb:97
+  # pkg:gem/activesupport#lib/active_support/testing/parallelization/worker.rb:99
   def add_setup_exception(result); end
 
-  # pkg:gem/activesupport#lib/active_support/testing/parallelization/worker.rb:101
+  # pkg:gem/activesupport#lib/active_support/testing/parallelization/worker.rb:103
   def set_process_title(status); end
 end
 
@@ -17518,6 +17529,8 @@ class Integer < ::Numeric
   def years; end
 end
 
+Integer::GMP_VERSION = T.let(T.unsafe(nil), String)
+
 # pkg:gem/activesupport#lib/active_support/core_ext/kernel/reporting.rb:3
 module Kernel
   private
@@ -19325,7 +19338,7 @@ class String
   # +raw+ helper in views. It is recommended that you use +sanitize+ instead of
   # this method. It should never be called on user input.
   #
-  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:232
+  # pkg:gem/activesupport#lib/active_support/core_ext/string/output_safety.rb:241
   def html_safe; end
 
   # Capitalizes the first word, turns underscores into spaces, and (by default) strips a
@@ -19336,7 +19349,7 @@ class String
   # optional parameter +capitalize+ to false.
   # By default, this parameter is true.
   #
-  # The trailing '_id' can be kept and capitalized by setting the
+  # The trailing '_id' can be kept by setting the
   # optional parameter +keep_id_suffix+ to true.
   # By default, this parameter is false.
   #
