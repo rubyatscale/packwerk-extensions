@@ -9,7 +9,6 @@ require 'fixtures/skeleton/components/timeline/app/models/private_thing'
 module Packwerk
   module Visibility
     class ValidatorTest < Minitest::Test
-      extend T::Sig
       include ApplicationFixtureHelper
       include RailsApplicationFixtureHelper
 
@@ -69,7 +68,7 @@ module Packwerk
         assert result.ok?
       end
 
-      sig { returns(Packwerk::Visibility::Validator) }
+      #: -> Packwerk::Visibility::Validator
       def validator
         @validator ||= Packwerk::Visibility::Validator.new
       end

@@ -6,7 +6,6 @@ require 'test_helper'
 module Packwerk
   module Visibility
     class CheckerTest < Minitest::Test
-      extend T::Sig
       include FactoryHelper
       include RailsApplicationFixtureHelper
 
@@ -59,7 +58,7 @@ module Packwerk
 
       private
 
-      sig { returns(Checker) }
+      #: -> Checker
       def visibility_checker
         Visibility::Checker.new
       end

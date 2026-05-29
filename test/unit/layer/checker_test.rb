@@ -6,7 +6,6 @@ require 'test_helper'
 module Packwerk
   module Layer
     class CheckerTest < Minitest::Test
-      extend T::Sig
       include FactoryHelper
       include RailsApplicationFixtureHelper
 
@@ -124,7 +123,7 @@ module Packwerk
 
       private
 
-      sig { returns(Checker) }
+      #: -> Checker
       def layer_checker
         Packwerk::Layer::Checker.new
       end
