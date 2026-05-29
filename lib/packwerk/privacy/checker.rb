@@ -25,7 +25,7 @@ module Packwerk
             publicized_locations[location] = check_for_publicized_sigil(location)
           end
 
-          publicized_locations[location] #: as !nil
+          publicized_locations.fetch(location)
         end
 
         #: (String location) -> bool
@@ -35,8 +35,7 @@ module Packwerk
 
         #: (Array[String] lines) -> bool
         def content_contains_sigil?(lines)
-          first_lines = lines[0..4] #: as !nil
-          first_lines.any? { |l| l =~ PUBLICIZED_SIGIL_REGEX }
+          lines.first(5).any? { |l| l =~ PUBLICIZED_SIGIL_REGEX }
         end
       end
 
