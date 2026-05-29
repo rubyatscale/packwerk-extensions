@@ -20,11 +20,7 @@ module Packwerk
         use_template(:extended)
         Packwerk::Checker.all
         assert_equal(Packwerk::Checker.all.count, 5)
-        found_checker = Packwerk::Checker.all.any? do |checker|
-          untyped_checker = checker #: as untyped
-          untyped_checker.is_a?(Packwerk::Privacy::Checker)
-        end
-        assert found_checker
+        assert(Packwerk::Checker.all.any?(Packwerk::Privacy::Checker))
       end
     end
   end
