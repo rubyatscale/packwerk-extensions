@@ -1,0 +1,36 @@
+name: Update Dependabot RBIs
+
+# Dependency bumps can change gem APIs, so regenerate the Sorbet gem RBIs
+# (`bundle exec tapioca gems`) and push the result back onto the Dependabot PR.
+on:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  tapioca-gems:
+    name: Regenerate gem RBIs
+    if: startsWith(github.head_ref, 'dependabot/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          ref: ${{ github.head_ref }}
+      - uses: ruby/setup-ruby@4c56a21280b36d862b5fc31348f463d60bdc55d5 # v1
+        with:
+          ruby-version: '3.4'
+          bundler-cache: true
+      - name: Regenerate gem RBIs
+        run: bundle exec tapioca gems
+      - name: Commit and push RBI changes
+        run: |
+          if [[ -z "$(git status --porcelain sorbet/rbi)" ]]; then
+            echo "No RBI changes to commit."
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add sorbet/rbi
+          git commit -m "Regenerate gem RBIs [dependabot skip]"
+          git push
