@@ -77,7 +77,7 @@ module ApplicationFixtureHelper
   end
 
   def copy_dir(path)
-    root = FileUtils.mkdir_p(fixture_path).last #: as !nil
+    root = FileUtils.mkdir_p(fixture_path).fetch(-1)
     FileUtils.cp_r("#{path}/.", root)
     @app_dir = root
   end
