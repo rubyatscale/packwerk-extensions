@@ -1,13 +1,24 @@
+---
 gem:
-  # Add your `gem` command parameters here:
-  #
-  # exclude:
-  # - gem_name
-  # doc: true
-  # workers: 5
-dsl:
-  # Add your `dsl` command parameters here:
-  #
-  # exclude:
-  # - SomeGeneratorName
-  # workers: 5
+  # These gems' RBIs are already provided by Sorbet's payload
+  # (sorbet/rbi/{stdlib,gems} in the sorbet/sorbet repo), so generating them
+  # here only duplicates and conflicts with Sorbet's built-in definitions.
+  exclude:
+    - base64
+    - benchmark
+    - bigdecimal
+    - date
+    - drb
+    - erb
+    - json
+    - logger
+    - pp
+    - psych
+    - racc
+    - rdoc
+    - reline
+    - rexml
+    - securerandom
+    - stringio
+    - tsort
+    - uri
