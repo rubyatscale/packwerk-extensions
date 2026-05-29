@@ -6,7 +6,6 @@ require 'test_helper'
 module Packwerk
   module Layer
     class ConfigTest < Minitest::Test
-      extend T::Sig
       include FactoryHelper
       include RailsApplicationFixtureHelper
 
@@ -58,7 +57,7 @@ module Packwerk
 
       private
 
-      sig { returns(Config) }
+      #: -> Config
       def config_instance
         Packwerk::Layer::Config.new
       end

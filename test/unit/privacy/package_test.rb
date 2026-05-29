@@ -6,8 +6,6 @@ require 'test_helper'
 module Packwerk
   module Privacy
     class PackageTest < Minitest::Test
-      extend T::Sig
-
       include RailsApplicationFixtureHelper
 
       setup do
@@ -19,7 +17,7 @@ module Packwerk
         teardown_application_fixture
       end
 
-      sig { returns(Package) }
+      #: -> Package
       def privacy_package
         Package.from(@package)
       end

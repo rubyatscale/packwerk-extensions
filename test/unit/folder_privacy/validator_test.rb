@@ -9,7 +9,6 @@ require 'fixtures/skeleton/components/timeline/app/models/private_thing'
 module Packwerk
   module FolderPrivacy
     class ValidatorTest < Minitest::Test
-      extend T::Sig
       include ApplicationFixtureHelper
       include RailsApplicationFixtureHelper
 
@@ -40,7 +39,7 @@ module Packwerk
         assert result.ok?
       end
 
-      sig { returns(Packwerk::FolderPrivacy::Validator) }
+      #: -> Packwerk::FolderPrivacy::Validator
       def validator
         @validator ||= Packwerk::FolderPrivacy::Validator.new
       end

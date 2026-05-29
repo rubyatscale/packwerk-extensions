@@ -6,7 +6,6 @@ require 'test_helper'
 module Packwerk
   module FolderPrivacy
     class CheckerTest < Minitest::Test
-      extend T::Sig
       include FactoryHelper
       include RailsApplicationFixtureHelper
 
@@ -61,7 +60,7 @@ module Packwerk
 
       private
 
-      sig { returns(Checker) }
+      #: -> Checker
       def folder_privacy_checker
         FolderPrivacy::Checker.new
       end

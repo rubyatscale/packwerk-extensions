@@ -6,7 +6,6 @@ require 'test_helper'
 module Packwerk
   module Privacy
     class CheckerTest < Minitest::Test
-      extend T::Sig
       include FactoryHelper
       include RailsApplicationFixtureHelper
 
@@ -169,7 +168,7 @@ module Packwerk
 
       private
 
-      sig { returns(Checker) }
+      #: -> Checker
       def privacy_checker
         Privacy::Checker.new
       end

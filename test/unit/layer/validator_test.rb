@@ -6,7 +6,6 @@ require 'test_helper'
 module Packwerk
   module Layer
     class ValidatorTest < Minitest::Test
-      extend T::Sig
       include ApplicationFixtureHelper
       include RailsApplicationFixtureHelper
 
@@ -175,7 +174,7 @@ module Packwerk
         assert_equal validator.permitted_keys, %w(enforce_architecture layer)
       end
 
-      sig { returns(Packwerk::Layer::Validator) }
+      #: -> Packwerk::Layer::Validator
       def validator
         @validator ||= Packwerk::Layer::Validator.new
       end

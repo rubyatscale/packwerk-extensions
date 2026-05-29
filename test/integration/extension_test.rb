@@ -6,8 +6,6 @@ require 'test_helper'
 module Packwerk
   module Privacy
     class ExtensionTest < Minitest::Test
-      extend T::Sig
-
       include ApplicationFixtureHelper
 
       setup do
@@ -23,7 +21,8 @@ module Packwerk
         Packwerk::Checker.all
         assert_equal(Packwerk::Checker.all.count, 5)
         found_checker = Packwerk::Checker.all.any? do |checker|
-          T.unsafe(checker).is_a?(Packwerk::Privacy::Checker)
+          untyped_checker = checker #: as untyped
+          untyped_checker.is_a?(Packwerk::Privacy::Checker)
         end
         assert found_checker
       end

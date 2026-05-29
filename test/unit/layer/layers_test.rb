@@ -6,7 +6,6 @@ require 'test_helper'
 module Packwerk
   module Layer
     class LayersTest < Minitest::Test
-      extend T::Sig
       include FactoryHelper
       include RailsApplicationFixtureHelper
 
@@ -34,7 +33,7 @@ module Packwerk
 
       private
 
-      sig { returns(Layers) }
+      #: -> Layers
       def layers_class
         Packwerk::Layer::Layers.new
       end

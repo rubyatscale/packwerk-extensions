@@ -9,7 +9,6 @@ require 'fixtures/skeleton/components/timeline/app/models/private_thing'
 module Packwerk
   module Privacy
     class ValidatorTest < Minitest::Test
-      extend T::Sig
       include ApplicationFixtureHelper
       include RailsApplicationFixtureHelper
 
@@ -128,7 +127,7 @@ module Packwerk
 
       private
 
-      sig { returns(ApplicationValidator) }
+      #: -> ApplicationValidator
       def validator
         @validator ||= ApplicationValidator.new
       end
