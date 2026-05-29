@@ -3,25 +3,56 @@
 
 module Packwerk
   module Privacy
-    class Package < T::Struct
-      extend T::Sig
+    class Package
+      #: String
+      attr_reader :public_path
 
-      const :public_path, String
-      const :user_defined_public_path, T.nilable(String)
-      const :enforce_privacy, T.nilable(T.any(T::Boolean, String))
-      const :private_constants, T::Array[String]
-      const :ignored_private_constants, T::Array[String]
-      const :strict_privacy_ignored_patterns, T::Array[String]
+      #: String?
+      attr_reader :user_defined_public_path
 
-      sig { params(path: String).returns(T::Boolean) }
+      #: (bool | String)?
+      attr_reader :enforce_privacy
+
+      #: Array[String]
+      attr_reader :private_constants
+
+      #: Array[String]
+      attr_reader :ignored_private_constants
+
+      #: Array[String]
+      attr_reader :strict_privacy_ignored_patterns
+
+      #: (
+      #|   public_path: String,
+      #|   user_defined_public_path: String?,
+      #|   enforce_privacy: (bool | String)?,
+      #|   private_constants: Array[String],
+      #|   ignored_private_constants: Array[String],
+      #|   strict_privacy_ignored_patterns: Array[String]
+      #| ) -> void
+      def initialize(
+        public_path:,
+        user_defined_public_path:,
+        enforce_privacy:,
+        private_constants:,
+        ignored_private_constants:,
+        strict_privacy_ignored_patterns:
+      )
+        @public_path = public_path
+        @user_defined_public_path = user_defined_public_path
+        @enforce_privacy = enforce_privacy
+        @private_constants = private_constants
+        @ignored_private_constants = ignored_private_constants
+        @strict_privacy_ignored_patterns = strict_privacy_ignored_patterns
+      end
+
+      #: (String path) -> bool
       def public_path?(path)
         path.start_with?(public_path)
       end
 
       class << self
-        extend T::Sig
-
-        sig { params(package: ::Packwerk::Package).returns(Package) }
+        #: (::Packwerk::Package package) -> Package
         def from(package)
           Package.new(
             public_path: public_path_for(package),
@@ -33,7 +64,7 @@ module Packwerk
           )
         end
 
-        sig { params(package: ::Packwerk::Package).returns(T.nilable(String)) }
+        #: (::Packwerk::Package package) -> String?
         def user_defined_public_path(package)
           return unless package.config['public_path']
           return package.config['public_path'] if package.config['public_path'].end_with?('/')
@@ -41,7 +72,7 @@ module Packwerk
           "#{package.config['public_path']}/"
         end
 
-        sig { params(package: ::Packwerk::Package).returns(String) }
+        #: (::Packwerk::Package package) -> String
         def public_path_for(package)
           unprefixed_public_path = user_defined_public_path(package) || 'app/public/'
 

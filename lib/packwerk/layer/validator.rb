@@ -4,14 +4,14 @@
 module Packwerk
   module Layer
     class Validator
-      extend T::Sig
       include Packwerk::Validator
 
       Result = Packwerk::Validator::Result
 
-      sig { override.params(package_set: PackageSet, configuration: Configuration).returns(Result) }
+      # @override
+      #: (PackageSet package_set, Configuration configuration) -> Result
       def call(package_set, configuration)
-        results = T.let([], T::Array[Result])
+        results = [] #: Array[Result]
 
         package_set.each do |package|
           config = package.config
@@ -36,24 +36,23 @@ module Packwerk
         merge_results(results, separator: "\n---\n")
       end
 
-      sig { returns(Layers) }
+      #: -> Layers
       def layers
-        @layers ||= T.let(Layers.new, T.nilable(Packwerk::Layer::Layers))
+        @layers ||= Layers.new #: Packwerk::Layer::Layers?
       end
 
-      sig { returns(Config) }
+      #: -> Config
       def layer_config
-        @layer_config ||= T.let(Config.new, T.nilable(Config))
+        @layer_config ||= Config.new #: Config?
       end
 
-      sig { override.returns(T::Array[String]) }
+      # @override
+      #: -> Array[String]
       def permitted_keys
         [layer_config.enforce_key, 'layer']
       end
 
-      sig do
-        params(package: Package, config_file_path: String, config: T::Hash[T.untyped, T.untyped]).returns(Result)
-      end
+      #: (Package package, String config_file_path, Hash[untyped, untyped] config) -> Result
       def check_enforce_key(package, config_file_path, config)
         enforce_layer_present = !config[Config::LAYER_ENFORCE].nil?
         enforce_architecture_present = !config[Config::ARCHITECTURE_ENFORCE].nil?
@@ -73,9 +72,7 @@ module Packwerk
         end
       end
 
-      sig do
-        params(package: Package, config_file_path: String).returns(Result)
-      end
+      #: (Package package, String config_file_path) -> Result
       def check_layer_setting(package, config_file_path)
         layer = package.layer
         valid_layer = layer.nil? || layers.names.include?(layer)
@@ -95,9 +92,7 @@ module Packwerk
         end
       end
 
-      sig do
-        params(config_file_path: String, setting: T.untyped).returns(Result)
-      end
+      #: (String config_file_path, untyped setting) -> Result
       def check_enforce_layers_setting(config_file_path, setting)
         activated_value = [true, 'strict'].include?(setting)
         valid_value = [true, nil, false, 'strict'].include?(setting)

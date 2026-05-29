@@ -3,16 +3,21 @@
 
 module Packwerk
   module Visibility
-    class Package < T::Struct
-      extend T::Sig
+    class Package
+      #: Array[String]
+      attr_reader :visible_to
 
-      const :visible_to, T::Array[String]
-      const :enforce_visibility, T.nilable(T.any(T::Boolean, String))
+      #: (bool | String)?
+      attr_reader :enforce_visibility
+
+      #: (visible_to: Array[String], enforce_visibility: (bool | String)?) -> void
+      def initialize(visible_to:, enforce_visibility:)
+        @visible_to = visible_to
+        @enforce_visibility = enforce_visibility
+      end
 
       class << self
-        extend T::Sig
-
-        sig { params(package: ::Packwerk::Package).returns(Package) }
+        #: (::Packwerk::Package package) -> Package
         def from(package)
           Package.new(
             visible_to: package.config['visible_to'] || [],

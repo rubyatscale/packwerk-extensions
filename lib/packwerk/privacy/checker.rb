@@ -8,52 +8,46 @@ module Packwerk
   module Privacy
     # Checks whether a given reference references a private constant of another package.
     class Checker
-      extend T::Sig
       include Packwerk::Checker
 
-      VIOLATION_TYPE = T.let('privacy', String)
-      PUBLICIZED_SIGIL = T.let('pack_public: true', String)
-      PUBLICIZED_SIGIL_REGEX = T.let(/#.*pack_public:\s*true/, Regexp)
-      @publicized_locations = T.let({}, T::Hash[String, T::Boolean])
+      VIOLATION_TYPE = 'privacy'
+      PUBLICIZED_SIGIL = 'pack_public: true'
+      PUBLICIZED_SIGIL_REGEX = /#.*pack_public:\s*true/
+      @publicized_locations = {} #: Hash[String, bool]
 
       class << self
-        extend T::Sig
+        #: Hash[String, bool]
+        attr_reader :publicized_locations
 
-        sig { returns(T::Hash[String, T::Boolean]) }
-        def publicized_locations
-          @publicized_locations
-        end
-
-        sig { params(location: String).returns(T::Boolean) }
+        #: (String location) -> bool
         def publicized_location?(location)
           unless publicized_locations.key?(location)
             publicized_locations[location] = check_for_publicized_sigil(location)
           end
 
-          T.must(publicized_locations[location])
+          publicized_locations[location] #: as !nil
         end
 
-        sig { params(location: String).returns(T::Boolean) }
+        #: (String location) -> bool
         def check_for_publicized_sigil(location)
           content_contains_sigil?(File.readlines(location))
         end
 
-        sig { params(lines: T::Array[String]).returns(T::Boolean) }
+        #: (Array[String] lines) -> bool
         def content_contains_sigil?(lines)
-          T.must(lines[0..4]).any? { |l| l =~ PUBLICIZED_SIGIL_REGEX }
+          first_lines = lines[0..4] #: as !nil
+          first_lines.any? { |l| l =~ PUBLICIZED_SIGIL_REGEX }
         end
       end
 
-      sig { override.returns(String) }
+      # @override
+      #: -> String
       def violation_type
         VIOLATION_TYPE
       end
 
-      sig do
-        override
-          .params(reference: Packwerk::Reference)
-          .returns(T::Boolean)
-      end
+      # @override
+      #: (Packwerk::Reference reference) -> bool
       def invalid_reference?(reference)
         constant_package = reference.constant.package
         privacy_package = Package.from(constant_package)
@@ -69,11 +63,8 @@ module Packwerk
         explicitly_private_constant?(reference.constant, explicitly_private_constants: privacy_package.private_constants)
       end
 
-      sig do
-        override
-          .params(listed_offense: Packwerk::ReferenceOffense)
-          .returns(T::Boolean)
-      end
+      # @override
+      #: (Packwerk::ReferenceOffense listed_offense) -> bool
       def strict_mode_violation?(listed_offense)
         publishing_package = listed_offense.reference.constant.package
 
@@ -86,11 +77,8 @@ module Packwerk
         true
       end
 
-      sig do
-        override
-          .params(reference: Packwerk::Reference)
-          .returns(String)
-      end
+      # @override
+      #: (Packwerk::Reference reference) -> String
       def message(reference)
         source_desc = "'#{reference.package}'"
 
@@ -106,12 +94,7 @@ module Packwerk
 
       private
 
-      sig do
-        params(
-          constant: ConstantContext,
-          explicitly_private_constants: T::Array[String]
-        ).returns(T::Boolean)
-      end
+      #: (ConstantContext constant, explicitly_private_constants: Array[String]) -> bool
       def explicitly_private_constant?(constant, explicitly_private_constants:)
         return true if explicitly_private_constants.empty?
 
@@ -120,15 +103,12 @@ module Packwerk
           explicitly_private_constants.any? { |epc| constant.name.start_with?("#{epc}::") }
       end
 
-      sig do
-        params(privacy_option: T.nilable(T.any(T::Boolean, String, T::Array[String])))
-          .returns(T::Boolean)
-      end
+      #: ((bool | String | Array[String])? privacy_option) -> bool
       def enforcement_disabled?(privacy_option)
         [false, nil].include?(privacy_option)
       end
 
-      sig { params(reference: Reference).returns(String) }
+      #: (Reference reference) -> String
       def standard_help_message(reference)
         standard_message = <<~MESSAGE.chomp
           Inference details: this is a reference to #{reference.constant.name} which seems to be defined in #{reference.constant.location}.
@@ -138,7 +118,7 @@ module Packwerk
         standard_message.chomp
       end
 
-      sig { params(globs: T::Array[String], path: Pathname).returns(T::Boolean) }
+      #: (Array[String] globs, Pathname path) -> bool
       def exclude_from_strict?(globs, path)
         globs.any? do |glob|
           path.fnmatch(glob, File::FNM_EXTGLOB)
