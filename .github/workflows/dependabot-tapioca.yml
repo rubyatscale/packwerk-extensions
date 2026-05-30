@@ -23,7 +23,7 @@ jobs:
           bundler-cache: true
       - name: Regenerate gem RBIs
         run: bundle exec tapioca gems
-      - name: Commit and push RBI changes
+      - name: Commit, push, and type-check updated RBIs
         run: |
           if [[ -z "$(git status --porcelain sorbet/rbi)" ]]; then
             echo "No RBI changes to commit."
@@ -34,3 +34,6 @@ jobs:
           git add sorbet/rbi
           git commit -m "Regenerate gem RBIs [dependabot skip]"
           git push
+          # The push above uses GITHUB_TOKEN, which doesn't re-trigger CI.
+          # RBI changes only affect Sorbet, so type-check them here instead.
+          bundle exec srb tc
