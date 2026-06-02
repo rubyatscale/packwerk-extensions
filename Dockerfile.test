@@ -1,0 +1,41 @@
+# Test image for the Buildkite pipeline. RUBY_VERSION is supplied as a build
+# arg by .buildkite/docker-compose.yml (defaults to 3.4; the test matrix
+# overrides it to 3.3 / 3.4 / 4.0).
+ARG RUBY_VERSION=3.4
+FROM ruby:${RUBY_VERSION}
+
+# packwerk shells out to ripgrep to resolve files, so it must be on PATH.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ripgrep && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set up the buildkite-agent user/group the docker-compose plugin runs as.
+RUN groupadd -r buildkite-agent && \
+    useradd -u 9999 -r -g buildkite-agent buildkite-agent && \
+    mkdir -p /home/buildkite-agent
+
+ENV APP_HOME=/var/www
+WORKDIR $APP_HOME
+
+# Pin Bundler to match Gemfile.lock's `BUNDLED WITH` so no version swap happens
+# at runtime. `--default` replaces the base image's preinstalled Bundler.
+ENV BUNDLER_VERSION=4.0.7
+RUN gem install bundler --version 4.0.7 --default
+
+# Gusto-internal gem mirror: uncomment ONLY when this pipeline runs on Gusto
+# Buildkite agents that can reach gemstash. Leave commented for public agents,
+# which install straight from rubygems.org.
+# RUN bundle config --local "mirror.https://rubygems.org" "https://gemstash.zp-int.com"
+
+# Install dependencies first so the bundle layer caches across source changes.
+# The gemspec hardcodes its version and globs files with Dir[...], so it loads
+# fine with only the Gemfile and gemspec present.
+COPY Gemfile* packwerk-extensions.gemspec $APP_HOME/
+RUN bundle install
+
+# Add the rest of the source now that dependencies are installed.
+COPY . $APP_HOME
+
+RUN chown -R buildkite-agent:buildkite-agent $APP_HOME /home/buildkite-agent
+
+USER buildkite-agent

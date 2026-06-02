@@ -1,0 +1,37 @@
+steps:
+  - name: ':sorbet: Sorbet'
+    command: bundle exec srb tc
+    plugins:
+      - docker-compose#v5.6.0:
+          run: app
+          config: .buildkite/docker-compose.yml
+
+  - name: ':rubocop: Rubocop'
+    command: bundle exec rubocop
+    plugins:
+      - docker-compose#v5.6.0:
+          run: app
+          config: .buildkite/docker-compose.yml
+
+  # Tests run against every supported Ruby (matches the gemspec's
+  # `required_ruby_version >= 3.3` and the old GitHub Actions matrix). The
+  # matrix value is exported as RUBY_VERSION so docker-compose builds the
+  # image on that Ruby (see the build arg in docker-compose.yml).
+  - name: ':minitest: Tests (Ruby {{matrix}})'
+    command: bundle exec rake test
+    env:
+      RUBY_VERSION: '{{matrix}}'
+    matrix:
+      - '3.3'
+      - '3.4'
+      - '4.0'
+    plugins:
+      - docker-compose#v5.6.0:
+          run: app
+          config: .buildkite/docker-compose.yml
+
+# NOTE: gem publishing is intentionally NOT handled here. It currently lives in
+# .github/workflows/cd.yml. If you want releases to move to Buildkite too, add a
+# `wait` + publish step modeled on danger-gusto's pipeline — that step needs the
+# Gusto-internal `gemstash-publish` agent queue and the SSH token-generator
+# plugin, so it only works once this pipeline runs on Gusto Buildkite agents.

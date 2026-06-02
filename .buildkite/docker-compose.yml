@@ -1,0 +1,23 @@
+version: '3'
+services:
+  app:
+    build:
+      context: ../
+      dockerfile: Dockerfile.test
+      args:
+        # Overridden per-step via the RUBY_VERSION env var (see pipeline.yml's
+        # test matrix). Defaults to 3.4 for the Sorbet and Rubocop steps.
+        RUBY_VERSION: ${RUBY_VERSION:-3.4}
+    environment:
+      BUILDKITE:
+      BUILDKITE_AGENT_ACCESS_TOKEN:
+      BUILDKITE_BRANCH:
+      BUILDKITE_BUILD_ID:
+      BUILDKITE_BUILD_NUMBER:
+      BUILDKITE_BUILD_URL:
+      BUILDKITE_COMMIT:
+      BUILDKITE_JOB_ID:
+      BUILDKITE_PIPELINE_SLUG:
+      BUILDKITE_PULL_REQUEST:
+      BUILDKITE_PULL_REQUEST_BASE_BRANCH:
+      BUILDKITE_REPO:

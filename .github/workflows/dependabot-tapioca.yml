@@ -23,7 +23,7 @@ jobs:
           bundler-cache: true
       - name: Regenerate gem RBIs
         run: bundle exec tapioca gems
-      - name: Commit, push, and type-check updated RBIs
+      - name: Commit and push updated RBIs
         run: |
           if [[ -z "$(git status --porcelain sorbet/rbi)" ]]; then
             echo "No RBI changes to commit."
@@ -33,7 +33,9 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add sorbet/rbi
           git commit -m "Regenerate gem RBIs [dependabot skip]"
+          # Buildkite builds this commit via its GitHub webhook integration
+          # regardless of the pushing credential, so Sorbet, Rubocop, and the
+          # tests all run against the RBI commit. (GitHub Actions would ignore
+          # a GITHUB_TOKEN push here — that recursion guard does not apply to
+          # Buildkite.)
           git push
-          # The push above uses GITHUB_TOKEN, which doesn't re-trigger CI.
-          # RBI changes only affect Sorbet, so type-check them here instead.
-          bundle exec srb tc
