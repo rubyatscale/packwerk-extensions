@@ -23,7 +23,7 @@ module Packwerk
           config: { 'enforce_privacy' => false, 'private_constants' => ['::SomeName'] }
         )
         checker = privacy_checker
-        reference = build_reference(destination_package: destination_package)
+        reference = build_reference(destination_package:)
 
         refute checker.invalid_reference?(reference)
       end
@@ -34,7 +34,7 @@ module Packwerk
           config: { 'enforce_privacy' => true, 'private_constants' => ['::SomeOtherConstant'] }
         )
         checker = privacy_checker
-        reference = build_reference(destination_package: destination_package)
+        reference = build_reference(destination_package:)
 
         refute checker.invalid_reference?(reference)
       end
@@ -42,7 +42,7 @@ module Packwerk
       test 'complains about private constant if enforcing privacy for everything' do
         destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => true })
         checker = privacy_checker
-        reference = build_reference(destination_package: destination_package)
+        reference = build_reference(destination_package:)
 
         assert checker.invalid_reference?(reference)
       end
@@ -50,7 +50,7 @@ module Packwerk
       test 'does not complain about private constant if enforcing privacy for everything and the destination is publicizing the file' do
         destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => true })
         checker = privacy_checker
-        reference = build_reference(destination_package: destination_package)
+        reference = build_reference(destination_package:)
         Packwerk::Privacy::Checker.publicized_locations['some/location.rb'] = true
         refute checker.invalid_reference?(reference)
       end
@@ -58,7 +58,7 @@ module Packwerk
       test 'does not complain about private constant if it is an ignored_private_constant when using enforce_privacy' do
         destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'ignored_private_constants' => ['::SomeName'], 'enforce_privacy' => true })
         checker = privacy_checker
-        reference = build_reference(destination_package: destination_package)
+        reference = build_reference(destination_package:)
 
         refute checker.invalid_reference?(reference)
       end
@@ -66,7 +66,7 @@ module Packwerk
       test 'complains about private constant if enforcing for specific constants' do
         destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => true, 'private_constants' => ['::SomeName'] })
         checker = privacy_checker
-        reference = build_reference(destination_package: destination_package)
+        reference = build_reference(destination_package:)
 
         assert checker.invalid_reference?(reference)
       end
@@ -74,7 +74,7 @@ module Packwerk
       test 'complains about nested constant if enforcing for specific constants' do
         destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => true, 'private_constants' => ['::SomeName'] })
         checker = privacy_checker
-        reference = build_reference(destination_package: destination_package, constant_name: '::SomeName::Nested')
+        reference = build_reference(destination_package:, constant_name: '::SomeName::Nested')
 
         assert checker.invalid_reference?(reference)
       end
@@ -82,7 +82,7 @@ module Packwerk
       test 'ignores constant that starts like enforced constant' do
         destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => true, 'private_constants' => ['::SomeName'] })
         checker = privacy_checker
-        reference = build_reference(destination_package: destination_package, constant_name: '::SomeNameButNotQuite')
+        reference = build_reference(destination_package:, constant_name: '::SomeNameButNotQuite')
 
         refute checker.invalid_reference?(reference)
       end
@@ -90,7 +90,7 @@ module Packwerk
       test 'ignores public constant even if enforcing privacy for everything' do
         destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => true })
         checker = privacy_checker
-        reference = build_reference(destination_package: destination_package, constant_location: 'destination_package/app/public/')
+        reference = build_reference(destination_package:, constant_location: 'destination_package/app/public/')
 
         refute checker.invalid_reference?(reference)
       end
@@ -98,8 +98,8 @@ module Packwerk
       test 'ignores strict mode if not enabled' do
         destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => true })
         checker = privacy_checker
-        reference = build_reference(destination_package: destination_package, constant_location: 'destination_package/app/public/')
-        offense = Packwerk::ReferenceOffense.new(reference: reference, violation_type: 'privacy', message: '')
+        reference = build_reference(destination_package:, constant_location: 'destination_package/app/public/')
+        offense = Packwerk::ReferenceOffense.new(reference:, violation_type: 'privacy', message: '')
 
         refute checker.strict_mode_violation?(offense)
       end
@@ -107,8 +107,8 @@ module Packwerk
       test 'detect strict mode if enabled' do
         destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => 'strict' })
         checker = privacy_checker
-        reference = build_reference(destination_package: destination_package, constant_location: 'destination_package/app/public/')
-        offense = Packwerk::ReferenceOffense.new(reference: reference, violation_type: 'privacy', message: '')
+        reference = build_reference(destination_package:, constant_location: 'destination_package/app/public/')
+        offense = Packwerk::ReferenceOffense.new(reference:, violation_type: 'privacy', message: '')
 
         assert checker.strict_mode_violation?(offense)
       end
@@ -116,8 +116,8 @@ module Packwerk
       test 'ignores strict mode if excluded path' do
         destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => 'strict', 'strict_privacy_ignored_patterns' => ['some/**'] })
         checker = privacy_checker
-        reference = build_reference(destination_package: destination_package, constant_location: 'destination_package/app/public/')
-        offense = Packwerk::ReferenceOffense.new(reference: reference, violation_type: 'privacy', message: '')
+        reference = build_reference(destination_package:, constant_location: 'destination_package/app/public/')
+        offense = Packwerk::ReferenceOffense.new(reference:, violation_type: 'privacy', message: '')
 
         refute checker.strict_mode_violation?(offense)
       end
@@ -125,8 +125,8 @@ module Packwerk
       test 'detects strict mode if not excluded path' do
         destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => 'strict', 'strict_privacy_ignored_patterns' => ['test/**'] })
         checker = privacy_checker
-        reference = build_reference(destination_package: destination_package, constant_location: 'destination_package/app/public/')
-        offense = Packwerk::ReferenceOffense.new(reference: reference, violation_type: 'privacy', message: '')
+        reference = build_reference(destination_package:, constant_location: 'destination_package/app/public/')
+        offense = Packwerk::ReferenceOffense.new(reference:, violation_type: 'privacy', message: '')
 
         assert checker.strict_mode_violation?(offense)
       end
@@ -134,7 +134,7 @@ module Packwerk
       test 'only checks the package TODO file for private constants' do
         destination_package = Packwerk::Package.new(name: 'destination_package', config: { 'enforce_privacy' => true, 'private_constants' => ['::SomeName'] })
         checker = privacy_checker
-        reference = build_reference(destination_package: destination_package)
+        reference = build_reference(destination_package:)
 
         checker.invalid_reference?(reference)
       end

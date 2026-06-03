@@ -21,8 +21,8 @@ module FactoryHelper
     Packwerk::Reference.new(
       package: source_package,
       relative_path: path,
-      constant: constant,
-      source_location: source_location
+      constant:,
+      source_location:
     )
   end
 end

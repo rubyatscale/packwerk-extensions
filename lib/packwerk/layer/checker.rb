@@ -41,7 +41,7 @@ module Packwerk
       def invalid_reference?(reference)
         constant_package = Package.from(reference.constant.package, layers)
         referencing_package = Package.from(reference.package, layers)
-        !referencing_package.can_depend_on?(constant_package, layers: layers)
+        !referencing_package.can_depend_on?(constant_package, layers:)
       end
 
       # @override
