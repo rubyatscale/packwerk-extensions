@@ -22,11 +22,6 @@ WORKDIR $APP_HOME
 ENV BUNDLER_VERSION=4.0.7
 RUN gem install bundler --version 4.0.7 --default
 
-# Gusto-internal gem mirror: uncomment ONLY when this pipeline runs on Gusto
-# Buildkite agents that can reach gemstash. Leave commented for public agents,
-# which install straight from rubygems.org.
-# RUN bundle config --local "mirror.https://rubygems.org" "https://gemstash.zp-int.com"
-
 # Install dependencies first so the bundle layer caches across source changes.
 # The gemspec hardcodes its version and globs files with Dir[...], so it loads
 # fine with only the Gemfile and gemspec present.
