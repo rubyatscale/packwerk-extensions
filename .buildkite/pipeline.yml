@@ -32,6 +32,6 @@ steps:
 
 # NOTE: gem publishing is intentionally NOT handled here. It currently lives in
 # .github/workflows/cd.yml. If you want releases to move to Buildkite too, add a
-# `wait` + publish step modeled on danger-gusto's pipeline — that step needs the
-# Gusto-internal `gemstash-publish` agent queue and the SSH token-generator
-# plugin, so it only works once this pipeline runs on Gusto Buildkite agents.
+# `wait` + publish step — that step needs the Gusto-internal `gemstash-publish`
+# agent queue and an SSH token-generator plugin, so it only works once this
+# pipeline runs on Gusto Buildkite agents.
