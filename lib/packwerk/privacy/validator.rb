@@ -147,7 +147,7 @@ module Packwerk
                           'prefixed with the top-level namespace operator `::`.'
             Result.new(
               ok: false,
-              error_value: error_value
+              error_value:
             )
           end
         end

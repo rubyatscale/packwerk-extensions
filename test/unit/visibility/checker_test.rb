@@ -30,7 +30,7 @@ module Packwerk
           name: 'destination_package',
           config: { 'enforce_visibility' => true, :visible_to => 'other_pack' }
         )
-        reference = build_reference(destination_package: destination_package)
+        reference = build_reference(destination_package:)
 
         assert checker.invalid_reference?(reference)
       end
@@ -41,7 +41,7 @@ module Packwerk
           name: 'destination_package',
           config: { 'enforce_visibility' => true, 'visible_to' => ['components/source'] }
         )
-        reference = build_reference(destination_package: destination_package)
+        reference = build_reference(destination_package:)
 
         refute checker.invalid_reference?(reference)
       end

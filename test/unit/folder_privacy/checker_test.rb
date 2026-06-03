@@ -40,8 +40,8 @@ module Packwerk
           source_package = Packwerk::Package.new(name: test[2])
           destination_package = Packwerk::Package.new(name: test[1], config: { 'enforce_folder_privacy' => test[0] })
           reference = build_reference(
-            source_package: source_package,
-            destination_package: destination_package
+            source_package:,
+            destination_package:
           )
 
           assert_equal test[3], folder_privacy_checker.invalid_reference?(reference)
