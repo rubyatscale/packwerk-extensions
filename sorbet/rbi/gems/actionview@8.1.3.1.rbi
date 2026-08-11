@@ -14593,7 +14593,7 @@ ActionView::VERSION::MAJOR = T.let(T.unsafe(nil), Integer)
 ActionView::VERSION::MINOR = T.let(T.unsafe(nil), Integer)
 
 # pkg:gem/actionview#lib/action_view/gem_version.rb:13
-ActionView::VERSION::PRE = T.let(T.unsafe(nil), T.untyped)
+ActionView::VERSION::PRE = T.let(T.unsafe(nil), String)
 
 # pkg:gem/actionview#lib/action_view/gem_version.rb:15
 ActionView::VERSION::STRING = T.let(T.unsafe(nil), String)
