@@ -12,7 +12,7 @@ module Packwerk
 
       VIOLATION_TYPE = 'privacy'
       PUBLICIZED_SIGIL = 'pack_public: true'
-      PUBLICIZED_SIGIL_REGEX = /#.*pack_public:\s*true/
+      PUBLICIZED_SIGIL_REGEX = /pack_public:\s*true/
       @publicized_locations = {} #: Hash[String, bool]
 
       class << self
@@ -35,7 +35,14 @@ module Packwerk
 
         #: (Array[String] lines) -> bool
         def content_contains_sigil?(lines)
-          lines.first(5).any? { |l| l =~ PUBLICIZED_SIGIL_REGEX }
+          lines.first(5).any? do |l|
+            # Only the sigil's existence matters, so it is enough to look for it after the
+            # line's first `#`. Searching from there keeps the scan linear in the length of
+            # the line, where matching `/#.*pack_public:\s*true/` would retry the `.*` scan
+            # once per `#` in the line.
+            comment_start = l.index('#')
+            !comment_start.nil? && PUBLICIZED_SIGIL_REGEX.match?(l, comment_start + 1)
+          end
         end
       end
 
