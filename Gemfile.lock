@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    packwerk-extensions (0.3.0)
+    packwerk-extensions (0.4.0)
       packwerk (>= 3)
       railties (>= 6.0.0)
       zeitwerk
