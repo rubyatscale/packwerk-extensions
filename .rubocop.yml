@@ -38,10 +38,6 @@ Gemspec/RequireMFA:
 Style/NegatedIf:
   Enabled: false
 
-# Disabling for now until it's clearer why we want this
-Style/FrozenStringLiteralComment:
-  Enabled: false
-
 #
 # Leaving length metrics to human judgment for now
 #
