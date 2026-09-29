@@ -163,7 +163,7 @@ class CodeTeams::Team
   def config_yml; end
 
   # pkg:gem/code_teams#lib/code_teams.rb:142
-  def eql?(*args, **_arg1, &blk); end
+  def eql?(*args, **, &blk); end
 
   # pkg:gem/code_teams#lib/code_teams.rb:145
   sig { returns(::Integer) }
