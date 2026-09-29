@@ -63,6 +63,38 @@ RuboCop::Cop::Gusto::BootsnapLoadFile::PROHIBITED_CONSTANTS = T.let(T.unsafe(nil
 # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/bootsnap_load_file.rb:19
 RuboCop::Cop::Gusto::BootsnapLoadFile::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
 
+# Flags safe navigation (`&.`) called on a constant, covering both
+# class/module constants (`Model&.find`) and SCREAMING_CASE constants
+# (`CONST&.each`).
+#
+# A constant reference is never `nil`, an undefined constant raises
+# `NameError` before the call is even attempted, so the safe navigation
+# operator is always redundant. Use the plain `.` operator instead.
+#
+# @example
+#   # bad
+#   Model&.find(id)
+#   ENTITY_TYPES&.each { |type| type.to_s }
+#   Foo::Bar&.call
+#   ::Foo&.call
+#
+#   # good
+#   Model.find(id)
+#   ENTITY_TYPES.each { |type| type.to_s }
+#   Foo::Bar.call
+#   ::Foo.call
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/constant_safety.rb:26
+class RuboCop::Cop::Gusto::ConstantSafety < ::RuboCop::Cop::Base
+  extend ::RuboCop::Cop::AutoCorrector
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/constant_safety.rb:31
+  def on_csend(node); end
+end
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/constant_safety.rb:29
+RuboCop::Cop::Gusto::ConstantSafety::MSG = T.let(T.unsafe(nil), String)
+
 # Disallow referencing the `Datadog` constant directly. Calls should go
 # through an approved wrapper library so instrumentation stays consistent
 # and swappable.
@@ -308,6 +340,401 @@ RuboCop::Cop::Gusto::FeatureFlagConstants::MSG = T.let(T.unsafe(nil), String)
 
 # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/feature_flag_constants.rb:22
 RuboCop::Cop::Gusto::FeatureFlagConstants::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_description_concerns.rb:6
+module RuboCop::Cop::Gusto::Graphql; end
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_description_concerns.rb:7
+module RuboCop::Cop::Gusto::Graphql::IdDescriptionConcerns
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_description_concerns.rb:32
+  def argument_call?(node, &block); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_description_concerns.rb:28
+  def field_call?(node, &block); end
+
+  private
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_description_concerns.rb:46
+  def array_id_type?(type_node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_description_concerns.rb:78
+  def description_from_block(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_description_concerns.rb:68
+  def description_from_keyword_argument(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_description_concerns.rb:64
+  def description_from_positional_argument(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_description_concerns.rb:58
+  def extract_description(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_description_concerns.rb:139
+  def find_graphql_name_call(nodes); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_description_concerns.rb:119
+  def find_graphql_name_declaration(type_node); end
+
+  # Find the GraphQL type name for the enclosing class or module
+  # Prefers graphql_name declaration over Ruby class/module name
+  # Returns nil if the name cannot be determined
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_description_concerns.rb:94
+  def find_graphql_type_name(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_description_concerns.rb:38
+  def id_type?(type_node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_description_concerns.rb:143
+  def in_mutation_or_input_object?(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_description_concerns.rb:115
+  def strip_graphql_suffix(name); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_description_concerns.rb:131
+  def type_body_nodes(type_body); end
+end
+
+# Matches a GraphQL argument declaration capturing name and type node.
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_description_concerns.rb:17
+RuboCop::Cop::Gusto::Graphql::IdDescriptionConcerns::ARGUMENT_CALL_PATTERN = T.let(T.unsafe(nil), RuboCop::AST::NodePattern)
+
+# Matches a GraphQL field declaration capturing name and type node.
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_description_concerns.rb:12
+RuboCop::Cop::Gusto::Graphql::IdDescriptionConcerns::FIELD_CALL_PATTERN = T.let(T.unsafe(nil), RuboCop::AST::NodePattern)
+
+# Mutation / input-object base classes conventionally end in one of these final
+# segments (e.g. `Base::PermissionedMutation`, `Gusto::GraphQL::Objects::BaseInputObject`,
+# `Base::Input`). We match on the base class's final name segment rather than a substring
+# of its source, so unrelated bases that merely *contain* the word (e.g.
+# `GraphQLMutationTool`, `MutationHelper`) are not misclassified.
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_description_concerns.rb:26
+RuboCop::Cop::Gusto::Graphql::IdDescriptionConcerns::MUTATION_OR_INPUT_BASE_SUFFIXES = T.let(T.unsafe(nil), Array)
+
+# analytics_id is intentionally excluded
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_description_concerns.rb:9
+RuboCop::Cop::Gusto::Graphql::IdDescriptionConcerns::PRIMARY_ID_FIELDS = T.let(T.unsafe(nil), Array)
+
+# Ensures ID type arguments on query fields follow the standardized description template:
+# "The identifier of the <ObjectName> (`<ObjectName.fieldName>`) to filter by"
+# "The identifiers of each <ObjectName> (`<ObjectName.fieldName>`) to filter by" (for arrays)
+#
+# This cop only applies to arguments on regular GraphQL objects/queries,
+# NOT on mutations or input objects (see IdInputArgumentDescription for those).
+#
+# @example Bad
+#   argument :employee_id, ID, 'Employee ID', required: true
+#
+# @example Good
+#   argument :employee_id, ID, 'The identifier of the Employee (`Employee.id`) to filter by', required: true
+#   argument :employee_ids, [ID], 'The identifiers of each Employee (`Employee.id`) to filter by', required: true
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_field_argument_description.rb:23
+class RuboCop::Cop::Gusto::Graphql::IdFieldArgumentDescription < ::RuboCop::Cop::Base
+  include ::RuboCop::Cop::Gusto::Graphql::IdDescriptionConcerns
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_field_argument_description.rb:41
+  def on_send(node); end
+
+  private
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_field_argument_description.rb:59
+  def valid_argument_description?(desc, is_array); end
+end
+
+# Array: "The identifiers of each <ObjectName> (`<ObjectName.fieldName>`) to filter by"
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_field_argument_description.rb:39
+RuboCop::Cop::Gusto::Graphql::IdFieldArgumentDescription::ARRAY_PATTERN = T.let(T.unsafe(nil), Regexp)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_field_argument_description.rb:26
+RuboCop::Cop::Gusto::Graphql::IdFieldArgumentDescription::MSG = T.let(T.unsafe(nil), String)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_field_argument_description.rb:29
+RuboCop::Cop::Gusto::Graphql::IdFieldArgumentDescription::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
+
+# Single: "The identifier of the <ObjectName> (`<ObjectName.fieldName>`) to filter by"
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_field_argument_description.rb:36
+RuboCop::Cop::Gusto::Graphql::IdFieldArgumentDescription::SINGLE_PATTERN = T.let(T.unsafe(nil), Regexp)
+
+# A single "<ObjectName> (`<ObjectName.fieldName>`)" reference. Multiple may be joined
+# with " or " for arguments that accept an id from more than one entity.
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_field_argument_description.rb:33
+RuboCop::Cop::Gusto::Graphql::IdFieldArgumentDescription::TYPE_REF = T.let(T.unsafe(nil), Regexp)
+
+# Ensures ID type fields follow the standardized description template:
+# "The <ObjectName> identifier"
+#
+# This applies to fields named :id or :uuid with type ID.
+#
+# @example Bad
+#   field :id, ID, 'Unique identifier', null: false
+#   field :id, ID, null: false, description: 'The unique identifier'
+#
+# @example Good
+#   field :id, ID, 'The Employee identifier', null: false
+#   field :id, ID, null: false, description: 'The Employee identifier'
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_field_description.rb:22
+class RuboCop::Cop::Gusto::Graphql::IdFieldDescription < ::RuboCop::Cop::Base
+  include ::RuboCop::Cop::Gusto::Graphql::IdDescriptionConcerns
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_field_description.rb:29
+  def on_send(node); end
+
+  private
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_field_description.rb:44
+  def expected_description(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_field_description.rb:58
+  def report_offense(node, suggested); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_field_description.rb:51
+  def valid_field_description?(desc, node); end
+end
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_field_description.rb:25
+RuboCop::Cop::Gusto::Graphql::IdFieldDescription::MSG = T.let(T.unsafe(nil), String)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_field_description.rb:27
+RuboCop::Cop::Gusto::Graphql::IdFieldDescription::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
+
+# Ensures ID type arguments on mutations and input objects follow the standardized description template:
+# "The identifier of the <ObjectName> (`<ObjectName.fieldName>`) to <action>"
+# "The identifiers of each <ObjectName> (`<ObjectName.fieldName>`) to <action>" (for arrays)
+#
+# This cop only applies to arguments on mutations and input objects,
+# NOT on regular GraphQL objects/queries (see IdFieldArgumentDescription for those).
+#
+# @example Bad
+#   class UpdateEmployeeMutation < BaseMutation
+#     argument :employee_id, ID, 'Employee ID', required: true
+#   end
+#
+# @example Good
+#   class UpdateEmployeeMutation < BaseMutation
+#     argument :employee_id, ID, 'The identifier of the Employee (`Employee.id`) to update', required: true
+#   end
+#
+#   class DeleteEmployeeInput < BaseInputObject
+#     argument :employee_ids, [ID], 'The identifiers of each Employee (`Employee.id`) to delete', required: true
+#   end
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_input_argument_description.rb:30
+class RuboCop::Cop::Gusto::Graphql::IdInputArgumentDescription < ::RuboCop::Cop::Base
+  include ::RuboCop::Cop::Gusto::Graphql::IdDescriptionConcerns
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_input_argument_description.rb:48
+  def on_send(node); end
+
+  private
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_input_argument_description.rb:66
+  def valid_argument_description?(desc, is_array); end
+end
+
+# Array: "The identifiers of each <ObjectName> (`<ObjectName.fieldName>`) to <action>"
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_input_argument_description.rb:46
+RuboCop::Cop::Gusto::Graphql::IdInputArgumentDescription::ARRAY_PATTERN = T.let(T.unsafe(nil), Regexp)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_input_argument_description.rb:33
+RuboCop::Cop::Gusto::Graphql::IdInputArgumentDescription::MSG = T.let(T.unsafe(nil), String)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_input_argument_description.rb:36
+RuboCop::Cop::Gusto::Graphql::IdInputArgumentDescription::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_input_argument_description.rb:43
+RuboCop::Cop::Gusto::Graphql::IdInputArgumentDescription::SINGLE_PATTERN = T.let(T.unsafe(nil), Regexp)
+
+# Single: "The identifier of the <ObjectName> (`<ObjectName.fieldName>`) to <action>"
+# Also supports multiple types joined by " or ":
+# "The identifier of the Employee (`Employee.id`) or Contractor (`Contractor.id`) to <action>"
+# The action can be any verb phrase (update, delete, add items to, etc.)
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/id_input_argument_description.rb:42
+RuboCop::Cop::Gusto::Graphql::IdInputArgumentDescription::TYPE_REF = T.let(T.unsafe(nil), Regexp)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/paginate_arrays.rb:7
+class RuboCop::Cop::Gusto::Graphql::PaginateArrays < ::RuboCop::Cop::Base
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/paginate_arrays.rb:16
+  def on_send(node); end
+end
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/paginate_arrays.rb:12
+RuboCop::Cop::Gusto::Graphql::PaginateArrays::ARRAY_FIELD = T.let(T.unsafe(nil), RuboCop::AST::NodePattern)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/paginate_arrays.rb:8
+RuboCop::Cop::Gusto::Graphql::PaginateArrays::MSG = T.let(T.unsafe(nil), String)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/paginate_arrays.rb:10
+RuboCop::Cop::Gusto::Graphql::PaginateArrays::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
+
+# Disallows direct hash access on GraphQL context.
+# Use typed context methods instead for better type safety.
+#
+# @example
+#   # bad
+#   context[:user_id] | context["user_id"]
+#   ctx[:user_id] | ctx["user_id"]
+#   @context[:user_id] | @context["user_id"]
+#   @ctx[:user_id] | @ctx["user_id"]
+#   do |ctx| ctx[:user_id] end
+#   def resolve(context) context[:user_id] end
+#
+#   # ok
+#   ctx.user_id | @context.user_id | @ctx.user_id
+#
+#   # preferred
+#   context.user_id
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/prevent_context_hash_access.rb:25
+class RuboCop::Cop::Gusto::Graphql::PreventContextHashAccess < ::RuboCop::Cop::Base
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/prevent_context_hash_access.rb:49
+  def on_send(node); end
+end
+
+# Keys allowed to use hash access on context.
+#
+# current_arguments:
+#   A runtime metadata key added during field resolution as part of graphql-ruby's API.
+#   It contains all arguments passed to the current field, providing access to args that are otherwise not available to resolvers,
+#   for example pagination args (first, last, after, before) that are not directly accessible to resolver via the resolver signature.
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/prevent_context_hash_access.rb:37
+RuboCop::Cop::Gusto::Graphql::PreventContextHashAccess::ALLOWED_KEYS = T.let(T.unsafe(nil), Array)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/prevent_context_hash_access.rb:41
+RuboCop::Cop::Gusto::Graphql::PreventContextHashAccess::CONTEXT_BRACKET_ACCESS = T.let(T.unsafe(nil), RuboCop::AST::NodePattern)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/prevent_context_hash_access.rb:45
+RuboCop::Cop::Gusto::Graphql::PreventContextHashAccess::LITERAL_KEY = T.let(T.unsafe(nil), RuboCop::AST::NodePattern)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/prevent_context_hash_access.rb:26
+RuboCop::Cop::Gusto::Graphql::PreventContextHashAccess::MSG = T.let(T.unsafe(nil), String)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/prevent_context_hash_access.rb:29
+RuboCop::Cop::Gusto::Graphql::PreventContextHashAccess::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/prevent_field_can_can_action.rb:7
+class RuboCop::Cop::Gusto::Graphql::PreventFieldCanCanAction < ::RuboCop::Cop::Base
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/prevent_field_can_can_action.rb:17
+  def on_send(node); end
+end
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/prevent_field_can_can_action.rb:13
+RuboCop::Cop::Gusto::Graphql::PreventFieldCanCanAction::FIELD_WITH_CAN_CAN_ACTION = T.let(T.unsafe(nil), RuboCop::AST::NodePattern)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/prevent_field_can_can_action.rb:8
+RuboCop::Cop::Gusto::Graphql::PreventFieldCanCanAction::MSG = T.let(T.unsafe(nil), String)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/prevent_field_can_can_action.rb:11
+RuboCop::Cop::Gusto::Graphql::PreventFieldCanCanAction::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
+
+# Flags a field whose resolver cannot reach the node it hangs off: the method body never
+# reads `object` or `@object`, and no helper it calls in the same class does either. The
+# value is then identical for every node, so the field does not belong on this type.
+#
+# @example Bad - the value does not depend on the node
+#   field :eor_coming_soon_countries, [String], null: false
+#   def eor_coming_soon_countries
+#     BusinessValues::BusinessValueService.get_value_for("eor.coming_soon_countries", nil)
+#   end
+#
+# @example Good - the value depends on the node
+#   field :eor_coming_soon_countries, [String], null: false
+#   def eor_coming_soon_countries
+#     object.eor_coming_soon_countries
+#   end
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/resolver_ignores_object.rb:22
+class RuboCop::Cop::Gusto::Graphql::ResolverIgnoresObject < ::RuboCop::Cop::Base
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/resolver_ignores_object.rb:61
+  def on_class(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/resolver_ignores_object.rb:105
+  def on_module(node); end
+
+  private
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/resolver_ignores_object.rb:109
+  def delegated_names(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/resolver_ignores_object.rb:158
+  def node_accessors; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/resolver_ignores_object.rb:145
+  def propagate(direct, callers_of); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/resolver_ignores_object.rb:115
+  def scan_resolver(def_node, accessors, resolvers, direct, callers_of); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/resolver_ignores_object.rb:162
+  def walk(node, boundary, &block); end
+end
+
+# Fields are never declared inside a `def`, so stopping there loses nothing.
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/resolver_ignores_object.rb:59
+RuboCop::Cop::Gusto::Graphql::ResolverIgnoresObject::BODY_BOUNDARY = T.let(T.unsafe(nil), Array)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/resolver_ignores_object.rb:44
+RuboCop::Cop::Gusto::Graphql::ResolverIgnoresObject::DELEGATE_TO_OBJECT = T.let(T.unsafe(nil), RuboCop::AST::NodePattern)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/resolver_ignores_object.rb:40
+RuboCop::Cop::Gusto::Graphql::ResolverIgnoresObject::EPHEMERAL_BACKING = T.let(T.unsafe(nil), RuboCop::AST::NodePattern)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/resolver_ignores_object.rb:28
+RuboCop::Cop::Gusto::Graphql::ResolverIgnoresObject::FIELD_NAME_NODE = T.let(T.unsafe(nil), RuboCop::AST::NodePattern)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/resolver_ignores_object.rb:23
+RuboCop::Cop::Gusto::Graphql::ResolverIgnoresObject::MSG = T.let(T.unsafe(nil), String)
+
+# A concern that `requires_ancestor` reaches the node through `T.bind(self, ...).object`,
+# since Sorbet cannot see `object` on the module itself. That reads the node exactly as a
+# bare `object` does, so the receiver form has to count too.
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/resolver_ignores_object.rb:51
+RuboCop::Cop::Gusto::Graphql::ResolverIgnoresObject::NODE_READ_THROUGH_RECEIVER = T.let(T.unsafe(nil), RuboCop::AST::NodePattern)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/resolver_ignores_object.rb:30
+RuboCop::Cop::Gusto::Graphql::ResolverIgnoresObject::RESOLUTION_ELSEWHERE = T.let(T.unsafe(nil), RuboCop::AST::NodePattern)
+
+# `resolver_method:` redirects the lookup on the type instance; `method:` names a method on
+# the backing object, which this cop does not read.
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/resolver_ignores_object.rb:36
+RuboCop::Cop::Gusto::Graphql::ResolverIgnoresObject::RESOLVER_METHOD = T.let(T.unsafe(nil), RuboCop::AST::NodePattern)
+
+# A nested class gets its own `on_class`, so the walk must not cross into one.
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/resolver_ignores_object.rb:56
+RuboCop::Cop::Gusto::Graphql::ResolverIgnoresObject::SCOPE_BOUNDARY = T.let(T.unsafe(nil), Array)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/type_variables.rb:7
+class RuboCop::Cop::Gusto::Graphql::TypeVariables < ::RuboCop::Cop::Base
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/type_variables.rb:15
+  def on_block(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/type_variables.rb:21
+  def on_itblock(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/type_variables.rb:20
+  def on_numblock(node); end
+end
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/type_variables.rb:8
+RuboCop::Cop::Gusto::Graphql::TypeVariables::MSG = T.let(T.unsafe(nil), String)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/type_variables.rb:11
+RuboCop::Cop::Gusto::Graphql::TypeVariables::UNTYPED_OBJECT = T.let(T.unsafe(nil), RuboCop::AST::NodePattern)
 
 # Checks for the use of `min` or `max` with a proc. Corrects to `min_by` or `max_by`.
 #
@@ -793,6 +1220,102 @@ end
 # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/rake_constants.rb:31
 RuboCop::Cop::Gusto::RakeConstants::MSG = T.let(T.unsafe(nil), String)
 
+# Flags an inline `require 'spec_helper'` / `require 'rails_helper'` (or the
+# `require_relative` equivalent) that the governing `.rspec` already loads via
+# `--require`, making the inline require a redundant no-op.
+#
+# Correctness is per file: the cop resolves the `.rspec` that governs the file by walking
+# up to the nearest ancestor `.rspec`, but stops at a project boundary (a directory holding
+# a `*.gemspec` or `Gemfile`). A project with no `.rspec` of its own is therefore never
+# attributed a parent project's `.rspec` -- e.g. a standalone gem/engine that boots its own
+# test environment keeps its inline require. Packs (no gemspec/Gemfile) still resolve to the
+# repo-root `.rspec`.
+#
+# `spec_helper.rb` / `rails_helper.rb` themselves are never edited (they are the definitions
+# and the `rails_helper` -> `spec_helper` shim).
+#
+# `rails_helper` is treated as redundant only when the governing `.rspec` auto-requires it
+# directly, or auto-requires `spec_helper` AND the project's `spec/rails_helper.rb` is a pure
+# shim (nothing but `require 'spec_helper'`). Otherwise it is kept, since a `rails_helper`
+# that does real setup (e.g. boots Rails) is not covered by `spec_helper`.
+#
+# @example
+#   # bad (the governing .rspec already `--require`s it)
+#   require 'spec_helper'
+#   RSpec.describe Foo do
+#   end
+#
+#   # good
+#   RSpec.describe Foo do
+#   end
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/redundant_spec_helper_require.rb:35
+class RuboCop::Cop::Gusto::RedundantSpecHelperRequire < ::RuboCop::Cop::Base
+  include ::RuboCop::Cop::RangeHelp
+  extend ::RuboCop::Cop::AutoCorrector
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/redundant_spec_helper_require.rb:60
+  def on_csend(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/redundant_spec_helper_require.rb:48
+  def on_send(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/redundant_spec_helper_require.rb:44
+  def require_path(param0 = T.unsafe(nil)); end
+
+  private
+
+  # Helper basenames the `.rspec` auto-requires via `--require`/`-r`.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/redundant_spec_helper_require.rb:116
+  def auto_required_helpers(rspec_path); end
+
+  # The `.rspec` that governs this file: nearest ancestor `.rspec`, not crossing a project
+  # boundary (a dir with a `*.gemspec` or `Gemfile`). Returns nil when the file's project
+  # has no `.rspec` of its own.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/redundant_spec_helper_require.rb:95
+  def governing_rspec; end
+
+  # Never edit the helper/shim files themselves.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/redundant_spec_helper_require.rb:72
+  def helper_definition_file?; end
+
+  # 'spec_helper' | 'rails_helper' | nil, from 'spec_helper', 'rails_helper',
+  # 'rails_helper.rb', or a require_relative path such as '../spec_helper'.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/redundant_spec_helper_require.rb:66
+  def helper_name(path); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/redundant_spec_helper_require.rb:109
+  def project_boundary?(dir); end
+
+  # True when <root>/spec/rails_helper.rb exists and is a pure shim whose only executable
+  # line is `require 'spec_helper'` (magic comments / blank lines / comments ignored).
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/redundant_spec_helper_require.rb:127
+  def rails_helper_shim?(root_dir); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/redundant_spec_helper_require.rb:76
+  def redundant?(name); end
+
+  # Remove the require line, absorbing one immediately-following blank line so the fix does
+  # not leave a stray/duplicate blank.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/redundant_spec_helper_require.rb:137
+  def removal_range(node); end
+end
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/redundant_spec_helper_require.rb:40
+RuboCop::Cop::Gusto::RedundantSpecHelperRequire::HELPERS = T.let(T.unsafe(nil), Array)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/redundant_spec_helper_require.rb:39
+RuboCop::Cop::Gusto::RedundantSpecHelperRequire::MSG = T.let(T.unsafe(nil), String)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/redundant_spec_helper_require.rb:41
+RuboCop::Cop::Gusto::RedundantSpecHelperRequire::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
+
 # Ensures that regular expressions use `\A` and `\z` anchors instead
 # of `^` and `$` when matching the start or end of a string. This is
 # critical for security validations as `^` and `$` will match the start/end
@@ -949,6 +1472,204 @@ end
 # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/smart_todo_team.rb:26
 RuboCop::Cop::Gusto::SmartTodoTeam::TEAM_HELP = T.let(T.unsafe(nil), String)
 
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:6
+module RuboCop::Cop::Gusto::Sorbet; end
+
+# Checks that predicate methods (methods ending with ?) in Sorbet-typed files
+# return boolean values (T::Boolean or true/false literals).
+#
+# This cop categorizes offenses into:
+# - Methods returning nil
+# - Methods returning other non-boolean values
+#
+# A `sig { void }` predicate is left alone. `void` is an explicit declaration that
+# the return value is not meaningful, which is how validator-style methods that only
+# call `errors.add` are annotated.
+#
+# It also provides an unsafe autocorrect feature to change the signature
+# to `returns(T::Boolean)` and coerce the return value to a boolean.
+#
+# @safety
+#   This cop's autocorrect is unsafe because it changes method signatures
+#   and coerces return values using `!!()`, which may alter the behavior
+#   of the code in subtle ways.
+#
+# @example
+#   # bad (returns nil)
+#   sig { returns(T.nilable(String)) }
+#   def valid?
+#     nil
+#   end
+#
+#   # bad (returns non-boolean)
+#   sig { returns(String) }
+#   def valid?
+#     'yes'
+#   end
+#
+#   # good
+#   sig { returns(T::Boolean) }
+#   def valid?
+#     true
+#   end
+#
+#   # good (also acceptable)
+#   sig { returns(T.any(TrueClass, FalseClass)) }
+#   def valid?
+#     true
+#   end
+#
+#   # good (void declares the return value meaningless)
+#   sig { void }
+#   def valid_state?
+#     errors.add(:state, 'is invalid') unless state_ok?
+#   end
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:56
+class RuboCop::Cop::Gusto::Sorbet::PredicateBooleanReturn < ::RuboCop::Cop::Base
+  extend ::RuboCop::Cop::AutoCorrector
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:68
+  def on_def(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:74
+  def on_defs(node); end
+
+  private
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:137
+  def already_boolean_coerced?(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:110
+  def autocorrect(corrector, node, return_type_node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:209
+  def boolean_type?(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:82
+  def check_predicate_method(node); end
+
+  # An expression that is already negated (`!foo` / `!!foo`) is boolean, so it needs
+  # no coercion.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:119
+  def coerce_last_expression(corrector, method_body); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:230
+  def extract_const_name(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:169
+  def extract_return_type(sig_node); end
+
+  # Walks left siblings past `private` modifiers to find the method's `sig` block.
+  # A `private_class_method def self.foo?` wrapper shifts the starting point to the
+  # wrapping send.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:145
+  def find_sig_node(method_node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:244
+  def format_send_type(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:238
+  def format_type(return_node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:257
+  def format_type_arg(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:128
+  def last_expression_in_body(body_node); end
+
+  # `private_class_method def self.foo?` still reads as a plain definition; any other
+  # wrapping send (e.g. a custom decorator) hides the real return type.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:270
+  def method_has_non_private_class_method_wrapper?(method_node); end
+
+  # `T.untyped` can be nil but is reported as non-boolean rather than nilable.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:205
+  def nil_type?(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:189
+  def nilable_type?(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:183
+  def returns_boolean?(return_node); end
+
+  # `void` is filtered out before this point, so the node is always `returns(...)`.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:176
+  def returns_nil?(return_node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:165
+  def sig_block?(node); end
+
+  # `T.any(TrueClass, FalseClass)` is the only `T.` send that is boolean.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:221
+  def t_boolean_union?(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:78
+  def typed_file?; end
+end
+
+# Guards `find_sig_node`'s left-sibling walk against a pathological node list
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:66
+RuboCop::Cop::Gusto::Sorbet::PredicateBooleanReturn::MAX_SIBLING_LOOKBACK = T.let(T.unsafe(nil), Integer)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:59
+RuboCop::Cop::Gusto::Sorbet::PredicateBooleanReturn::MSG_RETURNS_NIL = T.let(T.unsafe(nil), String)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:60
+RuboCop::Cop::Gusto::Sorbet::PredicateBooleanReturn::MSG_RETURNS_NON_BOOLEAN = T.let(T.unsafe(nil), String)
+
+# Starts with `!` or `!!` but not `!=` / `!==`
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:64
+RuboCop::Cop::Gusto::Sorbet::PredicateBooleanReturn::NEGATION_PREFIX = T.let(T.unsafe(nil), Regexp)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sorbet/predicate_boolean_return.rb:62
+RuboCop::Cop::Gusto::Sorbet::PredicateBooleanReturn::TYPED_SIGIL = T.let(T.unsafe(nil), Regexp)
+
+# Detects Rails association definitions called on other classes from outside their class bodies.
+# This kind of sudden monkey-patching can lead to unexpected behavior.
+#
+# @example
+#   # bad
+#   Company.has_one :onboarding_benefits_survey
+#   User.belongs_to :company
+#   Post.has_many :comments
+#   Student.has_and_belongs_to_many :courses
+#
+#   # good
+#   class Company
+#     has_one :onboarding_benefits_survey
+#   end
+#
+#   class User
+#     belongs_to :company
+#   end
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sudden_associations.rb:24
+class RuboCop::Cop::Gusto::SuddenAssociations < ::RuboCop::Cop::Base
+  # Matches association method calls on a class constant
+  # Examples matched:
+  #   Company.has_one :onboarding_benefits_survey
+  #   User.belongs_to :company
+  #   ::Company.has_many :users
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sudden_associations.rb:38
+  def on_send(node); end
+end
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sudden_associations.rb:25
+RuboCop::Cop::Gusto::SuddenAssociations::MSG = T.let(T.unsafe(nil), String)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sudden_associations.rb:26
+RuboCop::Cop::Gusto::SuddenAssociations::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
+
 # Checks that no top-level constants (excluding classes and modules)
 # are defined. This rule exists to prevent accidental pollution of the
 # global namespace as well as cases where application code has
@@ -1038,32 +1759,32 @@ RuboCop::Cop::Gusto::ToplevelConstants::MSG = T.let(T.unsafe(nil), String)
 #   let(:thing) { create(:thing) }
 #   it { expect(thing).to be_present }
 #
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:54
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:53
 class RuboCop::Cop::Gusto::UnreferencedLet < ::RuboCop::Cop::RSpec::Base
   include ::RuboCop::Cop::RangeHelp
   extend ::RuboCop::Cop::AutoCorrector
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:83
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:79
   def definition_name(param0 = T.unsafe(nil)); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:133
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:115
   def on_send(node); end
 
   private
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:193
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:175
   def absorbable_comment?(source_line); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:198
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:180
   def blank_line?(source_line); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:218
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:200
   def consumes_shared_examples?; end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:277
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:259
   def definition_name_argument?(sym_node); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:243
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:225
   def definitions_by_name; end
 
   # True when the file reflectively dispatches through a name we cannot resolve statically --
@@ -1071,7 +1792,7 @@ class RuboCop::Cop::Gusto::UnreferencedLet < ::RuboCop::Cop::RSpec::Base
   # first argument (most commonly an interpolated string, `send("expected_#{type}")`). In
   # that case any `let` in the file could be the dispatch target, so none are deleted.
   #
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:228
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:210
   def dynamic_dispatch?; end
 
   # A lazy `let` is exempt from deletion whenever file-scoped analysis cannot prove its name
@@ -1081,19 +1802,19 @@ class RuboCop::Cop::Gusto::UnreferencedLet < ::RuboCop::Cop::RSpec::Base
   # framework contract, it is overridden by another definition of the same name, or it is
   # referenced somewhere in the file.
   #
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:158
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:140
   def exempt_from_deletion?(name, block); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:202
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:184
   def let_or_subject_line?(source_line); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:239
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:221
   def overridden?(name); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:206
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:188
   def preceding_sig(node); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:250
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:232
   def referenced?(name); end
 
   # A name is "referenced" if it is called as a bare method (`foo`), appears as a symbol
@@ -1106,7 +1827,7 @@ class RuboCop::Cop::Gusto::UnreferencedLet < ::RuboCop::Cop::RSpec::Base
   # inside a multi-word heredoc from being deleted.) Interpolated-string *dispatch* is handled
   # separately by `dynamic_dispatch?`, which exempts the whole file.
   #
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:263
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:245
   def referenced_names; end
 
   # Delete the `let` block, plus:
@@ -1116,86 +1837,72 @@ class RuboCop::Cop::Gusto::UnreferencedLet < ::RuboCop::Cop::RSpec::Base
   #   blank -- unless the line above is a `let`/`subject`, where that blank is the required
   #   separator after the now-final let and must stay.
   #
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:174
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:156
   def removal_range(node); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:214
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:196
   def within_shared_definition?(node); end
 
   class << self
-    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:121
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:103
     def extract_let_names(source, names); end
 
     # Names defined as `let`/`subject` anywhere under `spec/support/**`. Computed once per
     # process (lazily, after boot) and shared across every file the cop inspects.
     #
-    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:90
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:86
     def framework_let_names; end
 
-    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:106
-    def git_tracked_support_files; end
-
-    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:126
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:108
     def read_source(path); end
 
-    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:115
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:97
     def scan_framework_let_names(paths); end
 
-    # Enumerate `spec/support/**/*.rb`. Prefer `git ls-files` (reads the git index, skipping
-    # untracked trees like `node_modules`): a leading-`**` `Dir.glob` walks the entire
-    # repository and costs seconds, while reading the index costs tens of milliseconds. Fall
-    # back to `Dir.glob` when not in a git work tree or `git` is unavailable.
+    # Enumerate `spec/support/**/*.rb`. No git dependency: some environments (e.g. a build
+    # step's working directory) are not a git work tree at all, and shelling out to `git`
+    # there is unreliable and noisy.
     #
-    # Tradeoff: an untracked (brand-new, uncommitted) `spec/support/*.rb` override is invisible
-    # to `git ls-files`. In that narrow window its contract names are not exempted; once
-    # committed it is seen like any other support file.
-    #
-    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:102
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:93
     def support_file_paths; end
   end
 end
 
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:58
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:57
 RuboCop::Cop::Gusto::UnreferencedLet::DEFINITION_METHODS = T.let(T.unsafe(nil), Set)
 
 # Reflective dispatch methods whose target is the first argument. When that argument is not
 # a statically-resolvable name (a `sym` or plain `str`) -- e.g. `send("expected_#{type}")` --
 # the called name cannot be known, so the whole file is left untouched.
 #
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:66
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:65
 RuboCop::Cop::Gusto::UnreferencedLet::DYNAMIC_DISPATCH_METHODS = T.let(T.unsafe(nil), Array)
 
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:67
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:66
 RuboCop::Cop::Gusto::UnreferencedLet::FRAMEWORK_LET_PATTERN = T.let(T.unsafe(nil), Regexp)
 
 # `let`s consumed by a test framework rather than by a reference in the spec file. The
 # rubocop-rspec `:config` shared context reads `cop_config`, so it is live even though the
 # spec never names it.
 #
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:62
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:61
 RuboCop::Cop::Gusto::UnreferencedLet::FRAMEWORK_RESERVED_NAMES = T.let(T.unsafe(nil), Array)
 
 # Identifier-shaped tokens inside a string/heredoc literal. A `let` whose name appears only
 # inside string text -- e.g. a binding or column referenced in raw SQL/GraphQL the spec
 # later executes -- counts as referenced, so it is not deleted.
 #
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:71
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:70
 RuboCop::Cop::Gusto::UnreferencedLet::IDENTIFIER_IN_STRING = T.let(T.unsafe(nil), Regexp)
 
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:72
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:71
 RuboCop::Cop::Gusto::UnreferencedLet::MSG = T.let(T.unsafe(nil), String)
 
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:73
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:72
 RuboCop::Cop::Gusto::UnreferencedLet::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
 
-# The glob and the pathspec encode the SAME set of files two ways: `Dir.glob` (fallback) and
-# a regexp filter over `git ls-files` output. Keep them in sync if either changes.
-#
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:76
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:73
 RuboCop::Cop::Gusto::UnreferencedLet::SUPPORT_FILES_GLOB = T.let(T.unsafe(nil), String)
-
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:77
-RuboCop::Cop::Gusto::UnreferencedLet::SUPPORT_FILES_PATHSPEC = T.let(T.unsafe(nil), Regexp)
 
 # Requires the use of the `paint` gem for terminal color methods on strings
 #
