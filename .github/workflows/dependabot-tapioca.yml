@@ -14,10 +14,10 @@ jobs:
     if: startsWith(github.head_ref, 'dependabot/')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-        with:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: # zizmor: ignore[artipacked] persisted credentials required for the git push below
           ref: ${{ github.head_ref }}
-      - uses: ruby/setup-ruby@4c56a21280b36d862b5fc31348f463d60bdc55d5 # v1
+      - uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8 # v1.327.0
         with:
           ruby-version: '3.4'
           bundler-cache: true
