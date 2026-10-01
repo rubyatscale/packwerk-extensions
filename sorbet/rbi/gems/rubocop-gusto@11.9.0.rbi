@@ -736,6 +736,342 @@ RuboCop::Cop::Gusto::Graphql::TypeVariables::MSG = T.let(T.unsafe(nil), String)
 # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/graphql/type_variables.rb:11
 RuboCop::Cop::Gusto::Graphql::TypeVariables::UNTYPED_OBJECT = T.let(T.unsafe(nil), RuboCop::AST::NodePattern)
 
+# Flags a hardcoded positive id standing in for a record an example expects to be absent.
+#
+# Auto-increment climbs across every example on a test node and is not reclaimed by
+# transactional rollback, so the counter eventually reaches the literal. From then on a
+# real row occupies it, the lookup succeeds, and the example stops testing absence --
+# passing locally, where the counter is low, and failing in CI. A negative id cannot
+# collide, because auto-increment never emits one.
+#
+# An id counts as standing in for an absent record when its own example group either
+# asserts absence (`ActiveRecord::RecordNotFound`, a `:not_found` response) or says so in
+# its description. Both are read from the group the `let` is written in, not the whole
+# file, so a shared id in an outer group is not attributed to a nested example that never
+# uses it.
+#
+# In a list, a literal sitting beside a real `record.id` also qualifies on its own: you
+# would write another `record.id` if you wanted one that exists. That matters because
+# those groups are usually named for the plural ("with multiple bank account IDs") rather
+# than for the gap.
+#
+# Five shapes are deliberately not offenses, because in none of them can the counter reach
+# the literal, or a single replacement would change what the example asserts:
+#
+# - a group that builds a record carrying that id -- the row is meant to exist, so the
+#   absence the group describes is about something else, a cache or a header;
+# - an `ActiveRecord::RecordNotFound` raised by reloading a row the example just deleted,
+#   which is a statement about that object rather than about the literal;
+# - a literal above `MaxId`, which is a deliberate never-collides sentinel;
+# - a group pinning two ids, which are usually pinned to differ from each other, and one
+#   shared replacement collapses that and inverts the example; and
+# - an example group under VCR, whose cassette matches on the id in the request URI.
+#
+# @safety
+#   Autocorrection is unsafe. `-1` is right for a primary key, but it also changes the
+#   value the example feeds to everything else, so an id matched against a stubbed request
+#   URI or an asserted error message needs those updated to match. `-1` is not free
+#   everywhere either: a codebase may reserve it as a sentinel of its own, and an unsigned
+#   column or protobuf field rejects it outright. Where a negative will not do, a sentinel
+#   above `MaxId` is the sanctioned alternative.
+#
+# @example
+#   # bad
+#   context 'when the company does not exist' do
+#     let(:company_id) { 123 }
+#
+#     it { expect { subject }.to raise_error(ActiveRecord::RecordNotFound) }
+#   end
+#
+#   # bad - the literal is there precisely because no record has it
+#   let(:bank_account_ids) { [bank_account.id, other_account.id, 999_999] }
+#
+#   # good - auto-increment never emits a negative id
+#   context 'when the company does not exist' do
+#     let(:company_id) { -1 }
+#
+#     it { expect { subject }.to raise_error(ActiveRecord::RecordNotFound) }
+#   end
+#
+#   # good - a deleted record's id is a reference, not a magic constant
+#   context 'when the company does not exist' do
+#     let(:company_id) { deleted_company.id }
+#   end
+#
+# @example AllowedNames: ['wise_id'] (default: [])
+#   # good - a third-party identifier, not a primary key the counter can reach
+#   context 'when the transfer does not exist' do
+#     let(:wise_id) { 5678 }
+#   end
+#
+# @example MaxId: 1000000 (default)
+#   # good - above MaxId the literal is a deliberate never-collides sentinel
+#   let(:company_id) { 9_999_999_999 }
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:79
+class RuboCop::Cop::Gusto::HardcodedAbsentRecordId < ::RuboCop::Cop::RSpec::Base
+  extend ::RuboCop::Cop::AutoCorrector
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:105
+  def let_definition(param0 = T.unsafe(nil)); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:114
+  def on_send(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:110
+  def vcr_metadata?(param0 = T.unsafe(nil)); end
+
+  private
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:195
+  def absent_context?(group); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:137
+  def allowed_names; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:199
+  def built_with?(group, name, value); end
+
+  # A cassette keys its recorded interactions off the request URI, so an id in the path is
+  # what tells two same-route requests apart. Rewriting it makes the example miss the
+  # recording rather than assert absence, and `record: :none` then fails it outright.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:214
+  def cassette_controlled?(node); end
+
+  # Only a lone literal qualifies. Two would both correct to `-1`, and a duplicated id in
+  # a list collapses on lookup, changing the count the example asserts.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:152
+  def check_id_list(node, name, array); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:141
+  def check_id_literal(node, name, literal); end
+
+  # A string id reaches the same column as an integer one, so both count; only the sign
+  # and the magnitude matter.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:179
+  def collidable_id(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:191
+  def enclosing_example_group(node); end
+
+  # A third-party identifier stored in a `*_id` field is not a primary key the
+  # auto-increment counter can reach, so a name listed in `AllowedNames` is skipped
+  # outright -- a named exception in config beats a file-path exclude or a disable.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:133
+  def id_name?(name); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:207
+  def inspect_group(group); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:165
+  def list_qualifies?(array, group); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:187
+  def max_id; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:203
+  def paired_ids?(group); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:171
+  def register(literal); end
+end
+
+# Each phrase is unambiguous on its own: a bare "missing" or "unknown" reads just as
+# naturally about a header or a flag, so neither is here.
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:90
+RuboCop::Cop::Gusto::HardcodedAbsentRecordId::ABSENT_DESCRIPTION = T.let(T.unsafe(nil), Regexp)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:101
+RuboCop::Cop::Gusto::HardcodedAbsentRecordId::BUILDERS = T.let(T.unsafe(nil), Array)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:102
+RuboCop::Cop::Gusto::HardcodedAbsentRecordId::DEFAULT_MAX_ID = T.let(T.unsafe(nil), Integer)
+
+# Answers the group-level questions: does this group say the record is absent, does it
+# build the record, and does it pin two ids that are meant to differ?
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:222
+class RuboCop::Cop::Gusto::HardcodedAbsentRecordId::GroupInspector
+  include ::RuboCop::RSpec::Language
+  extend ::RuboCop::AST::NodePattern::Macros
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:231
+  def initialize(group, max_id); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:236
+  def absent?; end
+
+  # A group that builds a record carrying this id means the row is meant to exist, so
+  # the absence the group describes is about something else.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:242
+  def builds?(name, value); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:227
+  def let_definition(param0 = T.unsafe(nil)); end
+
+  # Two ids pinned in one group are usually pinned to differ from each other -- a record
+  # and the "other company" it must not match. One shared replacement collapses that.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:251
+  def paired_ids?; end
+
+  private
+
+  # Matched against the source rather than the value so an interpolated description
+  # ("when #{model} does not exist") still reads as one.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:261
+  def absent_description?; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:298
+  def collidable_id(node); end
+
+  # `expect { record.reload }.to raise_error(ActiveRecord::RecordNotFound)` asserts that
+  # a row the example already holds was deleted by the code under test. That is about
+  # the object, not about the literal -- which is usually what selected it for deletion.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:291
+  def deleted_record_assertion?(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:257
+  def group; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:257
+  def max_id; end
+
+  # Scoped to this group: the walk stops at a nested example group, whose assertions
+  # belong to whatever that group redefines rather than to this `let`.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:270
+  def not_found_assertion?(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:277
+  def not_found_matcher?(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:317
+  def own_lets(node, found = T.unsafe(nil)); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:306
+  def references?(node, name); end
+
+  # `create(:evaluation, company_id: 1)` beside `let(:company_id) { 1 }` builds the row
+  # this id selects, even though the example inlined the literal rather than the `let`.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:312
+  def same_id_value?(node, value); end
+end
+
+# `id` itself, or any `<something>_id`, singular or plural.
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:86
+RuboCop::Cop::Gusto::HardcodedAbsentRecordId::ID_NAME = T.let(T.unsafe(nil), Regexp)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:82
+RuboCop::Cop::Gusto::HardcodedAbsentRecordId::MSG = T.let(T.unsafe(nil), String)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:99
+RuboCop::Cop::Gusto::HardcodedAbsentRecordId::NOT_FOUND = T.let(T.unsafe(nil), Regexp)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:100
+RuboCop::Cop::Gusto::HardcodedAbsentRecordId::NOT_FOUND_STATUS = T.let(T.unsafe(nil), Regexp)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:83
+RuboCop::Cop::Gusto::HardcodedAbsentRecordId::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
+
+# Flags a hardcoded `id:` passed to `create`/`create!`/`create_list`.
+#
+# Forcing a primary key in a spec collides with whatever else occupies that row --
+# fixtures, parallel workers, the table's auto-increment sequence -- and is a common
+# source of flaky, order-dependent failures. Let the database assign the id and reference
+# the returned record.
+#
+# Only the persisting builders are flagged: they insert a row, so a forced primary key is
+# an outright collision risk. `create_list` is worse still, forcing the identical id onto
+# every generated record, which is a guaranteed unique-constraint failure. `build` and
+# `build_stubbed` never insert, so they are left alone.
+#
+# Both `id:` and `'id' =>` are flagged: FactoryBot symbolizes override keys and
+# ActiveRecord treats string and symbol attribute keys identically on mass-assignment, so
+# a string-rocket key forces the same primary key.
+#
+# Only literal values are flagged. A value read from another record or a variable
+# (`id: company.id`, `id: company_id`) is a reference, not a magic constant.
+#
+# Two shapes are configured away rather than disabled per site, because in neither is the
+# literal a database primary key:
+#
+# - `AllowedFactories` -- factories that build a value object instead of inserting a row
+#   (`skip_create` / `initialize_with`), so `id:` is the object's own identity; plus the
+#   rare table declared `create_table ..., id: false`, whose column has no auto-increment
+#   and so requires an explicit id.
+# - `AllowedReceivers` -- constants whose `create` is not ActiveRecord's, such as a
+#   `T::Struct` whose `id:` is a required keyword argument.
+#
+# @example
+#   # bad
+#   create(:company, id: 123)
+#   create(:company, 'id' => 123)
+#   create_list(:company, 3, id: 123)
+#   Company.create!(id: '123456789')
+#
+#   # good - let the database assign the id
+#   company = create(:company)
+#
+#   # good - a transitive record id is a reference, not a magic constant
+#   create(:employee, id: company.id)
+#
+#   # better - pass the association so the child's own id is never forced
+#   create(:employee, company:)
+#
+# @example AllowedFactories: ['money'] (default: [])
+#   # good - a factory that builds a value object rather than inserting a row
+#   create(:money, id: 123)
+#
+# @example AllowedReceivers: ['Reporting::Row'] (default: [])
+#   # good - a constant whose `create` is not ActiveRecord's
+#   Reporting::Row.create(id: 123)
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_id.rb:58
+class RuboCop::Cop::Gusto::HardcodedId < ::RuboCop::Cop::Base
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_id.rb:73
+  def on_csend(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_id.rb:62
+  def on_send(node); end
+
+  private
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_id.rb:104
+  def allowed_factories; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_id.rb:93
+  def allowed_factory?(node); end
+
+  # `::Foo::Bar` and `Foo::Bar` name the same constant, so compare without the leading
+  # scope operator.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_id.rb:86
+  def allowed_receiver?(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_id.rb:100
+  def allowed_receivers; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_id.rb:77
+  def hardcoded_id?(pair); end
+end
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_id.rb:59
+RuboCop::Cop::Gusto::HardcodedId::MSG = T.let(T.unsafe(nil), String)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_id.rb:60
+RuboCop::Cop::Gusto::HardcodedId::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
+
 # Checks for the use of `min` or `max` with a proc. Corrects to `min_by` or `max_by`.
 #
 # @safety This cop is unsafe because it will change the behavior of the code.
@@ -2250,6 +2586,10 @@ module RuboCop::Cop::Sidekiq; end
 #   expect(Foo).to receive(:perform_async)
 #   expect(Foo).not_to receive(:perform_async)
 #
+#   # bad - the stub it verifies is itself the offense, and it may have been
+#   # set up in a shared context this cop cannot see
+#   expect(Foo).to have_received(:perform_async)
+#
 #   # good (still invokes the real method)
 #   allow(Foo).to receive(:perform_async).and_call_original
 #   expect(Foo).to receive(:perform_async).with(arg).and_call_original
@@ -2260,43 +2600,54 @@ module RuboCop::Cop::Sidekiq; end
 #   expect { subject }.not_to change(Foo.jobs, :count)
 #   expect(Foo.jobs.count).to eq(n)
 #
-#   # good (only checks previously pre-stubbed objects)
-#   expect(Foo).to have_received(:perform_async)
+#   # good - there is no other way to make an enqueue fail. Sidekiq's testing API
+#   # pushes onto Foo.jobs and offers no failure injection, so a spec covering the
+#   # rescue around an enqueue has to raise from the stub.
+#   allow(Foo).to receive(:perform_async).and_raise(StandardError, "redis down")
 #
 # @safety
 #   Autocorrect is unsafe: it appends `.and_call_original` on positive `receive` only, which runs
 #   the real `perform_async` during the example (may enqueue jobs, hit external code, or
 #   change expectations vs a pure stub). There is no autocorrect for `not_to` / `to_not receive`,
-#   since `.and_call_original` would not apply to a negative expectation. Autocorrect is also
-#   suppressed when the expectation uses a block, since appending `.and_call_original` would
-#   rebind the block to the wrong method.
+#   since `.and_call_original` would not apply to a negative expectation, nor for
+#   `have_received`, whose stub lives elsewhere. Autocorrect is also suppressed when the
+#   expectation uses a block, since appending `.and_call_original` would rebind the block to
+#   the wrong method.
 #
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/sidekiq/perform_async_stub.rb:34
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/sidekiq/perform_async_stub.rb:41
 class RuboCop::Cop::Sidekiq::PerformAsyncStub < ::RuboCop::Cop::Base
   extend ::RuboCop::Cop::AutoCorrector
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/sidekiq/perform_async_stub.rb:72
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/sidekiq/perform_async_stub.rb:88
   def on_csend(node); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/sidekiq/perform_async_stub.rb:47
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/sidekiq/perform_async_stub.rb:59
   def on_send(node); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/sidekiq/perform_async_stub.rb:43
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/sidekiq/perform_async_stub.rb:55
   def stub_perform_async?(param0 = T.unsafe(nil)); end
 
   private
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/sidekiq/perform_async_stub.rb:76
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/sidekiq/perform_async_stub.rb:92
   def message_expectation_chain_tail(node); end
 end
 
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/sidekiq/perform_async_stub.rb:37
+# Chain modifiers that leave the real `perform_async` reachable, so the example is not
+# replacing the enqueue with a canned result. `and_raise` belongs here even though it
+# never calls the original: simulating a failed enqueue is the one thing Sidekiq's
+# testing API cannot express, so a spec covering the rescue has no other route.
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/sidekiq/perform_async_stub.rb:52
+RuboCop::Cop::Sidekiq::PerformAsyncStub::ALLOWED_CHAIN = T.let(T.unsafe(nil), Array)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/sidekiq/perform_async_stub.rb:44
 RuboCop::Cop::Sidekiq::PerformAsyncStub::MSG = T.let(T.unsafe(nil), String)
 
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/sidekiq/perform_async_stub.rb:38
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/sidekiq/perform_async_stub.rb:45
 RuboCop::Cop::Sidekiq::PerformAsyncStub::MSG_RECEIVE = T.let(T.unsafe(nil), String)
 
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/sidekiq/perform_async_stub.rb:39
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/sidekiq/perform_async_stub.rb:46
 RuboCop::Cop::Sidekiq::PerformAsyncStub::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
 
 # RuboCop Gusto project namespace.
