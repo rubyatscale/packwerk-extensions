@@ -213,44 +213,99 @@ end
 # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/described_class_constant_reference.rb:52
 RuboCop::Cop::Gusto::DescribedClassConstantReference::MSG = T.let(T.unsafe(nil), String)
 
-# Flag installation of discouraged gems (e.g. timecop) in Gemfiles and
-# gemspecs. The discouraged gems an advice about alternatives are configured under
-# `Gems:`; intended to be enabled in Rails projects via config/rails.yml.
+# Flag installation of discouraged gems (e.g. ostruct) in Gemfiles and gemspecs. The
+# discouraged gems and advice about alternatives are configured under `Gems:`.
 #
-# @example Gems: { timecop: "Use Rails' time helpers instead of Timecop." }
+# When a Gemfile has a lockfile beside it, discouraged gems pulled in transitively are
+# flagged on the line of the Gemfile dependency that pulls them in, so each existing case
+#
+# @example Gems: { ostruct: "Use Struct or Data instead of OpenStruct." }
 #   # bad
-#   gem "timecop"
+#   gem "ostruct"
 #
-#   # good
-#   # Use Rails' time helpers (freeze_time, travel_to) instead.
+#   # bad - Gemfile.lock resolves slack-ruby-client -> gli -> ostruct
+#   gem "slack-ruby-client"
 #
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:16
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:22
 class RuboCop::Cop::Gusto::DiscouragedGem < ::RuboCop::Cop::Base
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:21
+  # Asked once per run, so only a lockfile-only change at the project root busts the cache.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:48
+  def external_dependency_checksum; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:31
+  def gem_declaration(param0 = T.unsafe(nil)); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:34
+  def gemspec_declaration?(param0 = T.unsafe(nil)); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:36
+  def on_new_investigation; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:43
   def on_send(node); end
 
   private
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:43
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:151
   def advice_for(gem); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:27
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:57
   def check_gem_usage(node); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:35
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:71
+  def check_lockfile(lockfile); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:124
+  def declared_gems; end
+
+  # Platform-specific specs share a name, so their dependencies are merged.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:94
+  def dependency_graph(specs); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:143
   def discouraged_gems; end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:47
+  # Breadth-first, so each discouraged gem is reported via its shortest path from root.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:101
+  def discouraged_paths(root, graph); end
+
+  # Dependencies that come from a gemspec, eval_gemfile, or similar have no `gem` line.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:132
+  def fallback_location; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:155
   def gems_config; end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:39
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:65
+  def lockfile_path; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:147
   def message_for(gem); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:137
+  def message_for_path(path); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:118
+  def path_to(name, parents); end
 end
 
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:17
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:26
+RuboCop::Cop::Gusto::DiscouragedGem::LOCKFILES = T.let(T.unsafe(nil), Hash)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:23
 RuboCop::Cop::Gusto::DiscouragedGem::MSG = T.let(T.unsafe(nil), String)
 
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:19
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:24
+RuboCop::Cop::Gusto::DiscouragedGem::MSG_TRANSITIVE = T.let(T.unsafe(nil), String)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:25
+RuboCop::Cop::Gusto::DiscouragedGem::MSG_UNREADABLE_LOCKFILE = T.let(T.unsafe(nil), String)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/discouraged_gem.rb:28
 RuboCop::Cop::Gusto::DiscouragedGem::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
 
 # Disallow `execute` (raw SQL) in migrations. Run raw SQL from a backfill
@@ -753,7 +808,15 @@ RuboCop::Cop::Gusto::Graphql::TypeVariables::UNTYPED_OBJECT = T.let(T.unsafe(nil
 # In a list, a literal sitting beside a real `record.id` also qualifies on its own: you
 # would write another `record.id` if you wanted one that exists. That matters because
 # those groups are usually named for the plural ("with multiple bank account IDs") rather
-# than for the gap.
+# than for the gap. Several literals each correct to their own negative (`-1`, `-2`), so
+# the count the example asserts is preserved. A list only reads as record ids when every
+# member is one: `['story', '123', '']` enumerates the shapes an id parser must reject,
+# so its numeric member is a format, not a primary key.
+#
+# The description vocabulary is wider than "does not exist" on purpose. "Invalid company
+# id", "belongs to another company" and "for a different employee" are, in practice,
+# how specs name an id that matches no row -- and a positive literal there collides with
+# the example's own record as soon as the counter reaches it.
 #
 # Five shapes are deliberately not offenses, because in none of them can the counter reach
 # the literal, or a single replacement would change what the example asserts:
@@ -808,117 +871,126 @@ RuboCop::Cop::Gusto::Graphql::TypeVariables::UNTYPED_OBJECT = T.let(T.unsafe(nil
 #   # good - above MaxId the literal is a deliberate never-collides sentinel
 #   let(:company_id) { 9_999_999_999 }
 #
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:79
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:87
 class RuboCop::Cop::Gusto::HardcodedAbsentRecordId < ::RuboCop::Cop::RSpec::Base
   extend ::RuboCop::Cop::AutoCorrector
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:105
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:112
   def let_definition(param0 = T.unsafe(nil)); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:114
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:121
   def on_send(node); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:110
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:117
   def vcr_metadata?(param0 = T.unsafe(nil)); end
 
   private
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:195
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:215
   def absent_context?(group); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:137
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:144
   def allowed_names; end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:199
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:219
   def built_with?(group, name, value); end
 
   # A cassette keys its recorded interactions off the request URI, so an id in the path is
   # what tells two same-route requests apart. Rewriting it makes the example miss the
   # recording rather than assert absence, and `record: :none` then fails it outright.
   #
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:214
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:234
   def cassette_controlled?(node); end
 
-  # Only a lone literal qualifies. Two would both correct to `-1`, and a duplicated id in
-  # a list collapses on lookup, changing the count the example asserts.
-  #
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:152
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:157
   def check_id_list(node, name, array); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:141
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:148
   def check_id_literal(node, name, literal); end
 
   # A string id reaches the same column as an integer one, so both count; only the sign
   # and the magnitude matter.
   #
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:179
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:199
   def collidable_id(node); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:191
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:211
   def enclosing_example_group(node); end
+
+  # `['story', 'story-', '123', '']` lists the shapes an id parser has to reject, so its
+  # numeric member is a format, not a primary key.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:179
+  def format_fixture?(array); end
 
   # A third-party identifier stored in a `*_id` field is not a primary key the
   # auto-increment counter can reach, so a name listed in `AllowedNames` is skipped
   # outright -- a named exception in config beats a file-path exclude or a disable.
   #
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:133
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:140
   def id_name?(name); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:207
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:227
   def inspect_group(group); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:165
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:185
   def list_qualifies?(array, group); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:187
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:207
   def max_id; end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:203
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:223
   def paired_ids?(group); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:171
-  def register(literal); end
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:191
+  def register(literal, replacement = T.unsafe(nil)); end
+
+  # Each literal gets its own negative: a duplicated id collapses on lookup, which would
+  # change the count the example asserts.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:169
+  def register_list(literals, group, name); end
 end
 
 # Each phrase is unambiguous on its own: a bare "missing" or "unknown" reads just as
 # naturally about a header or a flag, so neither is here.
 #
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:90
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:98
 RuboCop::Cop::Gusto::HardcodedAbsentRecordId::ABSENT_DESCRIPTION = T.let(T.unsafe(nil), Regexp)
 
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:101
-RuboCop::Cop::Gusto::HardcodedAbsentRecordId::BUILDERS = T.let(T.unsafe(nil), Array)
-
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:102
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:109
 RuboCop::Cop::Gusto::HardcodedAbsentRecordId::DEFAULT_MAX_ID = T.let(T.unsafe(nil), Integer)
 
 # Answers the group-level questions: does this group say the record is absent, does it
 # build the record, and does it pin two ids that are meant to differ?
 #
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:222
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:242
 class RuboCop::Cop::Gusto::HardcodedAbsentRecordId::GroupInspector
   include ::RuboCop::RSpec::Language
   extend ::RuboCop::AST::NodePattern::Macros
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:231
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:257
   def initialize(group, max_id); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:236
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:262
   def absent?; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:252
+  def builder_calls(param0); end
 
   # A group that builds a record carrying this id means the row is meant to exist, so
   # the absence the group describes is about something else.
   #
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:242
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:268
   def builds?(name, value); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:227
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:247
   def let_definition(param0 = T.unsafe(nil)); end
 
   # Two ids pinned in one group are usually pinned to differ from each other -- a record
   # and the "other company" it must not match. One shared replacement collapses that.
   #
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:251
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:279
   def paired_ids?; end
 
   private
@@ -926,62 +998,68 @@ class RuboCop::Cop::Gusto::HardcodedAbsentRecordId::GroupInspector
   # Matched against the source rather than the value so an interpolated description
   # ("when #{model} does not exist") still reads as one.
   #
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:261
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:289
   def absent_description?; end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:298
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:326
   def collidable_id(node); end
 
   # `expect { record.reload }.to raise_error(ActiveRecord::RecordNotFound)` asserts that
   # a row the example already holds was deleted by the code under test. That is about
   # the object, not about the literal -- which is usually what selected it for deletion.
   #
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:291
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:319
   def deleted_record_assertion?(node); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:257
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:338
+  def factory_name(call); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:285
   def group; end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:257
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:285
   def max_id; end
 
   # Scoped to this group: the walk stops at a nested example group, whose assertions
   # belong to whatever that group redefines rather than to this `let`.
   #
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:270
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:298
   def not_found_assertion?(node); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:277
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:305
   def not_found_matcher?(node); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:317
+  # The built record carries the id when the key is its own primary key, or when the
+  # attribute is named for the factory, as in `create(:card, corepro_card_id: 123)`. A key
+  # naming another table is a foreign key: `create(:evaluation, company_id: 1)` points at
+  # the companies row the example says is absent rather than creating it, so it is not
+  # treated as building it.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:348
+  def own_attribute?(node, factory, value); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:357
   def own_lets(node, found = T.unsafe(nil)); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:306
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:334
   def references?(node, name); end
-
-  # `create(:evaluation, company_id: 1)` beside `let(:company_id) { 1 }` builds the row
-  # this id selects, even though the example inlined the literal rather than the `let`.
-  #
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:312
-  def same_id_value?(node, value); end
 end
 
 # `id` itself, or any `<something>_id`, singular or plural.
 #
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:86
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:94
 RuboCop::Cop::Gusto::HardcodedAbsentRecordId::ID_NAME = T.let(T.unsafe(nil), Regexp)
 
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:82
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:90
 RuboCop::Cop::Gusto::HardcodedAbsentRecordId::MSG = T.let(T.unsafe(nil), String)
 
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:99
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:107
 RuboCop::Cop::Gusto::HardcodedAbsentRecordId::NOT_FOUND = T.let(T.unsafe(nil), Regexp)
 
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:100
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:108
 RuboCop::Cop::Gusto::HardcodedAbsentRecordId::NOT_FOUND_STATUS = T.let(T.unsafe(nil), Regexp)
 
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:83
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/hardcoded_absent_record_id.rb:91
 RuboCop::Cop::Gusto::HardcodedAbsentRecordId::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
 
 # Flags a hardcoded `id:` passed to `create`/`create!`/`create_list`.
@@ -2006,6 +2084,48 @@ RuboCop::Cop::Gusto::SuddenAssociations::MSG = T.let(T.unsafe(nil), String)
 # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/sudden_associations.rb:26
 RuboCop::Cop::Gusto::SuddenAssociations::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
 
+# Flags calls to `Timeout.timeout`.
+#
+# `Timeout.timeout` stops its block by calling `Thread#raise` from a
+# watcher thread, so the exception can land on any line of the block,
+# including inside an `ensure` clause or halfway through a database write
+# or a connection checkout. That can leak locks, return a half-read socket
+# to a pool, or leave records partially updated. There is no safe way to
+# interrupt an arbitrary block of code; see
+# https://jvns.ca/blog/2015/11/27/why-rubys-timeout-is-dangerous-and-thread-dot-raise-is-terrifying/
+#
+# Instead, use the timeout the waiting operation itself supports, which
+# fails at a known point: `Net::HTTP#read_timeout`, a database
+# `statement_timeout`, `IO#timeout=`, `Queue#pop(timeout:)`, or a deadline
+# checked with `Process.clock_gettime(Process::CLOCK_MONOTONIC)`.
+#
+# `Timeout` is a constant, so it is never nil and safe navigation
+# (`Timeout&.timeout`) is never used; the cop only handles `on_send`.
+#
+# @example
+#   # bad
+#   Timeout.timeout(5) { http.get(path) }
+#   ::Timeout.timeout(5, MyError) { do_work }
+#
+#   # good
+#   http.read_timeout = 5
+#   http.get(path)
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/timeout_timeout.rb:32
+class RuboCop::Cop::Gusto::TimeoutTimeout < ::RuboCop::Cop::Base
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/timeout_timeout.rb:43
+  def on_send(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/timeout_timeout.rb:39
+  def timeout_timeout?(param0 = T.unsafe(nil)); end
+end
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/timeout_timeout.rb:33
+RuboCop::Cop::Gusto::TimeoutTimeout::MSG = T.let(T.unsafe(nil), String)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/timeout_timeout.rb:36
+RuboCop::Cop::Gusto::TimeoutTimeout::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
+
 # Checks that no top-level constants (excluding classes and modules)
 # are defined. This rule exists to prevent accidental pollution of the
 # global namespace as well as cases where application code has
@@ -2058,8 +2178,8 @@ RuboCop::Cop::Gusto::ToplevelConstants::MSG = T.let(T.unsafe(nil), String)
 # side effect even when unreferenced, so it cannot simply be deleted. Only plain `let` is
 # handled here.
 #
-# Detection is file-scoped: a `let` referenced only from another file (through a shared
-# example or an included test harness) cannot be seen, so the cop stays conservative and
+# By default detection is file-scoped: a `let` referenced only from another file (through a
+# shared example or an included test harness) cannot be seen, so the cop stays conservative and
 # prefers false negatives over false positives:
 # - a name defined more than once in the file by `let`/`let!`/`subject` (an override /
 #   `super` chain, including a `subject` that overrides a `let` of the same name) is never
@@ -2087,6 +2207,23 @@ RuboCop::Cop::Gusto::ToplevelConstants::MSG = T.let(T.unsafe(nil), String)
 # realistically only deletes distinctively-named dead lets; it is not a complete dead-`let`
 # finder.
 #
+# `PerExampleGroup: true` scopes detection to example groups instead. A `let` is live only where
+# code running in its group could read it: a reference in its own group, an enclosing group or
+# a nested one, never a sibling. A reference is a bare call or a call on the example itself
+# (`self.x`, `->(example) { example.x }`); hash keys and factory, stub and lookup arguments are
+# not. Each definition of an overridden name is judged on its own, and a `let!` reads its own
+# name. Shared groups and helper methods defined under `spec/support/**` (and in the
+# `spec/*_helper.rb` files beside it) are resolved, following the groups and helpers they use
+# in turn, so an include or helper call protects only the names that code could read. Harnesses
+# `config` registers by metadata (`include_context`, `include`, hooks) count where the lineage's
+# metadata, the type inferred from the directory, or metadata derived for the file selects
+# them. A reflective call reads the names its target could hold: a pattern for an
+# interpolated name. Anything the cop cannot resolve still protects every `let` in its lineage.
+# `LocalContextIncludes` names include methods that evaluate a sibling `context.rb` (or
+# `<name>_context.rb`), which is then resolved the same way.
+#
+# `Cascade: true` also flags a `let` read only from unreferenced `let`s (including its own block).
+#
 # @example
 #   # bad (name never referenced -- deleted, the block never runs)
 #   let(:unused) { create(:thing) }
@@ -2095,76 +2232,178 @@ RuboCop::Cop::Gusto::ToplevelConstants::MSG = T.let(T.unsafe(nil), String)
 #   let(:thing) { create(:thing) }
 #   it { expect(thing).to be_present }
 #
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:53
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:70
 class RuboCop::Cop::Gusto::UnreferencedLet < ::RuboCop::Cop::RSpec::Base
   include ::RuboCop::Cop::RangeHelp
   extend ::RuboCop::Cop::AutoCorrector
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:79
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:140
   def definition_name(param0 = T.unsafe(nil)); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:115
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:155
+  def eager_let_name(param0 = T.unsafe(nil)); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:145
+  def lazy_let?(param0 = T.unsafe(nil)); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:529
   def on_send(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:150
+  def subject_name(param0 = T.unsafe(nil)); end
 
   private
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:175
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:812
   def absorbable_comment?(source_line); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:180
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:817
   def blank_line?(source_line); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:200
-  def consumes_shared_examples?; end
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:777
+  def block_parameter?(lvar); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:259
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:559
+  def cascade?; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:567
+  def dead_lets; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:862
   def definition_name_argument?(sym_node); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:225
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:855
   def definitions_by_name; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:704
+  def dispatch_reads(read); end
 
   # True when the file reflectively dispatches through a name we cannot resolve statically --
   # `send`/`public_send`/`method`/etc. called with anything other than a `sym` or plain `str`
   # first argument (most commonly an interpolated string, `send("expected_#{type}")`). In
   # that case any `let` in the file could be the dispatch target, so none are deleted.
   #
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:210
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:845
   def dynamic_dispatch?; end
 
-  # A lazy `let` is exempt from deletion whenever file-scoped analysis cannot prove its name
-  # is dead: its name is a framework-reserved contract (e.g. `cop_config`), the file
-  # dispatches through a name we cannot resolve statically, it consumes shared examples, the
-  # `let` is lexically inside a shared-example definition, its name is a `spec/support/**`
-  # framework contract, it is overridden by another definition of the same name, or it is
-  # referenced somewhere in the file.
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:783
+  def enclosing_lazy_let(node); end
+
+  # A call reaches a `let` when it has no receiver, or, per example group, when its receiver may be
+  # the example itself: `self`, or a block parameter (`->(example) { example.payroll }`).
   #
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:140
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:770
+  def example_receiver?(receiver); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:548
   def exempt_from_deletion?(name, block); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:184
+  # By file, a name also defined as a `let`/`subject` under `spec/support/**` likely overrides a
+  # contract some harness reads. Per example group, the harnesses that metadata in the lineage
+  # pulls in are resolved and only their reads count.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:614
+  def exposed_to_harness?(name, scope); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:594
+  def exposed_to_reader?(name, scope); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:577
+  def find_dead(dead); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:696
+  def group_reader_site(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:581
+  def identity_set; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:711
+  def included_reads(node); end
+
+  # Hash keys and factory, stub and lookup arguments, by name and scope: not references, but a
+  # reader that dispatches to names its inputs carry could be handed one.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:603
+  def inert_references; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:634
+  def inferred_type; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:675
+  def lazy_lets; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:821
   def let_or_subject_line?(source_line); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:221
+  # Two scopes share a lineage when one encloses the other: a reference in an enclosing group runs
+  # in every nested example, and a reference in a nested group resolves outward to the definition.
+  # `nil` is file-wide and shares a lineage with everything.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:653
+  def lineage?(scope, other); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:585
+  def live?(let, dead); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:563
+  def local_context_includes; end
+
+  # A local-context include evaluates a sibling `context.rb`, or `<name>_context.rb` when named.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:725
+  def local_context_reads(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:733
+  def local_shared_groups; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:739
+  def metadata_scopes; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:671
+  def nesting_include?(block); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:851
   def overridden?(name); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:188
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:555
+  def per_example_group?; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:825
   def preceding_sig(node); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:232
-  def referenced?(name); end
-
-  # A name is "referenced" if it is called as a bare method (`foo`), appears as a symbol
-  # literal (`:foo`) other than the let/subject's own name argument, or appears as an
-  # identifier-shaped token inside any string/heredoc literal. The symbol and string cases
-  # cover indirect invocation -- `send(:foo)` / `send("foo")`, a `:foo`/`"foo"` listed in a
-  # data table the spec later dispatches on, or a binding named only inside raw SQL/GraphQL
-  # text the spec executes -- which file-scoped analysis cannot otherwise follow. (Tokenizing
-  # string bodies, rather than matching the whole string, keeps a `let` referenced only from
-  # inside a multi-word heredoc from being deleted.) Interpolated-string *dispatch* is handled
-  # separately by `dynamic_dispatch?`, which exempts the whole file.
+  # The metadata examples in the lineage of `scope` carry: written on its groups, plus the
+  # `type` rspec-rails infers from the file's directory. A bare `:key` reads as `key: true`.
   #
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:245
-  def referenced_names; end
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:623
+  def provided_metadata(scope); end
+
+  # Every place code could read a let other than by naming it, as `[scope, Reads]` (`nil` when
+  # unbounded): shared-group includes and, per example group, calls to helper methods defined
+  # under `spec/support/**` and reflective calls that build the name they dispatch to.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:686
+  def reader_sites; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:638
+  def redefined?(name); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:759
+  def reference_names(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:642
+  def referenced_in_lineage?(name, let, scope, dead); end
+
+  # Every reference to a name, keyed by name, as `[scope, enclosing lazy let]` pairs. A name is
+  # referenced where it is called bare (`foo`), appears as a symbol (`:foo`) other than a
+  # definition's own name argument, or appears as an identifier-shaped token inside any
+  # string/heredoc literal. The symbol and string cases cover indirect invocation --
+  # `send(:foo)` / `send("foo")`, a `:foo` listed in a data table the spec later dispatches on,
+  # or a binding named only inside raw SQL/GraphQL text -- which static analysis cannot
+  # otherwise follow. A `let!` references its own name from its own scope, since its eager
+  # hook calls it before every example there.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:753
+  def references; end
 
   # Delete the `let` block, plus:
   # - an immediately-preceding `sig { ... }` (so a Sorbet signature is not left dangling),
@@ -2173,72 +2412,347 @@ class RuboCop::Cop::Gusto::UnreferencedLet < ::RuboCop::Cop::RSpec::Base
   #   blank -- unless the line above is a `let`/`subject`, where that blank is the required
   #   separator after the now-final let and must stay.
   #
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:156
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:793
   def removal_range(node); end
 
-  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:196
+  # The innermost example group (or block passed to an include such as `it_behaves_like`)
+  # enclosing the node, or `nil` for file-wide: outside any group, inside a shared-group
+  # definition (its body runs wherever it is included), or when scoping per group is off.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:662
+  def scope_of(node); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:679
+  def subject_names; end
+
+  # Per example group, a shared group nested in an example group is only visible to this file, so
+  # its `let`s are judged file-wide like any other; a top-level one may be included elsewhere.
+  #
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:835
   def within_shared_definition?(node); end
 
   class << self
-    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:103
+    # A condition with no value asks only for its key; a provided value we cannot know meets any.
+    #
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:252
+    def condition_met?(condition, provided); end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:378
+    def config_call?(send_node); end
+
+    # Whether a `define_derived_metadata` filter matches this file: a literal `file_path:` regexp is
+    # tested, a metadata filter checked against `provided`; anything else is assumed to match.
+    #
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:242
+    def derived_applies?(filter, provided, path); end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:349
+    def derived_filter(args); end
+
+    # What a reflective call that can reach a `let` (no receiver, or `self`) reads beyond its
+    # literal names: nothing for a literal target; `:inputs` when the target is a parameter, a
+    # variable assigned only literals, or a bare call returning one, so any literal could
+    # supply the name; a pattern when it interpolates around literal text; `:unbounded`
+    # otherwise.
+    #
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:477
+    def dispatch_read(node); end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:465
+    def dynamic_target?(node); end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:301
+    def empty_index; end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:192
     def extract_let_names(source, names); end
 
     # Names defined as `let`/`subject` anywhere under `spec/support/**`. Computed once per
     # process (lazily, after boot) and shared across every file the cop inspects.
     #
-    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:86
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:162
     def framework_let_names; end
 
-    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:108
+    # Everything the harnesses whose conditions `provided` metadata meets could read: shared
+    # groups, modules and `config` hooks registered for that metadata. `provided` holds
+    # `[key, value]` pairs, a `nil` value standing for one we cannot know.
+    #
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:224
+    def harness_reads(provided, processed_source); end
+
+    # A module no support file defines comes from a gem, which cannot read spec `let`s.
+    #
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:258
+    def harness_target_reads(target, index, processed_source); end
+
+    # A method a spec could call bare: defined at the top level, in a block, or in a module that
+    # can be mixed into example groups -- not an instance method of some class.
+    #
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:444
+    def helper_method?(def_node); end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:448
+    def include_method?(method_name); end
+
+    # What including a module runs on its own: its `included`/`extended` hooks. Its other methods
+    # only read what they read when called, and calls are followed as helpers.
+    #
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:402
+    def inclusion_hooks(module_node); end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:326
+    def index_block(block, index); end
+
+    # Indexes each shared group, helper method and module by name, scanned on its own, and each
+    # harness `config` registers by the metadata keys that pull it in.
+    #
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:311
+    def index_definitions(ast, index); end
+
+    # The metadata a `define_derived_metadata` block assigns (`metadata[:key] = value`), which can
+    # be present without the spec writing it.
+    #
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:342
+    def index_derived(block, index); end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:365
+    def index_registration(node, index); end
+
+    # The support files plus the `spec/*_helper.rb` files beside each `spec/support` directory,
+    # which define helpers the same way.
+    #
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:179
+    def indexed_files; end
+
+    # A symbol or string that cannot name a `let`: a hash key, or a factory, trait, stubbed method
+    # or hash lookup name.
+    #
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:458
+    def inert_symbol?(node); end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:498
+    def interpolation_pattern(node); end
+
+    # `(?:a|b)` for an interpolated block parameter bound by iterating a literal array or hash.
+    #
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:506
+    def literal_alternatives(part); end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:515
+    def literal_collection(node); end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:452
+    def literal_name(node); end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:359
+    def literal_regexp(node); end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:394
+    def literal_value(node); end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:487
+    def literal_valued?(node); end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:267
+    def local_context_reads(path, processed_source); end
+
+    # `[key, value]` metadata pairs written as arguments: `:key` asks for the key, `key: value` for
+    # the value (`nil` when it is not a literal).
+    #
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:384
+    def metadata_conditions(args); end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:305
+    def parse(source, path, processed_source); end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:197
     def read_source(path); end
 
-    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:97
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:275
+    def reads_from(chunks, index); end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:372
+    def registration_target(node); end
+
+    # What code under `root` reads: its symbols (except factory/stub ones and hash keys), bare
+    # calls and string tokens; the helpers it calls and groups it includes, to follow; and the
+    # patterns of names it builds for dynamic dispatch, or `opaque` when it builds them some
+    # other way.
+    #
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:410
+    def scan(root); end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:424
+    def scan_call(node, chunk); end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:186
     def scan_framework_let_names(paths); end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:437
+    def scan_include(node, chunk); end
+
+    # A string with invalid encoding (e.g. a deliberate bad-UTF-8 test fixture) cannot contain
+    # an identifier-shaped reference and would raise on `scan`, so it yields none.
+    #
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:524
+    def string_tokens(node); end
 
     # Enumerate `spec/support/**/*.rb`. No git dependency: some environments (e.g. a build
     # step's working directory) are not a git work tree at all, and shelling out to `git`
     # there is unreliable and noisy.
     #
-    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:93
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:169
     def support_file_paths; end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:173
+    def support_files; end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:217
+    def support_helper?(name, processed_source); end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:294
+    def support_index(processed_source); end
+
+    # Every name the code behind a shared group (`kind` `:groups`), a helper method (`:defs`) or a
+    # module (`:modules`) defined under `spec/support/**` could read, or `nil` when that cannot be
+    # bounded. That code is followed through the groups it includes and the helpers it calls.
+    # Unbounded when a group is not defined there, or the code dispatches through a name it
+    # computes, or includes a group by a name we cannot resolve.
+    #
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:208
+    def support_reads(kind, name, processed_source); end
   end
 end
 
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:57
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:74
 RuboCop::Cop::Gusto::UnreferencedLet::DEFINITION_METHODS = T.let(T.unsafe(nil), Set)
 
 # Reflective dispatch methods whose target is the first argument. When that argument is not
 # a statically-resolvable name (a `sym` or plain `str`) -- e.g. `send("expected_#{type}")` --
 # the called name cannot be known, so the whole file is left untouched.
 #
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:65
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:82
 RuboCop::Cop::Gusto::UnreferencedLet::DYNAMIC_DISPATCH_METHODS = T.let(T.unsafe(nil), Array)
 
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:66
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:83
 RuboCop::Cop::Gusto::UnreferencedLet::FRAMEWORK_LET_PATTERN = T.let(T.unsafe(nil), Regexp)
 
 # `let`s consumed by a test framework rather than by a reference in the spec file. The
 # rubocop-rspec `:config` shared context reads `cop_config`, so it is live even though the
 # spec never names it.
 #
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:61
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:78
 RuboCop::Cop::Gusto::UnreferencedLet::FRAMEWORK_RESERVED_NAMES = T.let(T.unsafe(nil), Array)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:84
+RuboCop::Cop::Gusto::UnreferencedLet::HOOK_METHODS = T.let(T.unsafe(nil), Array)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:85
+RuboCop::Cop::Gusto::UnreferencedLet::HOOK_SCOPES = T.let(T.unsafe(nil), Array)
 
 # Identifier-shaped tokens inside a string/heredoc literal. A `let` whose name appears only
 # inside string text -- e.g. a binding or column referenced in raw SQL/GraphQL the spec
 # later executes -- counts as referenced, so it is not deleted.
 #
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:70
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:89
 RuboCop::Cop::Gusto::UnreferencedLet::IDENTIFIER_IN_STRING = T.let(T.unsafe(nil), Regexp)
 
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:71
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:104
+RuboCop::Cop::Gusto::UnreferencedLet::INCLUDED_CONTEXT = T.let(T.unsafe(nil), RuboCop::AST::NodePattern)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:105
+RuboCop::Cop::Gusto::UnreferencedLet::INCLUDED_MODULE = T.let(T.unsafe(nil), RuboCop::AST::NodePattern)
+
+# Methods whose literal arguments name factories, traits, stubbed methods or hash keys, never a
+# `let`.
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:92
+RuboCop::Cop::Gusto::UnreferencedLet::INERT_SYMBOL_METHODS = T.let(T.unsafe(nil), Array)
+
+# The `type` rspec-rails infers from a spec's directory (`infer_spec_type_from_file_location!`).
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:110
+RuboCop::Cop::Gusto::UnreferencedLet::INFERRED_TYPES = T.let(T.unsafe(nil), Hash)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:96
 RuboCop::Cop::Gusto::UnreferencedLet::MSG = T.let(T.unsafe(nil), String)
 
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:72
+# Includes whose block defines a nested example group; `include_context`/`include_examples`
+# evaluate their block in the including group itself.
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:99
+RuboCop::Cop::Gusto::UnreferencedLet::NESTING_INCLUDES = T.let(T.unsafe(nil), Array)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:106
+RuboCop::Cop::Gusto::UnreferencedLet::REGEXP_NEW = T.let(T.unsafe(nil), RuboCop::AST::NodePattern)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:100
+RuboCop::Cop::Gusto::UnreferencedLet::RESOLVABLE_INCLUDES = T.let(T.unsafe(nil), Array)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:101
 RuboCop::Cop::Gusto::UnreferencedLet::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
 
-# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:73
+# The names some code could read: literal names, patterns for names it builds by
+# interpolation (`try("#{prefix}_include")`), and whether it dispatches to names its inputs
+# carry (`hash.each_key { |key| send(key) }`), which hash keys and the like can supply.
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:119
+class RuboCop::Cop::Gusto::UnreferencedLet::Reads < ::Struct
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:124
+  def include?(name); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:119
+  def inputs; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:119
+  def inputs=(_); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:128
+  def merge!(other); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:119
+  def names; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:119
+  def names=(_); end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:119
+  def patterns; end
+
+  # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:119
+  def patterns=(_); end
+
+  class << self
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:119
+    def [](*_arg0); end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:120
+    def empty; end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:119
+    def inspect; end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:119
+    def keyword_init?; end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:119
+    def members; end
+
+    # pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:119
+    def new(*_arg0); end
+  end
+end
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:102
+RuboCop::Cop::Gusto::UnreferencedLet::SHARED_GROUP_METHODS = T.let(T.unsafe(nil), Array)
+
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:103
 RuboCop::Cop::Gusto::UnreferencedLet::SUPPORT_FILES_GLOB = T.let(T.unsafe(nil), String)
+
+# Harness condition for configuration that applies to every example group, metadata or not.
+#
+# pkg:gem/rubocop-gusto#lib/rubocop/cop/gusto/unreferenced_let.rb:108
+RuboCop::Cop::Gusto::UnreferencedLet::UNCONDITIONAL = T.let(T.unsafe(nil), Array)
 
 # Requires the use of the `paint` gem for terminal color methods on strings
 #
