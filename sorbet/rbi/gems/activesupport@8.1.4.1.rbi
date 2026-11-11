@@ -7306,7 +7306,7 @@ module ActiveSupport::Inflector
   #   ordinal(-11)   # => "th"
   #   ordinal(-1021) # => "st"
   #
-  # pkg:gem/activesupport#lib/active_support/inflector/methods.rb:334
+  # pkg:gem/activesupport#lib/active_support/inflector/methods.rb:335
   def ordinal(number); end
 
   # Turns a number into an ordinal string used to denote the position in an
@@ -7319,7 +7319,7 @@ module ActiveSupport::Inflector
   #   ordinalize(-11)   # => "-11th"
   #   ordinalize(-1021) # => "-1021st"
   #
-  # pkg:gem/activesupport#lib/active_support/inflector/methods.rb:347
+  # pkg:gem/activesupport#lib/active_support/inflector/methods.rb:348
   def ordinalize(number); end
 
   # Replaces special characters in a string so that it may be used as part of
@@ -7535,17 +7535,8 @@ module ActiveSupport::Inflector
   #   apply_inflections('post', inflections.plurals, :en)    # => "posts"
   #   apply_inflections('posts', inflections.singulars, :en) # => "post"
   #
-  # pkg:gem/activesupport#lib/active_support/inflector/methods.rb:376
+  # pkg:gem/activesupport#lib/active_support/inflector/methods.rb:360
   def apply_inflections(word, rules, locale = T.unsafe(nil)); end
-
-  # Mounts a regular expression, returned as a string to ease interpolation,
-  # that will match part by part the given constant.
-  #
-  #   const_regexp("Foo::Bar::Baz") # => "Foo(::Bar(::Baz)?)?"
-  #   const_regexp("::")            # => "::"
-  #
-  # pkg:gem/activesupport#lib/active_support/inflector/methods.rb:357
-  def const_regexp(camel_cased_word); end
 end
 
 # pkg:gem/activesupport#lib/active_support/inflector/transliterate.rb:8
@@ -14848,7 +14839,7 @@ ActiveSupport::VERSION::MAJOR = T.let(T.unsafe(nil), Integer)
 ActiveSupport::VERSION::MINOR = T.let(T.unsafe(nil), Integer)
 
 # pkg:gem/activesupport#lib/active_support/gem_version.rb:13
-ActiveSupport::VERSION::PRE = T.let(T.unsafe(nil), T.untyped)
+ActiveSupport::VERSION::PRE = T.let(T.unsafe(nil), String)
 
 # pkg:gem/activesupport#lib/active_support/gem_version.rb:15
 ActiveSupport::VERSION::STRING = T.let(T.unsafe(nil), String)
